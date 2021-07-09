@@ -1,0 +1,42 @@
+.header {
+    width: 100%;
+    background-color: rgb(24, 11, 145);
+    position: absolute;
+}
+
+.header ul {
+    text-align: center;
+}
+
+.header ul li {
+    text-align: center;
+    display: inline-block;
+}
+
+.header ul li a {
+    
+    display: block;
+    text-decoration: none;
+    text-transform: uppercase;
+    color: #fff;
+    font-size: 15px;
+    font-family: 'Raleway', sans-serif;
+    letter-spacing: 2px;
+    font-weight: 50;
+    padding: 25px;
+    transition: all ease 0.5s;
+}
+
+.header ul li a:hover {
+    background-color: #211b4385;
+}
+/* img{
+    height: 100%;
+    width: 50%;
+    object-fit: cover;
+    object-position: center center;
+  } */
+  .header ul li a img{
+    width: 70px;
+    height: 70px;
+}
