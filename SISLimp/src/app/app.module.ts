@@ -11,6 +11,7 @@ import { ProductsComponent } from './page/components/products/products.component
 import { ServicesComponent } from './page/components/services/services.component';
 import { ProducsAndServicesComponent } from './page/components/producs-and-services/producs-and-services.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { FooterComponent } from './page/components/footer/footer.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     AboutComponent,
     ProductsComponent,
     ServicesComponent,
-    ProducsAndServicesComponent
+    ProducsAndServicesComponent,
+    FooterComponent
   ],
   imports: [
     BrowserModule,
