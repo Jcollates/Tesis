@@ -40,9 +40,9 @@ hr.hr-text {
       border: none;
       height: 1px;
       background: #999;
-  }
+}
   
-  hr.hr-text::before {
+hr.hr-text::before {
       content: attr(data-content);
       display: inline-block;
       background: #fff;
@@ -56,4 +56,4 @@ hr.hr-text {
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-  }
+}

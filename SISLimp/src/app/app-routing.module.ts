@@ -8,12 +8,14 @@ import { ProductsComponent } from './page/components/products/products.component
 import { ServicesComponent } from './page/components/services/services.component';
 
 const routes: Routes = [
+  {path: '', pathMatch: 'full', redirectTo: 'inicio'},
   {path: 'inicio', component: InicioComponent},
   {path: 'contacto', component: ContactoComponent},
   {path: 'about', component: AboutComponent},
   {path: 'products', component: ProductsComponent},
   {path: 'proservices', component: ProducsAndServicesComponent},
   {path: 'services', component: ServicesComponent},
+  {path: '**', redirectTo: 'inicio'}
   //login here
 ];
 
