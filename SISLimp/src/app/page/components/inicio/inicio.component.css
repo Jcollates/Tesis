@@ -22,16 +22,16 @@
 
 .contenido-header h1 {
     margin-top: 150px;
-    color: #ffffff;
+    color: #3d3c3c;
     /* background-color: grey; */
     opacity: 0.8;
 }
 .circle {
-    width: 150px;
-    height: 150px;
-    line-height: 150px;
+    width: 200px;
+    height: 200px;
+    line-height: 200px;
     border-radius: 50%;
-    font-size: 12px;
+    font-size: 20px;
     color: #fff;
     text-align: center;
     background: #51B5AF

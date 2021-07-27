@@ -27,24 +27,23 @@
     opacity: 0.8;
 }
 
-hr.hr-text {
-    position: relative;
-      border: none;
-      height: 1px;
-      background: #999;
+.login {
+  min-height: 100vh;
 }
-hr.hr-text::before {
-    content: attr(data-content);
-    display: inline-block;
-    background: #fff;
-    font-weight: bold;
-    font-size: 0.85rem;
+
+.title{
+    background-color: grey;
     font-style: italic;
-    color: rgb(0, 0, 0);
-    border-radius: 30rem;
-    padding: 0.2rem 2rem;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    color: #ffffff;
+}
+@media (min-width: 576px) {
+    .rounded-nav {
+      border-radius: 50rem !important;
+    }
+  }
+  
+@media (min-width: 576px) {
+    .rounded-nav .nav-link {
+      border-radius: 50rem !important;
+    }
 }

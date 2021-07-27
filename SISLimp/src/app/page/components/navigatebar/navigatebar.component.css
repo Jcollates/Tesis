@@ -1,45 +1,50 @@
-.header {
-    width: 100%;
-    background-color: rgb(24, 11, 145);
-    position: absolute ;
-    height: 10%;
+.navbar {
+    transition: all 0.4s;
 }
 
-.header ul {
-    text-align: center;
+.navbar .nav-link {
+    color: rgb(0, 0, 0);
 }
 
-.header ul li {
-    text-align: center;
-    display: inline-block;
-}
-
-.header ul li a {
-    
-    display: block;
+.navbar .nav-link:hover,
+.navbar .nav-link:focus {
+    color: rgb(0, 0, 0);
     text-decoration: none;
-    text-transform: uppercase;
-    color: #fff;
-    font-size: 15px;
-    font-family: 'Raleway', sans-serif;
-    letter-spacing: 1px;
-    font-weight: 40;
-    padding: 25px;
-    /* transition: all ease 1s; */
 }
 
-.header ul li a:hover {
-    background-color: #1b43bd;
-    border-radius: 10%;
-    height: 60px;
+.navbar .navbar-brand {
+    color: rgb(0, 0, 0);
 }
-/* img{
-    height: 100%;
-    width: 50%;
-    object-fit: cover;
-    object-position: center center;
-  } */
-  .header ul li a img{
-    width: 50px;
-    height: 50px;
+
+
+/* Change navbar styling on scroll */
+.navbar.active {
+    background: #fff;
+    box-shadow: 1px 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.navbar.active .nav-link {
+    color: #555;
+}
+
+.navbar.active .nav-link:hover,
+.navbar.active .nav-link:focus {
+    color: #555;
+    text-decoration: none;
+}
+
+.navbar.active .navbar-brand {
+    color: #555;
+}
+
+
+/* Change navbar styling on small viewports */
+@media (max-width: 991.98px) {
+    .navbar {
+        background: #fff;
+    }
+
+    .navbar .navbar-brand, .navbar .nav-link {
+        color: #555;
+    }
 }
