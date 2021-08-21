@@ -6,10 +6,13 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./navigation.component.css']
 })
 export class NavigationComponent implements OnInit {
-
+  active: any;
   constructor() { }
 
   ngOnInit(): void {
+    this.active = 'top';
   }
+  
+  
 
 }

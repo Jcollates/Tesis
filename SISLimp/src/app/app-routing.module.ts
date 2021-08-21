@@ -7,6 +7,7 @@ import { LoginComponent } from './page/components/login/login.component';
 import { ProducsAndServicesComponent } from './page/components/producs-and-services/producs-and-services.component';
 import { ProductsComponent } from './page/components/products/products.component';
 import { ServicesCliComponent } from './page/components/services-cli/services-cli.component';
+import { NavigationComponent } from './user/components/shared/navigation/navigation.component';
 
 const routes: Routes = [
   {path: '', pathMatch: 'full', redirectTo: 'inicio'},
@@ -17,6 +18,7 @@ const routes: Routes = [
   {path: 'proservices', component: ProducsAndServicesComponent},
   {path: 'services', component: ServicesCliComponent},
   {path: 'login', component: LoginComponent},
+  {path: 'user', component: NavigationComponent},
   {path: '**', redirectTo: 'inicio'}
   //login here
 ];

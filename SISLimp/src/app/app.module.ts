@@ -9,16 +9,15 @@ import { NavigatebarComponent } from './page/components/navigatebar/navigatebar.
 import { AboutComponent } from './page/components/about/about.component';
 import { ProductsComponent } from './page/components/products/products.component';
 import { ProducsAndServicesComponent } from './page/components/producs-and-services/producs-and-services.component';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FooterComponent } from './page/components/footer/footer.component';
 import { ServicesCliComponent } from './page/components/services-cli/services-cli.component';
 import { LoginComponent } from './page/components/login/login.component';
-import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 import { NavigationComponent } from './user/components/shared/navigation/navigation.component';
 import { BuyHistoryComponent } from './user/components/buy-history/buy-history.component';
 import { OrdersComponent } from './user/components/orders/orders.component';
 import { AccountDetailComponent } from './user/components/account-detail/account-detail.component';
 import { OutComponent } from './user/components/out/out.component';
+import {SidebarModule} from 'primeng/sidebar';
 
 @NgModule({
   declarations: [
@@ -41,8 +40,10 @@ import { OutComponent } from './user/components/out/out.component';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    NgbModule,
-    NgbDropdownModule
+
+
+    //primng
+    SidebarModule
   ],
   providers: [],
   bootstrap: [AppComponent]
