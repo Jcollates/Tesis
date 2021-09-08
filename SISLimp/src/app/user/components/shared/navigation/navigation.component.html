@@ -1,5 +1,21 @@
-<header class="site-header inicio mb-5">
-    <div class="contenedor contenido-header">
-        <h1 style="font-style: italic;">NEGA</h1>
+<p-menubar [model]="items">
+    <ng-template pTemplate="start">
+        <img src="../../../../../assets/Picture1.png" height="40" class="p-mr-2">
+    </ng-template>
+    <ng-template pTemplate="end">
+        <input type="text" pInputText placeholder="Search">
+    </ng-template>
+</p-menubar>
+<div class="pantalla">
+    <div class="menu-wrapper">
+        <div class="layout-menu-container p-2"> 
+            <p-menu [model]="items2"></p-menu>
+        </div>
     </div>
-</header>
+    <div class="layout-main">
+        <div class="layout-content">
+            <router-outlet></router-outlet>
+        </div>
+        <app-footertwo></app-footertwo>
+    </div>
+</div>

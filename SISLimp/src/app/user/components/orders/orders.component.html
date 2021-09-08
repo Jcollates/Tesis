@@ -1,1 +1,32 @@
-<p>orders works!</p>
+<!-- [style]="{'width': 'fit-content'}" -->
+<div class="p-text-italic">
+    <h3>Pedidos</h3>
+</div>
+
+<ng-container *ngFor="let item of cards">
+    <div class="p-grid">
+        <div class="p-col-2"></div>
+        <div class="p-col-8">
+            <p-card header="{{item.date}}" styleClass="p-shadow-5" [style]="{'border-radius': '50px'}">
+                <ng-template pTemplate="body">
+                    <div class="p-2">
+                        <p>{{item.name}}</p>
+                        <p>{{item.about}}</p>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="footer">
+                    <div class="p-grid">
+                        <div class="p-col-6">
+                        </div>
+                        <div class="p-col-6" style="text-align: end;">
+                            <p-tag styleClass="p-mr-2" value="{{item.status}}" icon="pi pi-info-circle" severity="info"
+                                [rounded]="true"> </p-tag>
+                        </div>
+                    </div>
+
+                </ng-template>
+            </p-card>
+        </div>
+        <div class="p-col-2"></div>
+    </div>
+</ng-container>

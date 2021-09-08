@@ -56,7 +56,12 @@
 
 
 
-
+.about {
+  padding: 140px 0;
+  /* background: url("../img/about-bg.png") top center no-repeat; */
+  position: relative;
+  margin: 12px;
+}
 #header {
     background: rgb(3, 14, 112);
     transition: all 0.5s;
