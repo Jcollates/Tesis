@@ -12,6 +12,7 @@ import { ProducsAndServicesComponent } from './components/producs-and-services/p
 import { FooterComponent } from './components/footer/footer.component';
 import { LoginComponent } from './components/login/login.component';
 import { FirstpageComponent } from './components/firstpage/firstpage.component';
+import { NgbModule} from '@ng-bootstrap/ng-bootstrap';
 
 
 @NgModule({
@@ -29,7 +30,8 @@ import { FirstpageComponent } from './components/firstpage/firstpage.component';
   ],
   imports: [
     CommonModule,
-    PageRoutingModule
+    PageRoutingModule,
+    NgbModule
   ]
 })
 export class PageModule { }

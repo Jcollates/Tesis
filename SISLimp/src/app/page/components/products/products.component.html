@@ -1,9 +1,9 @@
-<!-- <app-navigatebar></app-navigatebar> -->
 <header class="site-header inicio mb-5">
     <div class="contenedor contenido-header">
         <h1 style="font-style: italic;">Productos</h1>
     </div>
 </header>
+
 <div class="container-fluid">
     <section>
         <div class="mb-5 mt-5">
@@ -25,7 +25,8 @@
                                     <p class="card-text">{{item.productDesq}}
                                     </p>
                                     <a class="btn btn-success btn-block p-2 shadow rounded-pill shadow-lg"
-                                        (click)="addProduct(item.idProd)">+
+                                        (click)="addProduct(item.idProd)">
+                                        <i class="fa fa-plus-circle" aria-hidden="true"></i>
                                         Añadir</a>
                                 </div>
                             </div>
@@ -47,18 +48,21 @@
                                             <div class="media-body order-2 order-lg-1">
                                                 <div class="row">
                                                     <div class="col-6">
-                                                        <h6 class="mt-0 font-weight-bold mb-2">{{item.productName}}</h6>
+                                                        <h6 class="mt-0 font-weight-bold mb-2">{{item.productName}}
+                                                        </h6>
                                                     </div>
                                                     <div class="col-6 text-right">
                                                         <span
                                                             class="badge rounded-pill bg-primary text-white">x{{item.cantidad}}</span>
                                                     </div>
                                                 </div>
-                                                <p class="font-italic text-muted mb-0 small">{{item.productDesq}}</p>
+                                                <p class="font-italic text-muted mb-0 small">{{item.productDesq}}
+                                                </p>
                                                 <div class="d-flex align-items-center justify-content-between mt-1">
                                                     <a class="btn btn-danger btn-block p-2 shadow rounded-pill shadow-lg"
                                                         style="width: 100px;" (click)="quitProduct(item.idProd)"><i
                                                             class="fas fa-trash-alt"></i>
+                                                        <span class="font-weight-bold">Eliminar</span>
                                                     </a>
                                                 </div>
                                             </div>
@@ -70,7 +74,7 @@
                     </div>
                     <div class="card-footer d-flex justify-content-center">
                         <a class="btn btn-success btn-block p-2 shadow rounded-pill shadow-lg" style="width: 60%;">
-                            <i class="fas fa-check-circle mr-2"></i>
+                            <i class="fa fa-check-circle mr-2"></i>
                             <span class="font-weight-bold">Confirmar</span>
                         </a>
                     </div>
@@ -80,4 +84,5 @@
         </div>
     </section>
 </div>
-<!-- <app-footer></app-footer> -->
+
+

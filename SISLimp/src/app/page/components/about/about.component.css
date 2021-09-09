@@ -38,7 +38,7 @@ div p {
 hr.hr-text {
     position: relative;
       border: none;
-      height: 1px;
+      height: 15px;
       background: #999;
 }
   
