@@ -1,0 +1,35 @@
+.layout-content {
+    padding: 2rem !important;
+    padding-top: 1rem !important;
+    flex: 1 1 0;
+    margin-left: 14rem;
+    background-color: #f7f7f7;
+    overflow-y : auto;
+}
+.menu-wrapper {
+    height: calc(100% - 10rem);
+    width: 14rem;
+    position: absolute;
+    left: 0;
+    top: 4rem;
+    z-index: 997;
+    transform: none;
+    overflow-y : auto;
+}
+.layout-main {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 92vh;
+}
+.layout-menu-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow-y : auto;
+  }
+
+.pantalla {
+    max-height: 100px;
+    /* min-height:100px; */
+}

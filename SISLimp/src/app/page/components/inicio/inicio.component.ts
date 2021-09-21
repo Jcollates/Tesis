@@ -6,10 +6,14 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./inicio.component.css']
 })
 export class InicioComponent implements OnInit {
-
+  arrayofWords: any[] = [];
   constructor() { }
 
   ngOnInit(): void {
+    this.setWords();
+  }
+  setWords(){
+    this.arrayofWords = ["CALIDAD","CONFIABILIDAD","PUNTUALIDAD","RESPONSABILIDAD","ESFUERZO"]
   }
 
 }

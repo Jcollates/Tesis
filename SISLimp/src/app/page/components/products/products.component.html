@@ -1,1 +1,88 @@
-<p>products works!</p>
+<header class="site-header inicio mb-5">
+    <div class="contenedor contenido-header">
+        <h1 style="font-style: italic;">Productos</h1>
+    </div>
+</header>
+
+<div class="container-fluid">
+    <section>
+        <div class="mb-5 mt-5">
+            <img style="width: 100%;" src="../../../../assets/picturespage/products.png" alt="">
+        </div>
+    </section>
+    <section>
+        <div class="row mb-5 mt-5">
+            <div class="col-1"></div>
+            <div class="col-6">
+                <div class="row">
+                    <ng-container *ngFor="let item of product">
+                        <div class="col-6 col-sm-5">
+                            <div class="card mb-5 border-0 rounded-3 shadow-lg text-center">
+                                <img src="../../../../assets/picturespage/itemsproductos.png" alt=""
+                                    class="rounded mx-auto d-block imgpro card-img-top">
+                                <div class="card-body">
+                                    <h6 class="card-title mt-0 font-weight-bold mb-2">{{item.productName}}</h6>
+                                    <p class="card-text">{{item.productDesq}}
+                                    </p>
+                                    <a class="btn btn-success btn-block p-2 shadow rounded-pill shadow-lg"
+                                        (click)="addProduct(item.idProd)">
+                                        <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                                        Añadir</a>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-container>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="card mb-5 border-4 rounded-3 shadow-lg text-black bg-secondary">
+                    <div class="card-header">
+                        <h6 class="card-header text-white">Cesto de productos</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="custom-scrollbar-css">
+                            <ul class="list-group shadow">
+                                <ng-container *ngFor="let item of cart">
+                                    <li class="list-group-item">
+                                        <div class="media align-items-lg-center flex-column flex-lg-row p-3">
+                                            <div class="media-body order-2 order-lg-1">
+                                                <div class="row">
+                                                    <div class="col-6">
+                                                        <h6 class="mt-0 font-weight-bold mb-2">{{item.productName}}
+                                                        </h6>
+                                                    </div>
+                                                    <div class="col-6 text-right">
+                                                        <span
+                                                            class="badge rounded-pill bg-primary text-white">x{{item.cantidad}}</span>
+                                                    </div>
+                                                </div>
+                                                <p class="font-italic text-muted mb-0 small">{{item.productDesq}}
+                                                </p>
+                                                <div class="d-flex align-items-center justify-content-between mt-1">
+                                                    <a class="btn btn-danger btn-block p-2 shadow rounded-pill shadow-lg"
+                                                        style="width: 100px;" (click)="quitProduct(item.idProd)"><i
+                                                            class="fas fa-trash-alt"></i>
+                                                        <span class="font-weight-bold">Eliminar</span>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ng-container>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="card-footer d-flex justify-content-center">
+                        <a class="btn btn-success btn-block p-2 shadow rounded-pill shadow-lg" style="width: 60%;">
+                            <i class="fa fa-check-circle mr-2"></i>
+                            <span class="font-weight-bold">Confirmar</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-1"></div>
+        </div>
+    </section>
+</div>
+
+
