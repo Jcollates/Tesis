@@ -4,10 +4,11 @@
 </div>
 
 <p-card>
-    <p-table [columns]="cols" [value]="dataFromdb"
-        styleClass="p-datatable-customers p-datatable-gridlines p-datatable-striped" [responsive]="true"
-        [paginator]="true" [rows]="pageSize" dataKey="date" [rowsPerPageOptions]="[10,30,60]"
-        [totalRecords]="sizeRecords" (onLazyLoad)="chargeData($event)" [lazy]="true" [autoLayout]="true">
+    
+    <p-table [value]="dataFromdb" styleClass="p-datatable-customers p-datatable-gridlines p-datatable-striped"
+        [responsive]="true" [paginator]="true" [rows]="pageSize" dataKey="date" [rowsPerPageOptions]="[10,30,60]"
+        [totalRecords]="sizeRecords"  [lazy]="true" [autoLayout]="true"
+        [columns]="cols">
         <ng-template pTemplate="caption">
             Listado
         </ng-template>
@@ -40,13 +41,6 @@
                 </td>
             </tr>
         </ng-template>
-        <!-- <ng-template pTemplate="footer" let-yourColumnArrayVaraible>
-            <tr>
-                <td>
-                    Sumario del hisotrial de compras
-                </td>
-            </tr>
-        </ng-template> -->
         <ng-template pTemplate="emptymessage">
             No hay registros que mostrar
         </ng-template>

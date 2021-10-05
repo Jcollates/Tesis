@@ -7,16 +7,18 @@ import { LazyLoadEvent } from 'primeng/api';
   styleUrls: ['./buy-history.component.css']
 })
 export class BuyHistoryComponent implements OnInit {
+  
   cols: any[];
   dataFromdb: any[] = [];
   sizeRecords: number = 50;
   pageSize: number = 50;
+  
   constructor() {
-    this.cols = [];
-   }
+  }
 
-  ngOnInit(): void {
+  ngOnInit() {
     this.createCols();
+    this.chargeData(null);
   }
   createCols(){
     this.cols = [
