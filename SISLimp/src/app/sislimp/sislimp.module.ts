@@ -29,6 +29,14 @@ import { AgendamientoCitasComponent } from './components/agendamiento-citas/agen
 import { AtencionClienteComponent } from './components/atencion-cliente/atencion-cliente.component';
 import { FooterSysComponent } from './shared/footer-sys/footer-sys.component';
 import {TabViewModule} from 'primeng/tabview';
+import {DynamicDialogModule} from 'primeng/dynamicdialog';
+import {DialogModule} from 'primeng/dialog';
+import { GestionServiciosComponent } from './components/gestion-servicios/gestion-servicios.component';
+import { DetailserviceComponent } from './components/gestion-servicios/detailservice/detailservice.component';
+import { CatalogoServicesComponent } from './components/catalogo-services/catalogo-services.component';
+import { CatalogoProductsComponent } from './components/catalogo-products/catalogo-products.component';
+import {FileUploadModule} from 'primeng/fileupload';
+import {HttpClientModule} from '@angular/common/http';
 
 
 
@@ -38,7 +46,11 @@ import {TabViewModule} from 'primeng/tabview';
     PrincipalComponent,
     AgendamientoCitasComponent,
     AtencionClienteComponent,
-    FooterSysComponent
+    FooterSysComponent,
+    GestionServiciosComponent,
+    DetailserviceComponent,
+    CatalogoServicesComponent,
+    CatalogoProductsComponent
   ],
   imports: [
     CommonModule,
@@ -67,7 +79,11 @@ import {TabViewModule} from 'primeng/tabview';
     TagModule,
     DropdownModule,
     FormsModule,
-    TabViewModule
+    TabViewModule,
+    DynamicDialogModule,
+    DialogModule,
+    FileUploadModule,
+    HttpClientModule
   ]
 })
 export class SislimpModule { }
