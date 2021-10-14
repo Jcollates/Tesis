@@ -37,6 +37,8 @@ import { CatalogoServicesComponent } from './components/catalogo-services/catalo
 import { CatalogoProductsComponent } from './components/catalogo-products/catalogo-products.component';
 import {FileUploadModule} from 'primeng/fileupload';
 import {HttpClientModule} from '@angular/common/http';
+import { GestionEmpleadosComponent } from './components/gestion-empleados/gestion-empleados.component';
+import { GestionContratosComponent } from './components/gestion-contratos/gestion-contratos.component';
 
 
 
@@ -50,7 +52,9 @@ import {HttpClientModule} from '@angular/common/http';
     GestionServiciosComponent,
     DetailserviceComponent,
     CatalogoServicesComponent,
-    CatalogoProductsComponent
+    CatalogoProductsComponent,
+    GestionEmpleadosComponent,
+    GestionContratosComponent
   ],
   imports: [
     CommonModule,

@@ -10,8 +10,14 @@ export class PrincipalComponent implements OnInit {
 
   items: MenuItem[];
   items2: MenuItem[];
+  nombre = 'JAIR QUIÑONEZ'
 
   ngOnInit() {
+    this.items = [
+      {
+        label: this.nombre
+      }
+    ]
     this.items2 = [
       {
         label: 'Menu',
@@ -48,6 +54,16 @@ export class PrincipalComponent implements OnInit {
             label: 'Catalogo de productos',
             icon: 'pi pi-book',
             routerLink: ['/system/catProducts']
+          },
+          {
+            label: 'Gestión de empleados',
+            icon: 'pi pi-book',
+            routerLink: ['/system/employees']
+          },
+          {
+            label: 'Gestión de contratos',
+            icon: 'pi pi-book',
+            routerLink: ['/system/contracts']
           }
         ]
       }

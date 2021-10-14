@@ -1,11 +1,11 @@
 <div class="p-mb-3 p-text-italic">
-    <h3>Agendamiento de citas</h3>
+    <h3>Gestion de contratos</h3>
 </div>
 <p-card>
     <p-tabView>
-        <p-tabPanel header="Formulario de citas">
+        <p-tabPanel header="Formulario de contratos">
             <div class="card-header">
-                Formulario de citas
+                Formulario de contratos
             </div>
             <br>
             <div class="p-fluid p-grid">
@@ -16,7 +16,7 @@
                         </span>
                         <span class="p-float-label">
                             <input type="text" id="inputgroup" pInputText>
-                            <label for="inputgroup">Nombre</label>
+                            <label for="inputgroup">Ruc</label>
                         </span>
                     </div>
                 </div>
@@ -27,7 +27,7 @@
                         </span>
                         <span class="p-float-label">
                             <input type="text" id="inputgroup" pInputText>
-                            <label for="inputgroup">Apellido</label>
+                            <label for="inputgroup">Nombre empresa</label>
                         </span>
                     </div>
                 </div>
@@ -38,7 +38,7 @@
                         </span>
                         <span class="p-float-label">
                             <input type="text" id="inputgroup" pInputText>
-                            <label for="inputgroup">Cedula</label>
+                            <label for="inputgroup">Representante legal</label>
                         </span>
                     </div>
                 </div>
@@ -49,7 +49,7 @@
                         </span>
                         <span class="p-float-label">
                             <input type="text" id="inputgroup" pInputText>
-                            <label for="inputgroup">Telefono</label>
+                            <label for="inputgroup">Dirección principal</label>
                         </span>
                     </div>
                 </div>
@@ -60,33 +60,18 @@
                         </span>
                         <span class="p-float-label">
                             <input type="text" id="inputgroup" pInputText>
-                            <label for="inputgroup">Correo electrónico</label>
+                            <label for="inputgroup">Dirección del servicio</label>
                         </span>
                     </div>
                 </div>
-                <div class="p-field p-col-12 p-md-6"></div>
                 <div class="p-field p-col-12 p-md-6">
-                    <span class="p-float-label">
-                        <p-dropdown inputId="dropdown" [autoDisplayFirst]="false" [options]="drop"
-                            [(ngModel)]="fordropt" optionLabel="name"></p-dropdown>
-                        <label for="dropdown">Provincia</label>
-                    </span>
-                </div>
-                <div class="p-field p-col-12 p-md-6">
-                    <span class="p-float-label">
-                        <p-dropdown inputId="dropdown" [autoDisplayFirst]="false" [options]="drop"
-                            [(ngModel)]="fordropt" optionLabel="name"></p-dropdown>
-                        <label for="dropdown">Ciudad</label>
-                    </span>
-                </div>
-                <div class="p-field p-col-12 p-md-12">
                     <div class="p-inputgroup">
                         <span class="p-inputgroup-addon">
-                            <i class="pi pi-globe"></i>
+                            <i class="pi pi-envelope "></i>
                         </span>
                         <span class="p-float-label">
-                            <textarea id="float-input" rows="5" cols="30" pInputTextarea></textarea>
-                            <label for="inputgroup">Dirección detallada</label>
+                            <input type="text" id="inputgroup" pInputText>
+                            <label for="inputgroup">Telefono de contacto</label>
                         </span>
                     </div>
                 </div>
@@ -98,9 +83,28 @@
                         </span>
                         <span class="p-float-label">
                             <input type="text" id="inputgroup" pInputText>
-                            <label for="inputgroup">Tipo servicio</label>
+                            <label for="inputgroup">Area de trabajo</label>
                         </span>
                     </div>
+                </div>
+                <div class="p-field p-col-12 p-md-6">
+                    <span class="p-float-label">
+                        <p-dropdown inputId="dropdown" [autoDisplayFirst]="false" [options]="drop"
+                            [(ngModel)]="fordropt" optionLabel="name"></p-dropdown>
+                        <label for="dropdown">Tipo</label>
+                    </span>
+                </div>
+                <div class="p-field p-col-12 p-md-6">
+                    <span class="p-float-label">
+                        <p-calendar [showIcon]="true" inputId="icon"></p-calendar>
+                        <label for="inputgroup">Fecha inicio</label>
+                    </span>
+                </div>
+                <div class="p-field p-col-12 p-md-6">
+                    <span class="p-float-label">
+                        <p-calendar [showIcon]="true" inputId="icon"></p-calendar>
+                        <label for="inputgroup">Fecha fin</label>
+                    </span>
                 </div>
                 <div class="p-field p-col-12 p-md-6">
                     <div class="p-inputgroup">
@@ -109,7 +113,7 @@
                         </span>
                         <span class="p-float-label">
                             <input type="text" id="inputgroup" pInputText>
-                            <label for="inputgroup">Nombre servicio</label>
+                            <label for="inputgroup">Subtotal</label>
                         </span>
                     </div>
                 </div>
@@ -120,28 +124,33 @@
                         </span>
                         <span class="p-float-label">
                             <input type="number" id="inputgroup" pInputText>
-                            <label for="inputgroup">Num. Horas</label>
+                            <label for="inputgroup">Horario pre establecido</label>
                         </span>
                     </div>
                 </div>
-                <div class="p-field p-col-12 p-md-6">
-                    <span class="p-float-label">
-                        <p-calendar [showIcon]="true" inputId="icon"></p-calendar>
-                        <label for="inputgroup">Fecha servicio</label>
-                    </span>
+                <div class="p-field p-col-12 p-md-12">
+                    <div class="p-inputgroup">
+                        <span class="p-inputgroup-addon">
+                            <i class="pi pi-globe"></i>
+                        </span>
+                        <span class="p-float-label">
+                            <textarea id="float-input" rows="5" cols="30" pInputTextarea></textarea>
+                            <label for="inputgroup">Destalle del servicio</label>
+                        </span>
+                    </div>
                 </div>
             </div>
             <p-toolbar>
                 <div class="p-toolbar-group-left">
                 </div>
                 <div class="p-toolbar-group-right">
-                    <button pButton pRipple type="button" label="Agendar" icon="pi pi-save"
+                    <button pButton pRipple type="button" label="Agregar" icon="pi pi-save"
                         class="p-button-raised p-button-rounded p-button-success p-mr-2 p-mb-2 " style="float: right">
                     </button>
                 </div>
             </p-toolbar>
         </p-tabPanel>
-        <p-tabPanel header="Listado de citas">
+        <p-tabPanel header="Listado de contratos">
             <p-table [value]="dataFromdb" styleClass="p-datatable-customers p-datatable-gridlines p-datatable-striped"
                 [responsive]="true" [paginator]="true" [rows]="pageSize" dataKey="date"
                 [rowsPerPageOptions]="[10,30,60]" [totalRecords]="sizeRecords" [lazy]="true" [autoLayout]="true"
@@ -161,40 +170,49 @@
                 <ng-template pTemplate="body" let-dataFrom let-index="rowIndex" let-columns="columns">
                     <tr>
                         <td>
-                            <span class="p-column-title">Fecha</span>
-                            {{dataFrom.date}}
+                            <span class="p-column-title">Código contrato</span>
+                            {{dataFrom.codeContract}}
+                        </td>
+                        <td>
+                            <span class="p-column-title">Fecha inicio</span>
+                            {{dataFrom.datestart}}
+                        </td>
+                        <td>
+                            <span class="p-column-title">Fecha fin</span>
+                            {{dataFrom.dateend}}
+                        </td>
+                        <td>
+                            <span class="p-column-title">Nombre empresa</span>
+                            {{dataFrom.nameEnterprice}}
+                        </td>
+                        <td>
+                            <span class="p-column-title">Responsable empresa</span>
+                            {{dataFrom.respresent}}
+                        </td>
+                        <td>
+                            <span class="p-column-title">Tipo servicio</span>
+                            {{dataFrom.typeservice}}
                         </td>
                         <td>
                             <span class="p-column-title">Estado</span>
                             {{dataFrom.status}}
                         </td>
                         <td>
-                            <span class="p-column-title">Cliente</span>
-                            {{dataFrom.client}}
+                            <span class="p-column-title">Nombre supervisor</span>
+                            {{dataFrom.supervisor}}
                         </td>
                         <td>
-                            <span class="p-column-title">Agendador</span>
-                            {{dataFrom.agent}}
+                            <span class="p-column-title">Cantidad de empleados</span>
+                            {{dataFrom.employees}}
+                        </td>
+                        <td style="text-align: center;">
+                            <button pButton pRipple type="button" icon="pi pi-eye" (click)="showAssignated()"
+                                class="p-button-raised p-button-rounded p-button-help" style="float: center">
+                            </button>
                         </td>
                         <td>
-                            <span class="p-column-title">Empleado asigando</span>
-                            {{dataFrom.employeasi}}
-                        </td>
-                        <td>
-                            <span class="p-column-title">Dias asigandos</span>
-                            {{dataFrom.daysassigned}}
-                        </td>
-                        <td>
-                            <span class="p-column-title">Valor base</span>
-                            {{dataFrom.basecost}}
-                        </td>
-                        <td>
-                            <span class="p-column-title">Valor total</span>
-                            {{dataFrom.totalcost}}
-                        </td>
-                        <td>
-                            <span class="p-column-title">Utencilios incluidos</span>
-                            {{dataFrom.toolsneed}}
+                            <span class="p-column-title">Utencilios</span>
+                            {{dataFrom.tools}}
                         </td>
                         <td style="text-align: center;">
                             <button pButton pRipple type="button" icon="pi pi-user-plus" (click)="showAssignation()"
@@ -257,5 +275,39 @@
             </div>
 
         </p-toolbar>
+    </p-dialog>
+    <p-dialog header="Asignacion de empleado" [(visible)]="showEmployesAssigned">
+        <p-table [value]="employesToAssig" styleClass="p-datatable-customers p-datatable-gridlines p-datatable-striped"
+            [responsive]="true" [paginator]="true" [rows]="pageSize" dataKey="nameEmploye"
+            [rowsPerPageOptions]="[10,30,60]" [totalRecords]="sizeRecords" [lazy]="true" [autoLayout]="true"
+            [columns]="colsEmployees">
+            <ng-template pTemplate="caption">
+                Listado
+            </ng-template>
+            <ng-template pTemplate="header" let-columns>
+                <tr>
+                    <ng-container *ngFor="let col of columns">
+                        <th>
+                            {{col.header}}
+                        </th>
+                    </ng-container>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-dataFrom let-index="rowIndex" let-columns="columns">
+                <tr>
+                    <td>
+                        <span class="p-column-title">Nombre</span>
+                        {{dataFrom.nameEmploye}}
+                    </td>
+                    <td>
+                        <span class="p-column-title">Cargo</span>
+                        {{dataFrom.nameEmploye}}
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                No hay registros que mostrar
+            </ng-template>
+        </p-table>
     </p-dialog>
 </p-card>
