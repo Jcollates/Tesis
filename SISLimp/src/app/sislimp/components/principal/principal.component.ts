@@ -54,7 +54,13 @@ export class PrincipalComponent implements OnInit {
             label: 'Catalogo de productos',
             icon: 'pi pi-book',
             routerLink: ['/system/catProducts']
-          },
+          }
+        ]
+      },
+      {
+        label: '',
+        style: 'font-size: 0.9rem !important',
+        items: [
           {
             label: 'Gestión de empleados',
             icon: 'pi pi-book',
@@ -64,6 +70,33 @@ export class PrincipalComponent implements OnInit {
             label: 'Gestión de contratos',
             icon: 'pi pi-book',
             routerLink: ['/system/contracts']
+          },
+          {
+            label: 'Gestión de proveedores',
+            icon: 'pi pi-book',
+            routerLink: ['/system/providers']
+          }
+        ]
+      },
+      {
+        label: 'Gestión de inventario',
+        style: 'font-size: 0.9rem !important',
+        items: [
+          {
+            label: 'Agregar producto',
+            icon: 'pi pi-book',
+            routerLink: ['/system/inventory/products']
+          }
+        ]
+      },
+      {
+        label: '',
+        style: 'font-size: 0.9rem !important',
+        items: [
+          {
+            label: 'Gestión de horarios',
+            icon: 'pi pi-book',
+            routerLink: ['/system/schedule']
           }
         ]
       }

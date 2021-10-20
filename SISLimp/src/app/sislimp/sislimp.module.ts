@@ -39,6 +39,9 @@ import {FileUploadModule} from 'primeng/fileupload';
 import {HttpClientModule} from '@angular/common/http';
 import { GestionEmpleadosComponent } from './components/gestion-empleados/gestion-empleados.component';
 import { GestionContratosComponent } from './components/gestion-contratos/gestion-contratos.component';
+import { GestionProvedoresComponent } from './components/gestion-provedores/gestion-provedores.component';
+import { GestionInventarioProductsComponent } from './components/gestion-inventario-products/gestion-inventario-products.component';
+import { CalendarAllComponent } from './components/calendar-all/calendar-all.component';
 
 
 
@@ -54,7 +57,10 @@ import { GestionContratosComponent } from './components/gestion-contratos/gestio
     CatalogoServicesComponent,
     CatalogoProductsComponent,
     GestionEmpleadosComponent,
-    GestionContratosComponent
+    GestionContratosComponent,
+    GestionProvedoresComponent,
+    GestionInventarioProductsComponent,
+    CalendarAllComponent
   ],
   imports: [
     CommonModule,
