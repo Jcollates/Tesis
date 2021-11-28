@@ -4,7 +4,7 @@
             <img src="../../../../../assets/Picture1.png" height="40" class="p-mr-2">
         </ng-template>
         <ng-template pTemplate="end">
-            <button pButton pRipple type="button" icon="pi pi-sign-out"
+            <button pButton pRipple type="button" icon="pi pi-sign-out" (click)=logOut()
                     class="p-button-raised p-button-rounded p-button-danger p-mr-2 p-mb-2 ">
                 </button>
         </ng-template>
@@ -12,7 +12,7 @@
 </div>
 <div class="pantalla">
     <div class="menu-wrapper">
-        <div class="layout-menu-container p-2">
+        <div class="layout-menu-container p-1">
             <p-menu [model]="items2"></p-menu>
         </div>
     </div>

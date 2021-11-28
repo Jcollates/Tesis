@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MenuItem } from 'primeng/api';
+import { AuthService } from 'src/app/sharedAll/serviceShared/auth.service';
 
 @Component({
   selector: 'app-principal',
@@ -11,7 +12,11 @@ export class PrincipalComponent implements OnInit {
   items: MenuItem[];
   items2: MenuItem[];
   nombre = 'JAIR QUIÑONEZ'
+  constructor(
+    private authService: AuthService
+  ){
 
+  }
   ngOnInit() {
     this.items = [
       {
@@ -101,5 +106,8 @@ export class PrincipalComponent implements OnInit {
         ]
       }
     ];
+  }
+  logOut(){
+    this.authService.logOut();
   }
 }

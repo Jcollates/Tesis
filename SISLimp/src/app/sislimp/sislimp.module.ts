@@ -42,8 +42,24 @@ import { GestionContratosComponent } from './components/gestion-contratos/gestio
 import { GestionProvedoresComponent } from './components/gestion-provedores/gestion-provedores.component';
 import { GestionInventarioProductsComponent } from './components/gestion-inventario-products/gestion-inventario-products.component';
 import { CalendarAllComponent } from './components/calendar-all/calendar-all.component';
+import { FullCalendarModule} from '@fullcalendar/angular';
+import { ReactiveFormsModule } from '@angular/forms';
+import {ToastModule} from 'primeng/toast';
+import {MessagesModule} from 'primeng/messages';
+import {MessageModule} from 'primeng/message';
+
+import dayGridPlugin from '@fullcalendar/daygrid';
+import timeGridPlugin from '@fullcalendar/timegrid';
+import interactionPlugin from '@fullcalendar/interaction';
 
 
+
+FullCalendarModule.registerPlugins([ // register FullCalendar plugins
+  dayGridPlugin,
+  timeGridPlugin,
+  interactionPlugin
+  
+]);
 
 
 @NgModule({
@@ -65,6 +81,11 @@ import { CalendarAllComponent } from './components/calendar-all/calendar-all.com
   imports: [
     CommonModule,
     SislimpRoutingModule,
+    FullCalendarModule,
+    ReactiveFormsModule,
+    ToastModule,
+    MessageModule,
+    MessagesModule,
     // primng
 
     SidebarModule,
@@ -93,7 +114,8 @@ import { CalendarAllComponent } from './components/calendar-all/calendar-all.com
     DynamicDialogModule,
     DialogModule,
     FileUploadModule,
-    HttpClientModule
+    HttpClientModule,
+    
   ]
 })
 export class SislimpModule { }

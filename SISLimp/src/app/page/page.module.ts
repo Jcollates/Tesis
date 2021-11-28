@@ -13,6 +13,7 @@ import { FooterComponent } from './components/footer/footer.component';
 import { LoginComponent } from './components/login/login.component';
 import { FirstpageComponent } from './components/firstpage/firstpage.component';
 import { NgbModule} from '@ng-bootstrap/ng-bootstrap';
+import { ReactiveFormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -31,7 +32,8 @@ import { NgbModule} from '@ng-bootstrap/ng-bootstrap';
   imports: [
     CommonModule,
     PageRoutingModule,
-    NgbModule
+    NgbModule,
+    ReactiveFormsModule
   ]
 })
 export class PageModule { }
