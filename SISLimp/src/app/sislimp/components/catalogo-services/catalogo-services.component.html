@@ -4,6 +4,60 @@
 </div>
 <p-card>
     <p-tabView>
+        <p-tabPanel header="Servicios publicados">
+            <p-table [value]="dataFromdb" styleClass="p-datatable-customers p-datatable-gridlines p-datatable-striped"
+                [responsive]="true" [paginator]="true" [rows]="pageSize" dataKey="code"
+                [rowsPerPageOptions]="[10,30,60]" [totalRecords]="sizeRecords" [lazy]="true" [autoLayout]="true"
+                [columns]="cols" (onLazyLoad)="chargeData($event)">
+                <ng-template pTemplate="caption">
+                    Listado
+                </ng-template>
+                <ng-template pTemplate="header" let-columns>
+                    <tr>
+                        <ng-container *ngFor="let col of columns">
+                            <th>
+                                {{col.header}}
+                            </th>
+                        </ng-container>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-dataFrom let-index="rowIndex" let-columns="columns">
+                    <tr>
+                        <td>
+                            <span class="p-column-title">Código</span>
+                            {{dataFrom.seqcatservice}}
+                        </td>
+                        <td>
+                            <span class="p-column-title">Tipo</span>
+                            {{dataFrom.type}}
+                        </td>
+                        <td>
+                            <span class="p-column-title">Nombre</span>
+                            {{dataFrom.nameservice}}
+                        </td>
+                        <td>
+                            <span class="p-column-title">Precio por metro</span>
+                            {{dataFrom.meterprize}}
+                        </td>
+                        <td>
+                            <span class="p-column-title">Precio por hora</span>
+                            {{dataFrom.hourprize}}
+                        </td>
+                        <td>
+                            <span class="p-column-title">Descripción</span>
+                            {{dataFrom.description}}
+                        </td>
+                        <td>
+                            <span class="p-column-title">Imagen</span>
+                            <img src="{{dataFrom.img}}" alt="" width="50" height="50"/>
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    No hay registros que mostrar
+                </ng-template>
+            </p-table>
+        </p-tabPanel>
         <p-tabPanel header="Formulario de Servicios">
             <div class="card-header">
                 Formulario de Servicios
@@ -99,60 +153,6 @@
                     </button>
                 </div>
             </p-toolbar>
-        </p-tabPanel>
-        <p-tabPanel header="Servicios publicados">
-            <p-table [value]="dataFromdb" styleClass="p-datatable-customers p-datatable-gridlines p-datatable-striped"
-                [responsive]="true" [paginator]="true" [rows]="pageSize" dataKey="code"
-                [rowsPerPageOptions]="[10,30,60]" [totalRecords]="sizeRecords" [lazy]="true" [autoLayout]="true"
-                [columns]="cols">
-                <ng-template pTemplate="caption">
-                    Listado
-                </ng-template>
-                <ng-template pTemplate="header" let-columns>
-                    <tr>
-                        <ng-container *ngFor="let col of columns">
-                            <th>
-                                {{col.header}}
-                            </th>
-                        </ng-container>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="body" let-dataFrom let-index="rowIndex" let-columns="columns">
-                    <tr>
-                        <td>
-                            <span class="p-column-title">Código</span>
-                            {{dataFrom.seqcatservice}}
-                        </td>
-                        <td>
-                            <span class="p-column-title">Tipo</span>
-                            {{dataFrom.type}}
-                        </td>
-                        <td>
-                            <span class="p-column-title">Nombre</span>
-                            {{dataFrom.nameservice}}
-                        </td>
-                        <td>
-                            <span class="p-column-title">Precio por metro</span>
-                            {{dataFrom.meterprize}}
-                        </td>
-                        <td>
-                            <span class="p-column-title">Precio por hora</span>
-                            {{dataFrom.hourprize}}
-                        </td>
-                        <td>
-                            <span class="p-column-title">Descripción</span>
-                            {{dataFrom.description}}
-                        </td>
-                        <td>
-                            <span class="p-column-title">Imagen</span>
-                            <img src="{{dataFrom.img}}" alt="" width="50" height="50"/>
-                        </td>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="emptymessage">
-                    No hay registros que mostrar
-                </ng-template>
-            </p-table>
         </p-tabPanel>
     </p-tabView>
 </p-card>

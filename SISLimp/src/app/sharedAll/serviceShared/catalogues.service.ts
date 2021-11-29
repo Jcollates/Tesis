@@ -17,10 +17,18 @@ export class CataloguesService {
     this.url = environment.API_URL;
   }
 
-  getCataloguebyCodeCat(codecat: string = ''): Observable<CatalgogueItem> {
+  getCataloguebyCodeCat(codecat: string): Promise<CatalgogueItem> {
     let urlsend = this.url + `/getCatalogueBycat/${codecat}`;
-    return this._http.get<CatalgogueItem>(urlsend).pipe(map(rest => rest as CatalgogueItem));
+    return this._http.get<CatalgogueItem>(urlsend).pipe(map(rest => rest as CatalgogueItem)).toPromise();
   }
+  getCataloguebyCodeCatAndCodeFather(
+    codecat: string, 
+    codeFather: string, 
+    codeCatFather: string): Promise<CatalgogueItem> {
+    let urlsend = this.url + `/getCatalogueBycatFather/${codecat ? codecat : ''}/${codeFather}/${codeCatFather}`;
+    return this._http.get<CatalgogueItem>(urlsend).pipe(map(rest => rest as CatalgogueItem)).toPromise();
+  }
+
 
   constructModel(list: any) {
     const comboItems: SelectItem[] = [];

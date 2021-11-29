@@ -3,6 +3,75 @@
 </div>
 <p-card>
     <p-tabView>
+        
+        <p-tabPanel header="Listado de citas">
+            <p-table [value]="dataFromdb" styleClass="p-datatable-customers p-datatable-gridlines p-datatable-striped"
+                [responsive]="true" [paginator]="true" [rows]="pageSize" dataKey="date"
+                [rowsPerPageOptions]="[10,30,60]" [totalRecords]="sizeRecords" [lazy]="true" [autoLayout]="true"
+                [columns]="cols">
+                <ng-template pTemplate="caption">
+                    Listado
+                </ng-template>
+                <ng-template pTemplate="header" let-columns>
+                    <tr>
+                        <ng-container *ngFor="let col of columns">
+                            <th>
+                                {{col.header}}
+                            </th>
+                        </ng-container>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-dataFrom let-index="rowIndex" let-columns="columns">
+                    <tr>
+                        <td>
+                            <span class="p-column-title">Fecha</span>
+                            {{dataFrom.date}}
+                        </td>
+                        <td>
+                            <span class="p-column-title">Estado</span>
+                            {{dataFrom.status}}
+                        </td>
+                        <td>
+                            <span class="p-column-title">Cliente</span>
+                            {{dataFrom.client}}
+                        </td>
+                        <td>
+                            <span class="p-column-title">Agendador</span>
+                            {{dataFrom.agent}}
+                        </td>
+                        <td>
+                            <span class="p-column-title">Empleado asigando</span>
+                            {{dataFrom.employeasi}}
+                        </td>
+                        <td>
+                            <span class="p-column-title">Dias asigandos</span>
+                            {{dataFrom.daysassigned}}
+                        </td>
+                        <td>
+                            <span class="p-column-title">Valor base</span>
+                            {{dataFrom.basecost}}
+                        </td>
+                        <td>
+                            <span class="p-column-title">Valor total</span>
+                            {{dataFrom.totalcost}}
+                        </td>
+                        <td>
+                            <span class="p-column-title">Utencilios incluidos</span>
+                            {{dataFrom.toolsneed}}
+                        </td>
+                        <td style="text-align: center;">
+                            <button pButton pRipple type="button" icon="pi pi-user-plus" (click)="showAssignation()"
+                                class="p-button-raised p-button-rounded p-button-info" style="float: center">
+                            </button>
+                        </td>
+
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    No hay registros que mostrar
+                </ng-template>
+            </p-table>
+        </p-tabPanel>
         <p-tabPanel header="Formulario de citas">
             <div class="card-header">
                 Formulario de citas
@@ -140,74 +209,6 @@
                     </button>
                 </div>
             </p-toolbar>
-        </p-tabPanel>
-        <p-tabPanel header="Listado de citas">
-            <p-table [value]="dataFromdb" styleClass="p-datatable-customers p-datatable-gridlines p-datatable-striped"
-                [responsive]="true" [paginator]="true" [rows]="pageSize" dataKey="date"
-                [rowsPerPageOptions]="[10,30,60]" [totalRecords]="sizeRecords" [lazy]="true" [autoLayout]="true"
-                [columns]="cols">
-                <ng-template pTemplate="caption">
-                    Listado
-                </ng-template>
-                <ng-template pTemplate="header" let-columns>
-                    <tr>
-                        <ng-container *ngFor="let col of columns">
-                            <th>
-                                {{col.header}}
-                            </th>
-                        </ng-container>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="body" let-dataFrom let-index="rowIndex" let-columns="columns">
-                    <tr>
-                        <td>
-                            <span class="p-column-title">Fecha</span>
-                            {{dataFrom.date}}
-                        </td>
-                        <td>
-                            <span class="p-column-title">Estado</span>
-                            {{dataFrom.status}}
-                        </td>
-                        <td>
-                            <span class="p-column-title">Cliente</span>
-                            {{dataFrom.client}}
-                        </td>
-                        <td>
-                            <span class="p-column-title">Agendador</span>
-                            {{dataFrom.agent}}
-                        </td>
-                        <td>
-                            <span class="p-column-title">Empleado asigando</span>
-                            {{dataFrom.employeasi}}
-                        </td>
-                        <td>
-                            <span class="p-column-title">Dias asigandos</span>
-                            {{dataFrom.daysassigned}}
-                        </td>
-                        <td>
-                            <span class="p-column-title">Valor base</span>
-                            {{dataFrom.basecost}}
-                        </td>
-                        <td>
-                            <span class="p-column-title">Valor total</span>
-                            {{dataFrom.totalcost}}
-                        </td>
-                        <td>
-                            <span class="p-column-title">Utencilios incluidos</span>
-                            {{dataFrom.toolsneed}}
-                        </td>
-                        <td style="text-align: center;">
-                            <button pButton pRipple type="button" icon="pi pi-user-plus" (click)="showAssignation()"
-                                class="p-button-raised p-button-rounded p-button-info" style="float: center">
-                            </button>
-                        </td>
-
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="emptymessage">
-                    No hay registros que mostrar
-                </ng-template>
-            </p-table>
         </p-tabPanel>
     </p-tabView>
     <p-dialog header="Asignacion de empleado" [(visible)]="showEmployes">

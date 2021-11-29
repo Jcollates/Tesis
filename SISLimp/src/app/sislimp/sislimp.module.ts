@@ -51,6 +51,7 @@ import {MessageModule} from 'primeng/message';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
+import { LegalpersonComponent } from './components/legalperson/legalperson.component';
 
 
 
@@ -76,7 +77,8 @@ FullCalendarModule.registerPlugins([ // register FullCalendar plugins
     GestionContratosComponent,
     GestionProvedoresComponent,
     GestionInventarioProductsComponent,
-    CalendarAllComponent
+    CalendarAllComponent,
+    LegalpersonComponent
   ],
   imports: [
     CommonModule,

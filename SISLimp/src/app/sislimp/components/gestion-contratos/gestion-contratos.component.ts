@@ -1,19 +1,24 @@
 import { Component, OnInit } from '@angular/core';
-import { LazyLoadEvent } from 'primeng/api';
-
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { LazyLoadEvent, MessageService, SelectItem } from 'primeng/api';
+import { CataloguesService } from 'src/app/sharedAll/serviceShared/catalogues.service';
+import { Agreement } from '../../shared/models/agreements.model';
+import { AgreementService } from './agreement.service';
+const CODECAT = 'SERVICETYPE'
 @Component({
   selector: 'app-gestion-contratos',
   templateUrl: './gestion-contratos.component.html',
-  styleUrls: ['./gestion-contratos.component.css']
+  styleUrls: ['./gestion-contratos.component.css'],
+  providers: [MessageService]
 })
 export class GestionContratosComponent implements OnInit {
 
-  drop: any[] = [];
+  drop: SelectItem[] = [];
   fordropt: any
 
   //table
   cols: any[];
-  dataFromdb: any[] = [];
+  dataFromdb: Agreement[] = [];
   sizeRecords: number = 50;
   pageSize: number = 50;
 
@@ -22,15 +27,21 @@ export class GestionContratosComponent implements OnInit {
   employesToAssig: any[] = [];
   showEmployesAssigned: boolean = false;
   showEmployes: boolean = false;
-  constructor() { }
+  showLegalperson: boolean = false;
+
+  formcontracts: FormGroup = new FormGroup({});
+  agreementContainer: Agreement = new Agreement();
+  seqLegalperson: number = 0;
+  constructor(
+    private formBuilder: FormBuilder,
+    private catalogueService: CataloguesService,
+    private messageService: MessageService,
+    private agreeService: AgreementService
+  ) { }
   ngOnInit(): void {
-    this.drop = [
-      { code: 1, name: 'NAME 1', text: 'Aki' },
-      { code: 2, name: 'NAME 2', text: 'No' },
-      { code: 3, name: 'NAME ', text: 'Se' },
-    ];
     this.createCols();
-    this.chargeData(null);
+    this.createForm();
+    this.getCatalogues();
   }
 
   createCols() {
@@ -41,8 +52,6 @@ export class GestionContratosComponent implements OnInit {
       { field: 'nameEnterprice', header: 'Nombre empresa' },
       { field: 'respresent', header: 'Responsable empresa' },
       { field: 'typeservice', header: 'Tipo servicio' },
-      { field: 'status', header: 'Estado' },
-      { field: 'supervisor', header: 'Nombre supervisor' },
       { field: 'employees', header: 'Cantidad de empleados' },
       { field: '', header: 'Empleados asignados' },
       { field: 'tools', header: 'Utencilios' },
@@ -53,22 +62,7 @@ export class GestionContratosComponent implements OnInit {
       { field: 'charge', header: 'Cargo' },
     ]
   }
-  chargeData(event: LazyLoadEvent) {
-    this.dataFromdb = [
-      {
-        codeContract: 1,
-        datestart: '17/12/2021',
-        dateend: '30/12/2021',
-        nameEnterprice: 'Jafferson LICORES',
-        respresent: 'Pablo Jose de la calle',
-        typeservice: 2,
-        status: 'En proceso',
-        supervisor: 'Juan Manuel',
-        employees: 50,
-        tools: 'SI'
-      },
-    ]
-  }
+
   showAssignation() {
     this.showEmployes = true;
     this.employesToAssig = [
@@ -77,7 +71,7 @@ export class GestionContratosComponent implements OnInit {
       { nameEmploye: 'Empleado 3', charge: 'Carpintero' },
     ]
   }
-  showAssignated(){
+  showAssignated() {
     this.showEmployesAssigned = true;
     this.employesToAssig = [
       { nameEmploye: 'Empleado 1', charge: 'Limpiador' },
@@ -86,4 +80,80 @@ export class GestionContratosComponent implements OnInit {
     ]
   }
 
+  showLegal() {
+    this.showLegalperson = true;
+  }
+  getLegal(event) {
+    this.seqLegalperson = event.seqlegalperson;
+    this.formcontracts.patchValue({
+      legalperson: event.name + " " + event.lastname
+    });
+  }
+  validateForm() {
+    if (!this.formcontracts.valid) {
+      this.messageService.add({ severity: 'error', detail: 'Formulario no valido' });
+      // console.log('FORM', this.formService.value);
+    } else {
+      console.log('FORM', this.formcontracts.value);
+      this.agreementContainer.ruc = this.formcontracts.controls.ruc.value;
+      this.agreementContainer.name = this.formcontracts.controls.name.value;
+      this.agreementContainer.location = this.formcontracts.controls.serviceAddress.value;
+      this.agreementContainer.principallocation = this.formcontracts.controls.principaladdress.value;
+      this.agreementContainer.phone = this.formcontracts.controls.phone.value;
+      this.agreementContainer.type = this.formcontracts.controls.type.value;
+      this.agreementContainer.datestart = this.formcontracts.controls.stardate.value;
+      this.agreementContainer.dateend = this.formcontracts.controls.endate.value;
+      this.agreementContainer.schedule = this.formcontracts.controls.schedule.value;
+      this.agreementContainer.servicedetail = this.formcontracts.controls.detailService.value;
+      this.agreementContainer.subtotal = this.formcontracts.controls.subtotal.value;
+      this.agreementContainer.area = this.formcontracts.controls.workarea.value;
+      this.agreementContainer.loginuser_codeuser = this.seqLegalperson;
+      this.saveForm(this.agreementContainer);
+    }
+  }
+  chargeData(event: LazyLoadEvent) {
+    this.agreeService.getAgreements().subscribe(rest => {
+      console.log(rest);
+      this.dataFromdb = rest;
+      this.sizeRecords = rest.length;
+    });
+  }
+
+  createForm() {
+    this.formcontracts = this.formBuilder.group({
+      ruc: ['', Validators.required],
+      name: ['', Validators.required],
+      legalperson: [{ value: '', disabled: true }, [Validators.required]],
+      principaladdress: ['', Validators.required],
+      serviceAddress: ['', Validators.required],
+      phone: ['', Validators.required],
+      workarea: ['', Validators.required],
+      type: ['', Validators.required],
+      stardate: ['', Validators.required],
+      endate: ['', Validators.required],
+      subtotal: ['', Validators.required],
+      schedule: ['', Validators.required],
+      detailService: ['', Validators.required],
+    });
+  }
+
+  getCatalogues() {
+    this.catalogueService.getCataloguebyCodeCat(CODECAT).then(rest => {
+      this.drop = this.catalogueService.constructModel(rest);
+    })
+  }
+
+  saveForm(container: Agreement) {
+    if (container.loginuser_codeuser > 0) {
+      this.agreeService.saveAgreement(container).subscribe(res => {
+        if (res != null) {
+          this.messageService.add({ severity: 'success', detail: 'Registrado correctamente' });
+          this.formcontracts.reset();
+          // console.log("SAVED?", res);
+          this.seqLegalperson = 0;
+          this.chargeData(null);
+        }
+      });
+    }
+  }
 }

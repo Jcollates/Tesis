@@ -39,7 +39,6 @@ export class CatalogoServicesComponent implements OnInit {
 
   ngOnInit(): void {
     this.createCols();
-    this.chargeData(null);
     this.getCatalogues();
     this.createForm();
   }
@@ -66,7 +65,7 @@ export class CatalogoServicesComponent implements OnInit {
     });
   }
   getCatalogues(){
-    this.catalogueService.getCataloguebyCodeCat(CODECAT).subscribe(rest => {
+    this.catalogueService.getCataloguebyCodeCat(CODECAT).then(rest => {
       this.drop = this.catalogueService.constructModel(rest);
     })
   }
