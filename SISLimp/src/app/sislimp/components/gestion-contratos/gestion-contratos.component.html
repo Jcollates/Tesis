@@ -6,9 +6,9 @@
     <p-tabView>
         <p-tabPanel header="Listado de contratos">
             <p-table [value]="dataFromdb" styleClass="p-datatable-customers p-datatable-gridlines p-datatable-striped"
-                [responsive]="true" [paginator]="true" [rows]="pageSize" dataKey="date"
-                [rowsPerPageOptions]="[10,30,60]" [totalRecords]="sizeRecords" [lazy]="true" [autoLayout]="true"
-                [columns]="cols" (onLazyLoad)="chargeData($event)">
+                [responsive]="true" [paginator]="true" [rows]="pageSize" dataKey="seqagree"
+                [rowsPerPageOptions]="[10,30,60]" [totalRecords]="sizeRecords" [lazy]="true" [autoLayout]="true" selectionMode="single"
+                [columns]="cols" (onLazyLoad)="chargeData($event)" >
                 <ng-template pTemplate="caption">
                     Listado
                 </ng-template>
@@ -22,7 +22,7 @@
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-dataFrom let-index="rowIndex" let-columns="columns">
-                    <tr>
+                    <tr> 
                         <td>
                             <span class="p-column-title">Código contrato</span>
                             {{dataFrom.seqagree}}
@@ -49,10 +49,10 @@
                         </td>
                         <td>
                             <span class="p-column-title">Cantidad de empleados</span>
-                            {{dataFrom.employees}}
+                            {{employeesAsignated}}
                         </td>
                         <td style="text-align: center;">
-                            <button pButton pRipple type="button" icon="pi pi-eye" (click)="showAssignated()"
+                            <button pButton pRipple type="button" icon="pi pi-eye" (click)="showAssignated()" 
                                 class="p-button-raised p-button-rounded p-button-help" style="float: center">
                             </button>
                         </td>
@@ -61,7 +61,7 @@
                             {{dataFrom.tools}}
                         </td>
                         <td style="text-align: center;">
-                            <button pButton pRipple type="button" icon="pi pi-user-plus" (click)="showAssignation()"
+                            <button pButton pRipple type="button" icon="pi pi-user-plus" (click)="showAssignation()" (click)="onRowSelectFather(dataFrom)"
                                 class="p-button-raised p-button-rounded p-button-info" style="float: center">
                             </button>
                         </td>
@@ -229,10 +229,10 @@
     </p-tabView>
     <p-dialog header="Asignacion de empleado" [(visible)]="showEmployes">
         <p-table [value]="employesToAssig" styleClass="p-datatable-customers p-datatable-gridlines p-datatable-striped"
-            [responsive]="true" [paginator]="true" [rows]="pageSize" dataKey="nameEmploye"
-            [rowsPerPageOptions]="[10,30,60]" [totalRecords]="sizeRecords" [lazy]="true" [autoLayout]="true"
-            [columns]="colsEmployees">
-            <ng-template pTemplate="caption">
+            [responsive]="true" [paginator]="true" [rows]="pageSize" dataKey="seqemploy"
+            [rowsPerPageOptions]="[10,30,60]" [totalRecords]="sizeRecordsToAsig" [lazy]="true" [autoLayout]="true"
+            [columns]="colsEmployees" (onRowSelect)="onRowSelect($event)" (onLazyLoad)="getEmployees($event)" selectionMode="single" >
+            <ng-template pTemplate="caption" >
                 Listado
             </ng-template>
             <ng-template pTemplate="header" let-columns>
@@ -254,11 +254,11 @@
                     </td>
                     <td>
                         <span class="p-column-title">Nombre</span>
-                        {{dataFrom.nameEmploye}}
+                        {{dataFrom.name}} - {{dataFrom.lastname}}
                     </td>
                     <td>
                         <span class="p-column-title">Cargo</span>
-                        {{dataFrom.nameEmploye}}
+                        {{dataFrom.position}}
                     </td>
                 </tr>
             </ng-template>
@@ -268,18 +268,18 @@
         </p-table>
         <p-toolbar>
             <div style="text-align: center;">
-                <button pButton pRipple type="button" label="Asignar selección" icon="pi pi-save"
+                <button pButton pRipple type="button" label="Asignar selección" icon="pi pi-save" (click)="saveAssigment()"
                     class="p-button-raised p-button-rounded p-button-success p-mr-2 p-mb-2 " style="float: center">
                 </button>
             </div>
 
         </p-toolbar>
     </p-dialog>
-    <p-dialog header="Asignacion de empleado" [(visible)]="showEmployesAssigned">
-        <p-table [value]="employesToAssig" styleClass="p-datatable-customers p-datatable-gridlines p-datatable-striped"
-            [responsive]="true" [paginator]="true" [rows]="pageSize" dataKey="nameEmploye"
-            [rowsPerPageOptions]="[10,30,60]" [totalRecords]="sizeRecords" [lazy]="true" [autoLayout]="true"
-            [columns]="colsEmployees">
+    <p-dialog header="Empleados asignados" [(visible)]="showEmployesAssigned">
+        <p-table [value]="employesAssigned" styleClass="p-datatable-customers p-datatable-gridlines p-datatable-striped"
+            [responsive]="true" [paginator]="true" [rows]="pageSize" dataKey="seqemploy"
+            [rowsPerPageOptions]="[10,30,60]" [totalRecords]="sizeRecordsAsigned" [lazy]="true" [autoLayout]="true"
+            [columns]="colsEmployees" (onLazyLoad)="getEmployeesAssigned($event)">
             <ng-template pTemplate="caption">
                 Listado
             </ng-template>
@@ -296,11 +296,11 @@
                 <tr>
                     <td>
                         <span class="p-column-title">Nombre</span>
-                        {{dataFrom.nameEmploye}}
+                        {{dataFrom.name}} - {{dataFrom.lastname}}
                     </td>
                     <td>
                         <span class="p-column-title">Cargo</span>
-                        {{dataFrom.nameEmploye}}
+                        {{dataFrom.position}}
                     </td>
                 </tr>
             </ng-template>

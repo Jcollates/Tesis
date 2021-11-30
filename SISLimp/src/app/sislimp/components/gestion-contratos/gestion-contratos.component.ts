@@ -2,7 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LazyLoadEvent, MessageService, SelectItem } from 'primeng/api';
 import { CataloguesService } from 'src/app/sharedAll/serviceShared/catalogues.service';
+import { FuntionsSharedService } from 'src/app/sharedAll/serviceShared/funtions-shared.service';
 import { Agreement } from '../../shared/models/agreements.model';
+import { Employee } from '../../shared/models/employee.model';
+import { EmployeeService } from '../gestion-empleados/employee.service';
 import { AgreementService } from './agreement.service';
 const CODECAT = 'SERVICETYPE'
 @Component({
@@ -20,15 +23,21 @@ export class GestionContratosComponent implements OnInit {
   cols: any[];
   dataFromdb: Agreement[] = [];
   sizeRecords: number = 50;
+  sizeRecordsToAsig: number = 10;
+  sizeRecordsAsigned: number = 10;
   pageSize: number = 50;
+
+  selectedFather: Agreement = new Agreement();
+  employeesAsignated: number = 0
 
   //employees
   colsEmployees: any[] = [];
-  employesToAssig: any[] = [];
+  employesToAssig: Employee[] = [];
+  employesAssigned: Employee[] = [];
   showEmployesAssigned: boolean = false;
   showEmployes: boolean = false;
   showLegalperson: boolean = false;
-
+  selectdEmployes: Employee[] = [];
   formcontracts: FormGroup = new FormGroup({});
   agreementContainer: Agreement = new Agreement();
   seqLegalperson: number = 0;
@@ -36,7 +45,9 @@ export class GestionContratosComponent implements OnInit {
     private formBuilder: FormBuilder,
     private catalogueService: CataloguesService,
     private messageService: MessageService,
-    private agreeService: AgreementService
+    private agreeService: AgreementService,
+    private emplyeeservice: EmployeeService,
+    private sharedFuntions: FuntionsSharedService,
   ) { }
   ngOnInit(): void {
     this.createCols();
@@ -65,19 +76,30 @@ export class GestionContratosComponent implements OnInit {
 
   showAssignation() {
     this.showEmployes = true;
-    this.employesToAssig = [
-      { nameEmploye: 'Empleado 1', charge: 'Limpiador' },
-      { nameEmploye: 'Empleado 2 ', charge: 'Piscinero' },
-      { nameEmploye: 'Empleado 3', charge: 'Carpintero' },
-    ]
   }
   showAssignated() {
     this.showEmployesAssigned = true;
-    this.employesToAssig = [
-      { nameEmploye: 'Empleado 1', charge: 'Limpiador' },
-      { nameEmploye: 'Empleado 2 ', charge: 'Piscinero' },
-      { nameEmploye: 'Empleado 3', charge: 'Carpintero' },
-    ]
+  }
+  getEmployees(event: LazyLoadEvent) {
+    this.emplyeeservice.getEmployesToBesAssigned().subscribe(res => {
+      // console.log(res);
+      res.forEach( item => {
+        item.img = this.sharedFuntions.repair(item.img);
+      })
+      this.employesToAssig = res;
+      this.sizeRecordsToAsig = res.length;
+    })
+  }
+  getEmployeesAssigned(event: LazyLoadEvent) {
+    this.emplyeeservice.getEmployessAssigned().subscribe(res => {
+      // console.log(res);
+      res.forEach( item => {
+        item.img = this.sharedFuntions.repair(item.img);
+      })
+      this.employesAssigned = res;
+      this.employesAssigned.length > 0 ? this.employeesAsignated = this.employesAssigned.length : 0;
+      this.sizeRecordsAsigned = res.length;
+    })
   }
 
   showLegal() {
@@ -155,5 +177,30 @@ export class GestionContratosComponent implements OnInit {
         }
       });
     }
+  }
+
+  onRowSelect(event: any) {
+    event.data.assigmentdayte = this.selectedFather.datestart;
+    this.selectdEmployes.push(event.data);
+    console.log("this.selectdEmployes", this.selectdEmployes);
+  }
+  saveAssigment() {
+    if (this.selectdEmployes.length > 0) {
+      this.selectdEmployes.forEach(item => {
+        this.emplyeeservice.updateEmployee(item).subscribe(update => {
+          if (update) this.messageService.add({ severity: 'success', detail: 'Empleado asignado' })
+          else this.messageService.add({ severity: 'error', detail: 'No se logro asignar' });
+          this.getEmployeesAssigned(null);
+          this.showEmployes = false;
+        })
+      })
+    } else {
+      this.messageService.add({ severity: 'error', detail: 'Seleccione al menos un empleado' });
+    }
+
+  }
+  onRowSelectFather(event: Agreement) {
+    // console.log(event);
+    this.selectedFather = event;
   }
 }

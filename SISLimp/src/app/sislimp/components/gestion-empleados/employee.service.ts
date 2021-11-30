@@ -25,4 +25,16 @@ export class EmployeeService {
     return this.http.post(url, container).pipe(map( res => res as any));
 
   }
+  updateEmployee(container: Employee): Observable<any>{
+    let url = this.url + '/updatemeploy';
+    return this.http.put(url, container).pipe(map( res => res as any));
+  }
+  getEmployessAssigned(): Observable<Employee[]>{
+    let url = this.url + '/assignedEmploy';
+    return this.http.get(url).pipe(map(res => res as Employee[] ));
+  }
+  getEmployesToBesAssigned(): Observable<Employee[]>{
+    let url = this.url + '/toAssignedEmploy';
+    return this.http.get(url).pipe(map(res => res as Employee[] ));
+  }
 }
