@@ -1,3 +1,4 @@
+<p-toast></p-toast>
 <div class="p-mb-3 p-text-italic">
     <h3>Atención al cliente</h3>
 </div>
@@ -7,7 +8,7 @@
             <p-table [value]="dataFromdb" styleClass="p-datatable-customers p-datatable-gridlines p-datatable-striped"
                 [responsive]="true" [paginator]="true" [rows]="pageSize" dataKey="date"
                 [rowsPerPageOptions]="[10,30,60]" [totalRecords]="sizeRecords" [lazy]="true" [autoLayout]="true"
-                [columns]="cols">
+                [columns]="cols" (onLazyLoad)="chargeData($event)">
                 <ng-template pTemplate="caption">
                     Listado
                 </ng-template>
@@ -24,19 +25,19 @@
                     <tr>
                         <td>
                             <span class="p-column-title">Codigo cliente</span>
-                            {{dataFrom.codeCli}}
+                            {{dataFrom.dnicliente}}
                         </td>
                         <td>
                             <span class="p-column-title">Fecha</span>
-                            {{dataFrom.date}}
+                            {{dataFrom.dateobservation | date}}
                         </td>
                         <td>
                             <span class="p-column-title">Nombre</span>
-                            {{dataFrom.name}}
+                            {{dataFrom.nameclient}}
                         </td>
                         <td>
                             <span class="p-column-title">Apellido</span>
-                            {{dataFrom.lastname}}
+                            {{dataFrom.lastnameclient}}
                         </td>
                         <td>
                             <span class="p-column-title">Observaciones</span>
@@ -44,19 +45,19 @@
                         </td>
                         <td>
                             <span class="p-column-title">Num. Telefono</span>
-                            {{dataFrom.phone}}
+                            {{dataFrom.phonenumber}}
                         </td>
                         <td>
                             <span class="p-column-title">Dirección</span>
-                            {{dataFrom.addres}}
+                            {{dataFrom.address}}
                         </td>
                         <td>
                             <span class="p-column-title">Nombre empleado</span>
-                            {{dataFrom.employe}}
+                            {{dataFrom.employeename}}
                         </td>
                         <td>
                             <span class="p-column-title">Detalle del servicio</span>
-                            {{dataFrom.detailservice}}
+                            {{dataFrom.servicedetail}}
                         </td>
                     </tr>
                 </ng-template>
@@ -78,151 +79,137 @@
                 Formulario de observaciones
             </div>
             <br>
-            <div class="p-fluid p-grid">
-                <div class="p-field p-col-12 p-md-6">
-                    <div class="p-inputgroup">
-                        <span class="p-inputgroup-addon">
-                            <i class="pi pi-user"></i>
-                        </span>
+            <form [formGroup]="formCustomer" (ngSubmit)="validateForm()">
+                <div class="p-fluid p-grid">
+                    <div class="p-field p-col-12 p-md-6">
+                        <div class="p-inputgroup">
+                            <span class="p-inputgroup-addon">
+                                <i class="pi pi-user"></i>
+                            </span>
+                            <span class="p-float-label">
+                                <input type="text" id="inputgroup" pInputText formControlName="dni">
+                                <label for="inputgroup">Cedula/RUC</label>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="p-field p-col-12 p-md-6">
+                        <div class="p-inputgroup">
+                            <span class="p-inputgroup-addon">
+                                <i class="pi pi-user"></i>
+                            </span>
+                            <span class="p-float-label">
+                                <input type="text" id="inputgroup" pInputText formControlName="email">
+                                <label for="inputgroup">Correo electrónico</label>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="p-field p-col-12 p-md-6">
+                        <div class="p-inputgroup">
+                            <span class="p-inputgroup-addon">
+                                <i class="pi pi-id-card"></i>
+                            </span>
+                            <span class="p-float-label">
+                                <input type="text" id="inputgroup" pInputText formControlName="cliname">
+                                <label for="inputgroup">Nombre</label>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="p-field p-col-12 p-md-6">
+                        <div class="p-inputgroup">
+                            <span class="p-inputgroup-addon">
+                                <i class="pi pi-phone"></i>
+                            </span>
+                            <span class="p-float-label">
+                                <input type="text" id="inputgroup" pInputText formControlName="clilastname">
+                                <label for="inputgroup">Apellido</label>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="p-field p-col-12 p-md-6">
+                        <div class="p-inputgroup">
+                            <span class="p-inputgroup-addon">
+                                <i class="pi pi-envelope "></i>
+                            </span>
+                            <span class="p-float-label">
+                                <input type="text" id="inputgroup" pInputText formControlName="phone">
+                                <label for="inputgroup">Teléfono</label>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="p-field p-col-12 p-md-6"></div>
+                    <div class="p-field p-col-12 p-md-6">
                         <span class="p-float-label">
-                            <input type="text" id="inputgroup" pInputText>
-                            <label for="inputgroup">Cedula/RUC</label>
+                            <p-dropdown [options]="dropProvince" (onChange)="onChangueProvince($event)"
+                                formControlName="province"></p-dropdown>
+                            <label for="dropdown">Provincia</label>
+                        </span>
+                    </div>
+                    <div class="p-field p-col-12 p-md-6">
+                        <span class="p-float-label">
+                            <p-dropdown [options]="dropCity" formControlName="city"></p-dropdown>
+                            <label for="dropdown">Ciudad</label>
+                        </span>
+                    </div>
+                    <div class="p-field p-col-12 p-md-12">
+                        <div class="p-inputgroup">
+                            <span class="p-inputgroup-addon">
+                                <i class="pi pi-globe"></i>
+                            </span>
+                            <span class="p-float-label">
+                                <textarea id="float-input" rows="5" cols="30" pInputTextarea
+                                    formControlName="observation"></textarea>
+                                <label for="inputgroup">Observación</label>
+                            </span>
+                        </div>
+                    </div>
+                    <!-- <div class="p-field p-col-12 p-md-6"></div> -->
+                    <div class="p-field p-col-12 p-md-6">
+                        <span class="p-float-label">
+                            <p-dropdown [options]="dropType" formControlName="typeservice"></p-dropdown>
+                            <label for="dropdown">Tipo servicio</label>
+                        </span>
+                    </div>
+                    <div class="p-field p-col-12 p-md-6">
+                        <div class="p-inputgroup">
+                            <span class="p-inputgroup-addon">
+                                <i class="pi pi-lock"></i>
+                            </span>
+                            <span class="p-float-label">
+                                <input type="text" id="inputgroup" pInputText formControlName="employename">
+                                <label for="inputgroup">Nombre empleado</label>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="p-field p-col-12 p-md-6">
+                        <div class="p-inputgroup">
+                            <span class="p-inputgroup-addon">
+                                <i class="pi pi-lock"></i>
+                            </span>
+                            <span class="p-float-label">
+                                <input type="text" id="inputgroup" pInputText formControlName="employecode">
+                                <label for="inputgroup">Código empleado</label>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="p-field p-col-12 p-md-6">
+                        <span class="p-float-label">
+                            <p-calendar [showIcon]="true" inputId="icon" formControlName="servicedate"></p-calendar>
+                            <label for="inputgroup">Fecha servicio</label>
                         </span>
                     </div>
                 </div>
-                <div class="p-field p-col-12 p-md-6">
-                    <div class="p-inputgroup">
-                        <span class="p-inputgroup-addon">
-                            <i class="pi pi-user"></i>
-                        </span>
-                        <span class="p-float-label">
-                            <input type="text" id="inputgroup" pInputText>
-                            <label for="inputgroup">Correo electrónico</label>
-                        </span>
+                <p-toolbar>
+                    <div class="p-toolbar-group-left">
                     </div>
-                </div>
-                <div class="p-field p-col-12 p-md-6">
-                    <div class="p-inputgroup">
-                        <span class="p-inputgroup-addon">
-                            <i class="pi pi-id-card"></i>
-                        </span>
-                        <span class="p-float-label">
-                            <input type="text" id="inputgroup" pInputText>
-                            <label for="inputgroup">Nombre</label>
-                        </span>
+                    <div class="p-toolbar-group-right">
+                        <button pButton pRipple type="button" label="Registrar" icon="pi pi-save"
+                            (click)="validateForm()"
+                            class="p-button-raised p-button-rounded p-button-success p-mr-2 p-mb-2 "
+                            style="float: right">
+                        </button>
                     </div>
-                </div>
-                <div class="p-field p-col-12 p-md-6">
-                    <div class="p-inputgroup">
-                        <span class="p-inputgroup-addon">
-                            <i class="pi pi-phone"></i>
-                        </span>
-                        <span class="p-float-label">
-                            <input type="text" id="inputgroup" pInputText>
-                            <label for="inputgroup">Apellido</label>
-                        </span>
-                    </div>
-                </div>
-                <div class="p-field p-col-12 p-md-6">
-                    <div class="p-inputgroup">
-                        <span class="p-inputgroup-addon">
-                            <i class="pi pi-envelope "></i>
-                        </span>
-                        <span class="p-float-label">
-                            <input type="text" id="inputgroup" pInputText>
-                            <label for="inputgroup">Teléfono</label>
-                        </span>
-                    </div>
-                </div>
-                <div class="p-field p-col-12 p-md-6"></div>
-                <div class="p-field p-col-12 p-md-6">
-                    <span class="p-float-label">
-                        <p-dropdown inputId="dropdown" [autoDisplayFirst]="false" [options]="drop"
-                            [(ngModel)]="fordropt" optionLabel="name"></p-dropdown>
-                        <label for="dropdown">Provincia</label>
-                    </span>
-                </div>
-                <div class="p-field p-col-12 p-md-6">
-                    <span class="p-float-label">
-                        <p-dropdown inputId="dropdown" [autoDisplayFirst]="false" [options]="drop"
-                            [(ngModel)]="fordropt" optionLabel="name"></p-dropdown>
-                        <label for="dropdown">Ciudad</label>
-                    </span>
-                </div>
-                <div class="p-field p-col-12 p-md-12">
-                    <div class="p-inputgroup">
-                        <span class="p-inputgroup-addon">
-                            <i class="pi pi-globe"></i>
-                        </span>
-                        <span class="p-float-label">
-                            <textarea id="float-input" rows="5" cols="30" pInputTextarea></textarea>
-                            <label for="inputgroup">Observación</label>
-                        </span>
-                    </div>
-                </div>
-                <!-- <div class="p-field p-col-12 p-md-6"></div> -->
-                <div class="p-field p-col-12 p-md-6">
-                    <div class="p-inputgroup">
-                        <span class="p-inputgroup-addon">
-                            <i class="pi pi-lock"></i>
-                        </span>
-                        <span class="p-float-label">
-                            <input type="text" id="inputgroup" pInputText>
-                            <label for="inputgroup">Tipo servicio</label>
-                        </span>
-                    </div>
-                </div>
-                <div class="p-field p-col-12 p-md-6">
-                    <div class="p-inputgroup">
-                        <span class="p-inputgroup-addon">
-                            <i class="pi pi-lock"></i>
-                        </span>
-                        <span class="p-float-label">
-                            <input type="text" id="inputgroup" pInputText>
-                            <label for="inputgroup">Nombre empleado</label>
-                        </span>
-                    </div>
-                </div>
-                <div class="p-field p-col-12 p-md-6">
-                    <div class="p-inputgroup">
-                        <span class="p-inputgroup-addon">
-                            <i class="pi pi-lock"></i>
-                        </span>
-                        <span class="p-float-label">
-                            <input type="text" id="inputgroup" pInputText>
-                            <label for="inputgroup">Código empleado</label>
-                        </span>
-                    </div>
-                </div>
-                <div class="p-field p-col-12 p-md-6">
-                    <div class="p-inputgroup">
-                        <span class="p-inputgroup-addon">
-                            <i class="pi pi-lock"></i>
-                        </span>
-                        <span class="p-float-label">
-                            <input type="number" id="inputgroup" pInputText>
-                            <label for="inputgroup">Num. Horas</label>
-                        </span>
-                    </div>
-                </div>
-                <div class="p-field p-col-12 p-md-6">
-
-                    <span class="p-float-label">
-                        <p-calendar [showIcon]="true" inputId="icon"></p-calendar>
-                        <label for="inputgroup">Fecha servicio</label>
-                    </span>
-                </div>
-
-            </div>
-            <p-toolbar>
-                <div class="p-toolbar-group-left">
-                </div>
-                <div class="p-toolbar-group-right">
-                    <button pButton pRipple type="button" label="Registrar" icon="pi pi-save"
-                        class="p-button-raised p-button-rounded p-button-success p-mr-2 p-mb-2 " style="float: right">
-                    </button>
-                </div>
-            </p-toolbar>
+                </p-toolbar>
+            </form>
         </p-tabPanel>
     </p-tabView>
 </p-card>
