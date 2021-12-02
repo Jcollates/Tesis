@@ -6,7 +6,7 @@
     <p-tabView>
         <p-tabPanel header="Servicios publicados">
             <p-table [value]="dataFromdb" styleClass="p-datatable-customers p-datatable-gridlines p-datatable-striped"
-                [responsive]="true" [paginator]="true" [rows]="pageSize" dataKey="code"
+                [responsive]="true" [paginator]="true" [rows]="pageSize" dataKey="seqcatservice"
                 [rowsPerPageOptions]="[10,30,60]" [totalRecords]="sizeRecords" [lazy]="true" [autoLayout]="true"
                 [columns]="cols" (onLazyLoad)="chargeData($event)">
                 <ng-template pTemplate="caption">

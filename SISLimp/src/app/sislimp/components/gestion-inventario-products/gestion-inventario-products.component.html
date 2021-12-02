@@ -1,3 +1,4 @@
+<p-toast></p-toast>
 <div class="p-mb-3 p-text-italic">
     <h3>Inventario de productos</h3>
 </div>
@@ -7,7 +8,7 @@
             <p-table [value]="dataFromdb" styleClass="p-datatable-customers p-datatable-gridlines p-datatable-striped"
                 [responsive]="true" [paginator]="true" [rows]="pageSize" dataKey="date"
                 [rowsPerPageOptions]="[10,30,60]" [totalRecords]="sizeRecords" [lazy]="true" [autoLayout]="true"
-                [columns]="cols">
+                [columns]="cols" (onLazyLoad)="chargeData($event)">
                 <ng-template pTemplate="caption">
                     Listado
                 </ng-template>
@@ -24,11 +25,11 @@
                     <tr>
                         <td>
                             <span class="p-column-title">Código producto</span>
-                            {{dataFrom.codepro}}
+                            {{dataFrom.codeproduct}}
                         </td>
                         <td>
                             <span class="p-column-title">Cantidad</span>
-                            {{dataFrom.cuantity}}
+                            {{dataFrom.quantity}}
                         </td>
                         <td>
                             <span class="p-column-title">Nombre</span>
@@ -40,11 +41,11 @@
                         </td>
                         <td>
                             <span class="p-column-title">Fecha compra</span>
-                            {{dataFrom.datebuy}}
+                            {{dataFrom.datebought | date}}
                         </td>
                         <td>
                             <span class="p-column-title">Proveedor</span>
-                            {{dataFrom.provider}}
+                            {{dataFrom.provider_seq | providerpipe:providers}}
                         </td>
                     </tr>
                 </ng-template>
@@ -58,102 +59,101 @@
                 Formulario de productos
             </div>
             <br>
-            <div class="p-fluid p-grid">
-                <div class="p-field p-col-12 p-md-6">
-                    <div class="p-inputgroup">
-                        <span class="p-inputgroup-addon">
-                            <i class="pi pi-user"></i>
-                        </span>
-                        <span class="p-float-label">
-                            <input type="text" id="inputgroup" pInputText>
-                            <label for="inputgroup">Código producto</label>
-                        </span>
+            <form [formGroup]="formProducts" (ngSubmit)="validateForm()">
+                <div class="p-fluid p-grid">
+                    <div class="p-field p-col-12 p-md-6">
+                        <div class="p-inputgroup">
+                            <span class="p-inputgroup-addon">
+                                <i class="pi pi-user"></i>
+                            </span>
+                            <span class="p-float-label">
+                                <input type="text" id="inputgroup" pInputText formControlName="codeprod">
+                                <label for="inputgroup">Código producto</label>
+                            </span>
+                        </div>
                     </div>
-                </div>
-                <div class="p-field p-col-12 p-md-6">
-                    <div class="p-inputgroup">
-                        <span class="p-inputgroup-addon">
-                            <i class="pi pi-user"></i>
-                        </span>
-                        <span class="p-float-label">
-                            <input type="text" id="inputgroup" pInputText>
-                            <label for="inputgroup">Cantidad</label>
-                        </span>
+                    <div class="p-field p-col-12 p-md-6">
+                        <div class="p-inputgroup">
+                            <span class="p-inputgroup-addon">
+                                <i class="pi pi-user"></i>
+                            </span>
+                            <span class="p-float-label">
+                                <input type="text" id="inputgroup" pInputText formControlName="quantity">
+                                <label for="inputgroup">Cantidad</label>
+                            </span>
+                        </div>
                     </div>
-                </div>
-                <div class="p-field p-col-12 p-md-6">
-                    <div class="p-inputgroup">
-                        <span class="p-inputgroup-addon">
-                            <i class="pi pi-id-card"></i>
-                        </span>
-                        <span class="p-float-label">
-                            <input type="text" id="inputgroup" pInputText>
-                            <label for="inputgroup">Nombre</label>
-                        </span>
+                    <div class="p-field p-col-12 p-md-6">
+                        <div class="p-inputgroup">
+                            <span class="p-inputgroup-addon">
+                                <i class="pi pi-id-card"></i>
+                            </span>
+                            <span class="p-float-label">
+                                <input type="text" id="inputgroup" pInputText formControlName="nameprod">
+                                <label for="inputgroup">Nombre</label>
+                            </span>
+                        </div>
                     </div>
-                </div>
-                <div class="p-field p-col-12 p-md-6">
-                    <div class="p-inputgroup">
-                        <span class="p-inputgroup-addon">
-                            <i class="pi pi-user"></i>
-                        </span>
-                        <span class="p-float-label">
-                            <input type="text" id="inputgroup" pInputText>
-                            <label for="inputgroup">Precio compra</label>
-                        </span>
+                    <div class="p-field p-col-12 p-md-6">
+                        <div class="p-inputgroup">
+                            <span class="p-inputgroup-addon">
+                                <i class="pi pi-user"></i>
+                            </span>
+                            <span class="p-float-label">
+                                <input type="text" id="inputgroup" pInputText formControlName="pricebougth">
+                                <label for="inputgroup">Precio compra</label>
+                            </span>
+                        </div>
                     </div>
-                </div>
-                <div class="p-field p-col-12 p-md-6">
-                    <div class="p-inputgroup">
-                        <span class="p-inputgroup-addon">
-                            <i class="pi pi-phone"></i>
-                        </span>
-                        <span class="p-float-label">
-                            <input type="text" id="inputgroup" pInputText>
-                            <label for="inputgroup">Precio venta</label>
-                        </span>
+                    <div class="p-field p-col-12 p-md-6">
+                        <div class="p-inputgroup">
+                            <span class="p-inputgroup-addon">
+                                <i class="pi pi-phone"></i>
+                            </span>
+                            <span class="p-float-label">
+                                <input type="text" id="inputgroup" pInputText formControlName="saleprice">
+                                <label for="inputgroup">Precio venta</label>
+                            </span>
+                        </div>
                     </div>
-                </div>
-                <div class="p-field p-col-12 p-md-6">
+                    <div class="p-field p-col-12 p-md-6">
 
-                    <span class="p-float-label">
-                        <p-calendar [showIcon]="true" inputId="icon"></p-calendar>
-                        <label for="inputgroup">Fecha compra</label>
-                    </span>
-                </div>
-                <div class="p-field p-col-12 p-md-6">
-                    <div class="p-inputgroup">
-                        <span class="p-inputgroup-addon">
-                            <i class="pi pi-lock"></i>
-                        </span>
                         <span class="p-float-label">
-                            <input type="text" id="inputgroup" pInputText>
+                            <p-calendar [showIcon]="true" inputId="icon" formControlName="datebought"></p-calendar>
+                            <label for="inputgroup">Fecha compra</label>
+                        </span>
+                    </div>
+                    <div class="p-field p-col-12 p-md-6">
+                        <span class="p-float-label">
+                            <p-dropdown [options]="drop" formControlName="provider"></p-dropdown>
                             <label for="inputgroup">Proveedor</label>
                         </span>
                     </div>
-                </div>
-                <div class="p-field p-col-12 p-md-12">
-                    <div class="p-inputgroup">
-                        <span class="p-inputgroup-addon">
-                            <i class="pi pi-globe"></i>
-                        </span>
-                        <span class="p-float-label">
-                            <textarea id="float-input" rows="5" cols="30" pInputTextarea></textarea>
-                            <label for="inputgroup">Descripción</label>
-                        </span>
+                    <div class="p-field p-col-12 p-md-12">
+                        <div class="p-inputgroup">
+                            <span class="p-inputgroup-addon">
+                                <i class="pi pi-globe"></i>
+                            </span>
+                            <span class="p-float-label">
+                                <textarea id="float-input" rows="5" cols="30" pInputTextarea
+                                    formControlName="description"></textarea>
+                                <label for="inputgroup">Descripción</label>
+                            </span>
+                        </div>
                     </div>
+
                 </div>
-                
-            </div>
-            <p-toolbar>
-                <div class="p-toolbar-group-left">
-                </div>
-                <div class="p-toolbar-group-right">
-                    <button pButton pRipple type="button" label="Registrar" icon="pi pi-save"
-                        class="p-button-raised p-button-rounded p-button-success p-mr-2 p-mb-2 " style="float: right">
-                    </button>
-                </div>
-            </p-toolbar>
+                <p-toolbar>
+                    <div class="p-toolbar-group-left">
+                    </div>
+                    <div class="p-toolbar-group-right">
+                        <button pButton pRipple type="button" label="Registrar" icon="pi pi-save"
+                            class="p-button-raised p-button-rounded p-button-success p-mr-2 p-mb-2 "
+                            style="float: right" (click)="validateForm()">
+                        </button>
+                    </div>
+                </p-toolbar>
+            </form>
         </p-tabPanel>
     </p-tabView>
 </p-card>
