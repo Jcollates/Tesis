@@ -14,6 +14,9 @@ import { LoginComponent } from './components/login/login.component';
 import { FirstpageComponent } from './components/firstpage/firstpage.component';
 import { NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import { ReactiveFormsModule } from '@angular/forms';
+import {ToastModule} from 'primeng/toast';
+import {MessagesModule} from 'primeng/messages';
+import {MessageModule} from 'primeng/message';
 
 
 @NgModule({
@@ -33,7 +36,10 @@ import { ReactiveFormsModule } from '@angular/forms';
     CommonModule,
     PageRoutingModule,
     NgbModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    ToastModule,
+    MessageModule,
+    MessagesModule
   ]
 })
 export class PageModule { }

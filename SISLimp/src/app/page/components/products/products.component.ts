@@ -1,37 +1,43 @@
 import { Component, OnInit } from '@angular/core';
+import { MessageService } from 'primeng/api';
+import { UserGeneralModel } from 'src/app/sharedAll/models/usergeneral.model';
+import { AuthService } from 'src/app/sharedAll/serviceShared/auth.service';
 import { FuntionsSharedService } from 'src/app/sharedAll/serviceShared/funtions-shared.service';
 import { CatProducts } from 'src/app/sislimp/shared/models/catproduct.model';
+import { UsersGeneralService } from '../login/users-general.service';
+import { SolProduct } from '../sharedpage/models/solproduct.model';
 import { ProoductShowService } from './prooduct-show.service';
 
 @Component({
   selector: 'app-products',
   templateUrl: './products.component.html',
-  styleUrls: ['./products.component.css']
+  styleUrls: ['./products.component.css'],
+  providers: [MessageService]
 })
 export class ProductsComponent implements OnInit {
+
+
+
 
   product: ProductEquleton[] = [];
   productSelected: ProductEquleton;
   cart: ProductEquleton[] = [];
+  dataTosend: SolProduct[] = [];
+  pureProducts: CatProducts[] = [];
 
+  phoneNumberUser: string;
+  emailUser: string
   constructor(
     private productShowService: ProoductShowService,
-    private sharedFuntions: FuntionsSharedService
+    private sharedFuntions: FuntionsSharedService,
+    private authService: AuthService,
+    private userService: UsersGeneralService,
+    private messageService: MessageService
   ) { }
 
   ngOnInit(): void {
-    // this.setProducts();
     this.getproducts();
-  }
-  setProducts() {
-    // this.product = [
-    //   { productName: "Cepillo", productDesq: "Compraeste cepillo o vete a mimir", idProd: 1, cantidad: 1 },
-    //   { productName: "Ducha", productDesq: "Compraeste cepillo o vete a mimir", idProd: 2, cantidad: 1 },
-    //   { productName: "Cartera", productDesq: "Compraeste cepillo o vete a mimir", idProd: 3, cantidad: 1 },
-    //   { productName: "Radio", productDesq: "Compraeste cepillo o vete a mimir", idProd: 4, cantidad: 1 },
-    //   { productName: "Cloro", productDesq: "Compraeste cepillo o vete a mimir", idProd: 5, cantidad: 1 },
-    //   { productName: "Desinfectante", productDesq: "Compraeste cepillo o vete a mimir", idProd: 6, cantidad: 1 },
-    // ]
+    this.findExtraData();
   }
   addProduct(idProd: number) {
     this.productSelected = this.product.find(item => idProd == item.idProd);
@@ -41,8 +47,8 @@ export class ProductsComponent implements OnInit {
     } else {
       this.cart = [...this.cart, this.productSelected];
     }
-    console.log("exist",exist);
-    console.log("this.cart",this.cart);
+    // console.log("exist",exist);
+    // console.log("this.cart",this.cart);
   }
 
   quitProduct(idPRod: number) {
@@ -53,14 +59,14 @@ export class ProductsComponent implements OnInit {
     } else {
       this.cart = this.cart.filter(item => item.idProd !== this.productSelected.idProd);
     }
-    console.log(this.productSelected);
-    console.log(this.cart);
+    // console.log(this.productSelected);
+    // console.log(this.cart);
   }
   confirmProducts() {
 
   }
-  mapperFromCatPRo(products: CatProducts[]): ProductEquleton[]{
-    let all:ProductEquleton[] = [];
+  mapperFromCatPRo(products: CatProducts[]): ProductEquleton[] {
+    let all: ProductEquleton[] = [];
     products.forEach(item => {
       let productEsqueleton = new ProductEquleton();
       productEsqueleton.idProd = item.seqcatproduct;
@@ -77,10 +83,48 @@ export class ProductsComponent implements OnInit {
       rest.forEach(item => {
         item.img = this.sharedFuntions.repair(item.img);
       });
+      this.pureProducts = rest;
       this.product = this.mapperFromCatPRo(rest);
+      console.log(rest);
     });
   }
+  sentProducts() {
+    console.log("cart", this.cart);
+    this.fillData(this.cart);
+  }
+  findExtraData() {
+    console.log('this.authService.codeUser', this.authService.codeUser);
+    this.userService.getUserExtraData(this.authService.codeUser).then(rest => {
+      console.log("USER  SEARCHED", rest);
+      this.phoneNumberUser = rest.phonenumber;
+      this.emailUser = rest.email;
+    });
+  }
+  constructJSON(products: ProductEquleton[]) {
+    let productsSend: PoductsQuantity[] = [];
 
+    for (let item of products) {
+      const filtered = this.pureProducts.find(itemfil => itemfil.seqcatproduct == item.idProd);
+      const productsQuantity: PoductsQuantity = new PoductsQuantity();
+      productsQuantity.codeProd = filtered.codeproduct;
+      productsQuantity.quantity = item.cantidad;
+      productsSend.push(productsQuantity);
+    }
+    return productsSend;
+  }
+  fillData(cart: ProductEquleton[]) {
+    const itemToSend: SolProduct = new SolProduct();
+    itemToSend.codeuser = this.authService.codeUser;
+    itemToSend.products = JSON.stringify(this.constructJSON(cart));
+    itemToSend.nameuser = this.authService.username;
+    itemToSend.contacnumber = this.phoneNumberUser || '';
+    itemToSend.email = this.emailUser || '';
+
+    this.productShowService.savesolProduct(itemToSend).subscribe(rest => {
+      if (rest != null) this.messageService.add({ severity: 'success', detail: 'Solicitud registrada, un asesor se contactara con usted.' });
+      this.cart = [];
+    });
+  }
 }
 
 export class ProductEquleton {
@@ -88,5 +132,14 @@ export class ProductEquleton {
   productName: string;
   productDesq: string;
   cantidad: number;
-  img:string
+  img: string
+}
+
+export class PoductsQuantity {
+  codeProd: string;
+  quantity: number;
+  constructor() {
+    this.codeProd = '';
+    this.quantity = 0
+  }
 }

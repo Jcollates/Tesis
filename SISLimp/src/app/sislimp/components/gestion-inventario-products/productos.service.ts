@@ -26,4 +26,8 @@ export class ProductosService {
     return this.http.post(url, container).pipe(map( res => res as ProductModel));
 
   }
+  getEspecifict(codeprod: string): Promise<ProductModel>{
+    let url = this.url + `/getUniqueProduct/${codeprod}`;
+    return this.http.get(url).pipe(map(res => res as ProductModel )).toPromise();;
+  }
 }

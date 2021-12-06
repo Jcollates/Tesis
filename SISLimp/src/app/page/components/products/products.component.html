@@ -1,3 +1,4 @@
+<p-toast></p-toast>
 <header class="site-header inicio mb-5">
     <div class="contenedor contenido-header">
         <h1 style="font-style: italic;">Productos</h1>
@@ -75,7 +76,7 @@
                         </div>
                     </div>
                     <div class="card-footer d-flex justify-content-center">
-                        <a class="btn btn-success btn-block p-2 shadow rounded-pill shadow-lg" style="width: 60%;">
+                        <a class="btn btn-success btn-block p-2 shadow rounded-pill shadow-lg" (click)="sentProducts()" style="width: 60%;">
                             <i class="fa fa-check-circle mr-2"></i>
                             <span class="font-weight-bold">Confirmar</span>
                         </a>
