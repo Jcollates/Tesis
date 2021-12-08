@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {FormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 import { UserRoutingModule } from './user-routing.module';
 import { NavigationComponent } from './components/shared/navigation/navigation.component';
@@ -32,7 +32,10 @@ import {MultiSelectModule} from 'primeng/multiselect';
 import {ToolbarModule} from 'primeng/toolbar';
 import {MenuModule} from 'primeng/menu';
 import { TagModule } from 'primeng/tag';
-
+import {PasswordModule} from 'primeng/password';
+import {ToastModule} from 'primeng/toast';
+import {MessagesModule} from 'primeng/messages';
+import {MessageModule} from 'primeng/message';
 
 
 
@@ -53,6 +56,7 @@ import { TagModule } from 'primeng/tag';
     CommonModule,
     UserRoutingModule,
     FormsModule,
+    ReactiveFormsModule,
     //primeng
     //primng
     SidebarModule,
@@ -75,7 +79,11 @@ import { TagModule } from 'primeng/tag';
     MultiSelectModule,
     ToolbarModule,
     MenuModule,
-    TagModule
+    TagModule,
+    PasswordModule, 
+    ToastModule,
+    MessageModule,
+    MessagesModule
     
   ], 
   providers:[

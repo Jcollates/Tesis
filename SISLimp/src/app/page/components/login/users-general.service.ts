@@ -27,4 +27,13 @@ export class UsersGeneralService {
     let urlsend = this.url + '/createUser';
     return this._http.post<LoginUser>(urlsend, container).pipe(map(rest => rest as LoginUser)).toPromise();
   }
+
+  updateDataUser(container: UserGeneralModel): Promise<UserGeneralModel>{
+    let urlsend = this.url + '/updateDataUser';
+    return this._http.post<UserGeneralModel>(urlsend, container).pipe(map(rest => rest as UserGeneralModel)).toPromise();
+  }
+  updateLoginUSer(container: LoginUser): Promise<LoginUser>{
+    let urlsend = this.url + '/updateLoginUSer';
+    return this._http.post<LoginUser>(urlsend, container).pipe(map(rest => rest as LoginUser)).toPromise();
+  }
 }
