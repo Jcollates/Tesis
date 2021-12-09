@@ -53,6 +53,7 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import { LegalpersonComponent } from './components/legalperson/legalperson.component';
 import { ProviderPipe } from './shared/pipes/provider.pipe';
+import { RequestsAllComponent } from './components/requests-all/requests-all.component';
 
 
 
@@ -80,7 +81,8 @@ FullCalendarModule.registerPlugins([ // register FullCalendar plugins
     GestionInventarioProductsComponent,
     CalendarAllComponent,
     LegalpersonComponent,
-    ProviderPipe
+    ProviderPipe,
+    RequestsAllComponent,
   ],
   imports: [
     CommonModule,

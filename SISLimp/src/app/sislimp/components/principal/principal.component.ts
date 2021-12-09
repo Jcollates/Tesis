@@ -43,6 +43,11 @@ export class PrincipalComponent implements OnInit {
             label: 'Gestión de servicios',
             icon: 'pi pi-users',
             routerLink: ['/system/servicesmanagement']
+          },
+          {
+            label: 'Gestión de solicitudes',
+            icon: 'pi pi-users',
+            routerLink: ['/system/solmanagement']
           }
         ]
       },
