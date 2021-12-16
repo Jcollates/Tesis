@@ -24,4 +24,10 @@ export class RequestsService {
     let url = this.url + `/solProducts/${codeUser}`;
     return this.http.get(url).pipe(map(res => res as SolProduct[] ));
   }
+  updateSolicitud(item: SolProduct){
+    let url = this.url + '/updateSol';
+    return this.http.post(url, item).pipe(map( res => res as SolProduct));
+    
+
+  }
 }

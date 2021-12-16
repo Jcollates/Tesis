@@ -54,6 +54,7 @@ import interactionPlugin from '@fullcalendar/interaction';
 import { LegalpersonComponent } from './components/legalperson/legalperson.component';
 import { ProviderPipe } from './shared/pipes/provider.pipe';
 import { RequestsAllComponent } from './components/requests-all/requests-all.component';
+import { SolistatusPipe } from './shared/pipes/solistatus.pipe';
 
 
 
@@ -83,6 +84,7 @@ FullCalendarModule.registerPlugins([ // register FullCalendar plugins
     LegalpersonComponent,
     ProviderPipe,
     RequestsAllComponent,
+    SolistatusPipe,
   ],
   imports: [
     CommonModule,

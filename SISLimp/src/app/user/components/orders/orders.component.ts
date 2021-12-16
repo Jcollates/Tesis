@@ -27,8 +27,6 @@ export class OrdersComponent implements OnInit {
     this.getSolProducts();
   }
   transformFromJSON(value: string) {
-    // const nextvalue =value.replace("[", "").replace("]","");
-    // console.log("VALUES",value);
     return JSON.parse(value);
   }
 
@@ -38,9 +36,11 @@ export class OrdersComponent implements OnInit {
     const filtered = products.filter(item => {
       const duplicate = seen.has(item.codeProd);
       seen.add(item.codeProd);
+      // console.log("du",duplicate);
       return !duplicate;
     });
     for (let item of filtered) {
+      console.log("Code prod", item.codeProd);
       await this.productsService.getEspecifict(item.codeProd).then(rest => {
          prods.push(rest);
       });
@@ -57,6 +57,7 @@ export class OrdersComponent implements OnInit {
       this.solProduct = rest;
       
       console.log("VEAMOS ", this.solProduct);
+      console.log("VEAMOS ", rest);
 
     })
   }
