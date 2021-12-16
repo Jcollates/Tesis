@@ -1,4 +1,3 @@
-
 <header class="site-header inicio mb-5">
     <div class="contenedor contenido-header">
         <h1 style="font-style: italic;">Servicios</h1>
@@ -19,8 +18,9 @@
                     <ng-container *ngFor="let item of service">
                         <div class="col-6 col-sm-5">
                             <div class="card mb-5 border-0 rounded-3 shadow-lg text-center">
-                                <img src="../../../../assets/picturespage/itemsproductos.png" alt=""
-                                    class="rounded mx-auto d-block imgpro card-img-top">
+                                <!-- <img src="../../../../assets/picturespage/itemsproductos.png" alt=""
+                                    class="rounded mx-auto d-block imgpro card-img-top"> -->
+                                    <img src="{{item.img}}" class="rounded mx-auto d-block imgpro card-img-top" />
                                 <div class="card-body">
                                     <h6 class="card-title mt-0 font-weight-bold mb-2">{{item.serviceName}}</h6>
                                     <p class="card-text">{{item.serviceDesq}}
@@ -28,7 +28,8 @@
                                     <a class="btn btn-success btn-block p-2 shadow rounded-pill shadow-lg"
                                         (click)="addservice(item.idProd)">
                                         <i class="fa fa-plus-circle" aria-hidden="true"></i>
-                                        Añadir</a>
+                                        Añadir
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -54,14 +55,16 @@
                                                     </div>
                                                     <div class="col-6 text-right">
                                                         <span
-                                                            class="badge rounded-pill bg-primary text-white">x{{item.cantidad}}</span>
+                                                            class="badge rounded-pill bg-primary text-white" style="font-size: 11px;">
+                                                            Cantidad: <b>{{item.cantidad}}</b>
+                                                        </span>
                                                     </div>
                                                 </div>
                                                 <p class="font-italic text-muted mb-0 small">{{item.serviceDesq}}
                                                 </p>
                                                 <div class="d-flex align-items-center justify-content-between mt-1">
                                                     <a class="btn btn-danger btn-block p-2 shadow rounded-pill shadow-lg"
-                                                        style="width: 100px;" (click)="quitservice(item.idProd)"><i
+                                                        style="width: 70px;" (click)="quitservice(item.idProd)"><i
                                                             class="fas fa-trash-alt"></i>
                                                         <span class="font-weight-bold">Eliminar</span>
                                                     </a>

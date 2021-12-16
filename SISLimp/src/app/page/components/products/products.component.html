@@ -1,3 +1,4 @@
+<p-toast></p-toast>
 <header class="site-header inicio mb-5">
     <div class="contenedor contenido-header">
         <h1 style="font-style: italic;">Productos</h1>
@@ -18,8 +19,9 @@
                     <ng-container *ngFor="let item of product">
                         <div class="col-6 col-sm-5">
                             <div class="card mb-5 border-0 rounded-3 shadow-lg text-center">
-                                <img src="../../../../assets/picturespage/itemsproductos.png" alt=""
-                                    class="rounded mx-auto d-block imgpro card-img-top">
+                                <!-- <img src="../../../../assets/picturespage/itemsproductos.png" alt=""
+                                    class="rounded mx-auto d-block imgpro card-img-top"> -->
+                                <img src="{{item.img}}" class="rounded mx-auto d-block imgpro card-img-top" />
                                 <div class="card-body">
                                     <h6 class="card-title mt-0 font-weight-bold mb-2">{{item.productName}}</h6>
                                     <p class="card-text">{{item.productDesq}}
@@ -47,20 +49,21 @@
                                         <div class="media align-items-lg-center flex-column flex-lg-row p-3">
                                             <div class="media-body order-2 order-lg-1">
                                                 <div class="row">
-                                                    <div class="col-6">
-                                                        <h6 class="mt-0 font-weight-bold mb-2">{{item.productName}}
-                                                        </h6>
+                                                    <div class="col-8">
+                                                        <h5 class="mt-0 font-weight-bold mb-2">{{item.productName}}
+                                                        </h5>
                                                     </div>
-                                                    <div class="col-6 text-right">
-                                                        <span
-                                                            class="badge rounded-pill bg-primary text-white">x{{item.cantidad}}</span>
+                                                    <div class="col-4 text-right">
+                                                        <span class="badge rounded-pill bg-primary text-white" style="font-size: 11px;">
+                                                            Cantidad: <b>{{item.cantidad}}</b>
+                                                        </span>
                                                     </div>
                                                 </div>
                                                 <p class="font-italic text-muted mb-0 small">{{item.productDesq}}
                                                 </p>
                                                 <div class="d-flex align-items-center justify-content-between mt-1">
                                                     <a class="btn btn-danger btn-block p-2 shadow rounded-pill shadow-lg"
-                                                        style="width: 100px;" (click)="quitProduct(item.idProd)"><i
+                                                        style="width: 70px;" (click)="quitProduct(item.idProd)"><i
                                                             class="fas fa-trash-alt"></i>
                                                         <span class="font-weight-bold">Eliminar</span>
                                                     </a>
@@ -73,7 +76,7 @@
                         </div>
                     </div>
                     <div class="card-footer d-flex justify-content-center">
-                        <a class="btn btn-success btn-block p-2 shadow rounded-pill shadow-lg" style="width: 60%;">
+                        <a class="btn btn-success btn-block p-2 shadow rounded-pill shadow-lg" (click)="sentProducts()" style="width: 60%;">
                             <i class="fa fa-check-circle mr-2"></i>
                             <span class="font-weight-bold">Confirmar</span>
                         </a>
@@ -84,5 +87,3 @@
         </div>
     </section>
 </div>
-
-

@@ -1,5 +1,8 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { CheckLoginGuard } from '../sharedAll/guard/check-login.guard';
+import { RoleGuardGuard } from '../sharedAll/guard/role-guard.guard';
+import { UserGuard } from '../sharedAll/guard/user.guard';
 import { AboutComponent } from './components/about/about.component';
 import { ContactoComponent } from './components/contacto/contacto.component';
 import { FirstpageComponent } from './components/firstpage/firstpage.component';
@@ -15,9 +18,9 @@ const routes: Routes = [
       { path: 'inicio', component: InicioComponent },
       { path: 'contacto', component: ContactoComponent },
       { path: 'about', component: AboutComponent },
-      { path: 'products', component: ProductsComponent },
+      { path: 'products', component: ProductsComponent , canActivate: [CheckLoginGuard, UserGuard]},
       { path: 'proservices', component: ProducsAndServicesComponent },
-      { path: 'services', component: ServicesCliComponent },
+      { path: 'services', component: ServicesCliComponent,canActivate: [CheckLoginGuard, UserGuard] },
       { path: 'login', component: LoginComponent },
       { path: '**', redirectTo: 'inicio' }
     ]

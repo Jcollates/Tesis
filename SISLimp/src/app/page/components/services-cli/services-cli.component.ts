@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { FuntionsSharedService } from 'src/app/sharedAll/serviceShared/funtions-shared.service';
+import { CatServices } from 'src/app/sislimp/shared/models/catservices.model';
+import { ServiceShowService } from './service-show.service';
 
 @Component({
   selector: 'app-services-cli',
@@ -11,20 +14,23 @@ export class ServicesCliComponent implements OnInit {
   serviceSelected: ServiceEquleton;
   cart: ServiceEquleton[] = [];
 
-  constructor() { }
+  constructor(
+    private serviceShowService: ServiceShowService,
+    private sharedFuntions: FuntionsSharedService 
+  ) { }
 
   ngOnInit(): void {
-    this.setservices();
+    this.getServices()
   }
   setservices() {
-    this.service = [
-      { serviceName: "Fumigación", serviceDesq: "Compraeste cepillo o vete a mimir", idProd: 1, cantidad: 1 },
-      { serviceName: "Limpieza interna", serviceDesq: "Compraeste cepillo o vete a mimir", idProd: 2, cantidad: 1 },
-      { serviceName: "Limpieza de colchones", serviceDesq: "Compraeste cepillo o vete a mimir", idProd: 3, cantidad: 1 },
-      { serviceName: "Limpieza externa", serviceDesq: "Compraeste cepillo o vete a mimir", idProd: 4, cantidad: 1 },
-      { serviceName: "Alfombras", serviceDesq: "Compraeste cepillo o vete a mimir", idProd: 5, cantidad: 1 },
-      { serviceName: "Desinfección", serviceDesq: "Compraeste cepillo o vete a mimir", idProd: 6, cantidad: 1 },
-    ]
+    // this.service = [
+    //   { serviceName: "Fumigación", serviceDesq: "Compraeste cepillo o vete a mimir", idProd: 1, cantidad: 1 },
+    //   { serviceName: "Limpieza interna", serviceDesq: "Compraeste cepillo o vete a mimir", idProd: 2, cantidad: 1 },
+    //   { serviceName: "Limpieza de colchones", serviceDesq: "Compraeste cepillo o vete a mimir", idProd: 3, cantidad: 1 },
+    //   { serviceName: "Limpieza externa", serviceDesq: "Compraeste cepillo o vete a mimir", idProd: 4, cantidad: 1 },
+    //   { serviceName: "Alfombras", serviceDesq: "Compraeste cepillo o vete a mimir", idProd: 5, cantidad: 1 },
+    //   { serviceName: "Desinfección", serviceDesq: "Compraeste cepillo o vete a mimir", idProd: 6, cantidad: 1 },
+    // ]
   }
   addservice(idProd: number) {
     this.serviceSelected = this.service.find(item => idProd == item.idProd);
@@ -52,6 +58,28 @@ export class ServicesCliComponent implements OnInit {
   confirmservices() {
 
   }
+  mapperFromCatPRo(products: CatServices[]): ServiceEquleton[]{
+    let all:ServiceEquleton[] = [];
+    products.forEach(item => {
+      let serviceEsqueleton = new ServiceEquleton();
+      serviceEsqueleton.idProd = item.seqcatservice;
+      serviceEsqueleton.cantidad = 1;
+      serviceEsqueleton.serviceDesq = item.description;
+      serviceEsqueleton.serviceName = item.nameservice;
+      serviceEsqueleton.img = item.img;
+      all.push(serviceEsqueleton);
+    });
+    return all;
+  }
+  getServices() {
+    this.serviceShowService.getCatServices().subscribe(rest => {
+      console.log(rest);
+      rest.forEach(item => {
+        item.img = this.sharedFuntions.repair(item.img);
+      });
+      this.service = this.mapperFromCatPRo(rest);
+    });
+  }
 
 }
 
@@ -60,5 +88,6 @@ export class ServiceEquleton {
   serviceName: string;
   serviceDesq: string;
   cantidad: number;
+  img: string
 }
 

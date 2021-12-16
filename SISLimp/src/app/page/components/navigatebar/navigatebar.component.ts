@@ -11,7 +11,7 @@ export class NavigatebarComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
-    
+    //preguntarpor el login 
   }
 
 }

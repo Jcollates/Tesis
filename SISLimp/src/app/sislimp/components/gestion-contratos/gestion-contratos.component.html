@@ -1,0 +1,316 @@
+<p-toast></p-toast>
+<div class="p-mb-3 p-text-italic">
+    <h3>Gestion de contratos</h3>
+</div>
+<p-card>
+    <p-tabView>
+        <p-tabPanel header="Listado de contratos">
+            <p-table [value]="dataFromdb" styleClass="p-datatable-customers p-datatable-gridlines p-datatable-striped"
+                [responsive]="true" [paginator]="true" [rows]="pageSize" dataKey="seqagree"
+                [rowsPerPageOptions]="[10,30,60]" [totalRecords]="sizeRecords" [lazy]="true" [autoLayout]="true" selectionMode="single"
+                [columns]="cols" (onLazyLoad)="chargeData($event)" >
+                <ng-template pTemplate="caption">
+                    Listado
+                </ng-template>
+                <ng-template pTemplate="header" let-columns>
+                    <tr>
+                        <ng-container *ngFor="let col of columns">
+                            <th>
+                                {{col.header}}
+                            </th>
+                        </ng-container>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-dataFrom let-index="rowIndex" let-columns="columns">
+                    <tr> 
+                        <td>
+                            <span class="p-column-title">Código contrato</span>
+                            {{dataFrom.seqagree}}
+                        </td>
+                        <td>
+                            <span class="p-column-title">Fecha inicio</span>
+                            {{dataFrom.datestart | date}}
+                        </td>
+                        <td>
+                            <span class="p-column-title">Fecha fin</span>
+                            {{dataFrom.dateend | date}}
+                        </td>
+                        <td>
+                            <span class="p-column-title">Nombre empresa</span>
+                            {{dataFrom.name}}
+                        </td>
+                        <td>
+                            <span class="p-column-title">Responsable empresa</span>
+                            {{dataFrom.loginuser_codeuser}}
+                        </td>
+                        <td>
+                            <span class="p-column-title">Tipo servicio</span>
+                            {{dataFrom.type}}
+                        </td>
+                        <td>
+                            <span class="p-column-title">Cantidad de empleados</span>
+                            {{employeesAsignated}}
+                        </td>
+                        <td style="text-align: center;">
+                            <button pButton pRipple type="button" icon="pi pi-eye" (click)="showAssignated()" 
+                                class="p-button-raised p-button-rounded p-button-help" style="float: center">
+                            </button>
+                        </td>
+                        <td>
+                            <span class="p-column-title">Utencilios</span>
+                            {{dataFrom.tools}}
+                        </td>
+                        <td style="text-align: center;">
+                            <button pButton pRipple type="button" icon="pi pi-user-plus" (click)="showAssignation()" (click)="onRowSelectFather(dataFrom)"
+                                class="p-button-raised p-button-rounded p-button-info" style="float: center">
+                            </button>
+                        </td>
+
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    No hay registros que mostrar
+                </ng-template>
+            </p-table>
+        </p-tabPanel>
+        <p-tabPanel header="Formulario de contratos">
+            <div class="card-header">
+                Formulario de contratos
+            </div>
+            <br>
+            <form [formGroup]="formcontracts" (ngSubmit)="validateForm()">
+
+                <div class="p-fluid p-grid">
+                    <div class="p-field p-col-12 p-md-6">
+                        <div class="p-inputgroup">
+                            <span class="p-inputgroup-addon">
+                                <i class="pi pi-user"></i>
+                            </span>
+                            <span class="p-float-label">
+                                <input type="text" id="inputgroup" pInputText formControlName="ruc">
+                                <label for="inputgroup">Ruc</label>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="p-field p-col-12 p-md-6">
+                        <div class="p-inputgroup">
+                            <span class="p-inputgroup-addon">
+                                <i class="pi pi-user"></i>
+                            </span>
+                            <span class="p-float-label">
+                                <input type="text" id="inputgroup" pInputText formControlName="name">
+                                <label for="inputgroup">Nombre empresa</label>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="p-field p-col-12 p-md-6">
+                        <div class="p-inputgroup">
+                            <span class="p-inputgroup-addon">
+                                <i class="pi pi-id-card"></i>
+                            </span>
+                            <span class="p-float-label">
+                                <input type="text" id="inputgroup" pInputText formControlName="legalperson">
+                                <label for="inputgroup">Representante legal</label>
+                            </span>
+                            <button pButton pRipple type="button" icon="pi pi-plus" (click)="showLegal()"
+                                class="p-button-raised p-button-rounded p-button-success p-0 m-0">
+                            </button>
+                        </div>
+                    </div>
+                    <div class="p-field p-col-12 p-md-6">
+                        <div class="p-inputgroup">
+                            <span class="p-inputgroup-addon">
+                                <i class="pi pi-phone"></i>
+                            </span>
+                            <span class="p-float-label">
+                                <input type="text" id="inputgroup" pInputText formControlName="principaladdress">
+                                <label for="inputgroup">Dirección principal</label>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="p-field p-col-12 p-md-6">
+                        <div class="p-inputgroup">
+                            <span class="p-inputgroup-addon">
+                                <i class="pi pi-envelope "></i>
+                            </span>
+                            <span class="p-float-label">
+                                <input type="text" id="inputgroup" pInputText formControlName="serviceAddress">
+                                <label for="inputgroup">Dirección del servicio</label>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="p-field p-col-12 p-md-6">
+                        <div class="p-inputgroup">
+                            <span class="p-inputgroup-addon">
+                                <i class="pi pi-envelope "></i>
+                            </span>
+                            <span class="p-float-label">
+                                <input type="text" id="inputgroup" pInputText formControlName="phone">
+                                <label for="inputgroup">Telefono de contacto</label>
+                            </span>
+                        </div>
+                    </div>
+                    <!-- <div class="p-field p-col-12 p-md-6"></div> -->
+                    <div class="p-field p-col-12 p-md-6">
+                        <div class="p-inputgroup">
+                            <span class="p-inputgroup-addon">
+                                <i class="pi pi-lock"></i>
+                            </span>
+                            <span class="p-float-label">
+                                <input type="text" id="inputgroup" pInputText formControlName="workarea"> 
+                                <label for="inputgroup">Area de trabajo</label>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="p-field p-col-12 p-md-6">
+                        <span class="p-float-label">
+                            <p-dropdown [options]="drop" formControlName="type"></p-dropdown>
+                            <label >Tipo</label>
+                        </span>
+                    </div>
+                    <div class="p-field p-col-12 p-md-6">
+                        <span class="p-float-label">
+                            <p-calendar [showIcon]="true" inputId="icon" formControlName="stardate"></p-calendar>
+                            <label for="inputgroup">Fecha inicio</label>
+                        </span>
+                    </div>
+                    <div class="p-field p-col-12 p-md-6">
+                        <span class="p-float-label">
+                            <p-calendar [showIcon]="true" inputId="icon" formControlName="endate"></p-calendar>
+                            <label for="inputgroup">Fecha fin</label>
+                        </span>
+                    </div>
+                    <div class="p-field p-col-12 p-md-6">
+                        <div class="p-inputgroup">
+                            <span class="p-inputgroup-addon">
+                                <i class="pi pi-lock"></i>
+                            </span>
+                            <span class="p-float-label">
+                                <input type="text" id="inputgroup" pInputText formControlName="subtotal">
+                                <label for="inputgroup">Subtotal</label>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="p-field p-col-12 p-md-6">
+                        <div class="p-inputgroup">
+                            <span class="p-inputgroup-addon">
+                                <i class="pi pi-lock"></i>
+                            </span>
+                            <span class="p-float-label">
+                                <input type="text" id="inputgroup" pInputText formControlName="schedule">
+                                <label for="inputgroup">Horario pre establecido</label>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="p-field p-col-12 p-md-12">
+                        <div class="p-inputgroup">
+                            <span class="p-inputgroup-addon">
+                                <i class="pi pi-globe"></i>
+                            </span>
+                            <span class="p-float-label">
+                                <textarea id="float-input" rows="5" cols="30" pInputTextarea formControlName="detailService"></textarea>
+                                <label for="inputgroup">Destalle del servicio</label>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <p-toolbar>
+                    <div class="p-toolbar-group-left">
+                    </div>
+                    <div class="p-toolbar-group-right">
+                        <button pButton pRipple type="button" label="Agregar" icon="pi pi-save"
+                            class="p-button-raised p-button-rounded p-button-success p-mr-2 p-mb-2 "
+                            (click)="validateForm()" style="float: right">
+                        </button>
+                    </div>
+                </p-toolbar>
+            </form>
+        </p-tabPanel>
+    </p-tabView>
+    <p-dialog header="Asignacion de empleado" [(visible)]="showEmployes">
+        <p-table [value]="employesToAssig" styleClass="p-datatable-customers p-datatable-gridlines p-datatable-striped"
+            [responsive]="true" [paginator]="true" [rows]="pageSize" dataKey="seqemploy"
+            [rowsPerPageOptions]="[10,30,60]" [totalRecords]="sizeRecordsToAsig" [lazy]="true" [autoLayout]="true"
+            [columns]="colsEmployees" (onRowSelect)="onRowSelect($event)" (onLazyLoad)="getEmployees($event)" selectionMode="single" >
+            <ng-template pTemplate="caption" >
+                Listado
+            </ng-template>
+            <ng-template pTemplate="header" let-columns>
+                <tr>
+                    <th style="width: 3rem">
+                        <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                    </th>
+                    <ng-container *ngFor="let col of columns">
+                        <th>
+                            {{col.header}}
+                        </th>
+                    </ng-container>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-dataFrom let-index="rowIndex" let-columns="columns">
+                <tr>
+                    <td>
+                        <p-tableCheckbox [value]="dataFrom"></p-tableCheckbox>
+                    </td>
+                    <td>
+                        <span class="p-column-title">Nombre</span>
+                        {{dataFrom.name}} - {{dataFrom.lastname}}
+                    </td>
+                    <td>
+                        <span class="p-column-title">Cargo</span>
+                        {{dataFrom.position}}
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                No hay registros que mostrar
+            </ng-template>
+        </p-table>
+        <p-toolbar>
+            <div style="text-align: center;">
+                <button pButton pRipple type="button" label="Asignar selección" icon="pi pi-save" (click)="saveAssigment()"
+                    class="p-button-raised p-button-rounded p-button-success p-mr-2 p-mb-2 " style="float: center">
+                </button>
+            </div>
+
+        </p-toolbar>
+    </p-dialog>
+    <p-dialog header="Empleados asignados" [(visible)]="showEmployesAssigned">
+        <p-table [value]="employesAssigned" styleClass="p-datatable-customers p-datatable-gridlines p-datatable-striped"
+            [responsive]="true" [paginator]="true" [rows]="pageSize" dataKey="seqemploy"
+            [rowsPerPageOptions]="[10,30,60]" [totalRecords]="sizeRecordsAsigned" [lazy]="true" [autoLayout]="true"
+            [columns]="colsEmployees" (onLazyLoad)="getEmployeesAssigned($event)">
+            <ng-template pTemplate="caption">
+                Listado
+            </ng-template>
+            <ng-template pTemplate="header" let-columns>
+                <tr>
+                    <ng-container *ngFor="let col of columns">
+                        <th>
+                            {{col.header}}
+                        </th>
+                    </ng-container>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-dataFrom let-index="rowIndex" let-columns="columns">
+                <tr>
+                    <td>
+                        <span class="p-column-title">Nombre</span>
+                        {{dataFrom.name}} - {{dataFrom.lastname}}
+                    </td>
+                    <td>
+                        <span class="p-column-title">Cargo</span>
+                        {{dataFrom.position}}
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                No hay registros que mostrar
+            </ng-template>
+        </p-table>
+    </p-dialog>
+    <p-dialog header="Asignacion de empleado" [(visible)]="showLegalperson" [style]="{width: '50vw'}"
+        [style]="{width: '50vw'}">
+        <app-legalperson (legalData)="getLegal($event)"></app-legalperson>
+    </p-dialog>
+</p-card>

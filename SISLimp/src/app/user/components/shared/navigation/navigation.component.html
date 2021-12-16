@@ -1,14 +1,34 @@
-<p-menubar [model]="items">
-    <ng-template pTemplate="start">
-        <img src="../../../../../assets/Picture1.png" height="40" class="p-mr-2">
-    </ng-template>
-    <ng-template pTemplate="end">
-        <input type="text" pInputText placeholder="Search">
-    </ng-template>
-</p-menubar>
+<div class="layout-topbar p-shadow-10">
+    <p-menubar [model]="items">
+        <ng-template pTemplate="start">
+            <img src="../../../../../assets/Picture1.png" height="40" class="p-mr-2">
+        </ng-template>
+        <ng-template pTemplate="end">
+            <input type="text" pInputText placeholder="Search">
+        </ng-template>
+    </p-menubar>
+    <!-- <div class="layout-topbar-left">
+        <a class="layout-topbar-logo" routerLink="/user">
+            <img id="app-logo" src="../../../../../assets/Picture1.png" alt="ultima-layout" style="height: 3.25rem">
+        </a>
+        <a class="layout-menu-button p-shadow-6" pRipple>
+            <i class="pi pi-chevron-right"></i>
+        </a>
+        <a class="layout-menu-two" pRipple>
+            <img src="../../../../../assets/Picture1.png" alt="avatar" style="width: 32px; height: 32px;">
+        </a>
+        <p class="layout-menu-three"><b> Username </b></p>
+    </div> -->
+    <!-- <div class="layout-topbar-right"> -->
+        
+    <!-- </div> -->
+</div>
+
+
+
 <div class="pantalla">
     <div class="menu-wrapper">
-        <div class="layout-menu-container p-2"> 
+        <div class="layout-menu-container p-2">
             <p-menu [model]="items2"></p-menu>
         </div>
     </div>

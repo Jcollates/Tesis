@@ -1,0 +1,148 @@
+<p-toast></p-toast>
+<div class="p-mb-3 p-text-italic">
+    <h3>Gestión de empleados</h3>
+</div>
+<p-card>
+    <p-tabView>
+        <p-tabPanel header="Empleados">
+            <p-table [value]="dataFromdb" styleClass="p-datatable-customers p-datatable-gridlines p-datatable-striped"
+                [responsive]="true" [paginator]="true" [rows]="pageSize" dataKey="code"
+                [rowsPerPageOptions]="[10,30,60]" [totalRecords]="sizeRecords" [lazy]="true" [autoLayout]="true"
+                [columns]="cols" (onLazyLoad)="chargeData($event)">
+                <ng-template pTemplate="caption">
+                    Empleados
+                </ng-template>
+                <ng-template pTemplate="header" let-columns>
+                    <tr>
+                        <ng-container *ngFor="let col of columns">
+                            <th>
+                                {{col.header}}
+                            </th>
+                        </ng-container>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-dataFrom let-index="rowIndex" let-columns="columns">
+                    <tr>
+                        <td>
+                            <span class="p-column-title">Cedula</span>
+                            {{dataFrom.dni}}
+                        </td>
+                        <td>
+                            <span class="p-column-title">Nombre</span>
+                            {{dataFrom.name}}
+                        </td>
+                        <td>
+                            <span class="p-column-title">Apellido</span>
+                            {{dataFrom.lastname}}
+                        </td>
+                        <td>
+                            <span class="p-column-title">Fecha nacimiento</span>
+                            {{dataFrom.birthday | date }}
+                        </td>
+                        <td>
+                            <span class="p-column-title">Fecha contratación</span>
+                            {{dataFrom.contractday | date}}
+                        </td>
+                        <td>
+                            <span class="p-column-title">Cargo</span>
+                            {{dataFrom.position}}
+                        </td>
+                        <td>
+                            <span class="p-column-title">Imagen</span>
+                            <img src="{{dataFrom.img}}" alt="" width="50" height="50"/>
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    No hay registros que mostrar
+                </ng-template>
+            </p-table>
+        </p-tabPanel>
+        <p-tabPanel header="Formulario de Empleado">
+            <div class="card-header">
+                Formulario de Empleado
+            </div>
+            <br>
+            <form [formGroup]="formEmployee" (ngSubmit)="validateForm()">
+
+                <div class="p-fluid p-grid">
+                    <div class="p-field p-col-12 p-md-2"></div>
+                    <div class="p-field p-col-12 p-md-8" style="text-align: center;">
+                        <h5>Imagen</h5>
+                        <p-fileUpload name="demo[]" [files]="myfiles" chooseLabel="Seleccionar" uploadLabel="Subir"
+                            cancelLabel="Cancelar" accept="image/*" maxFileSize="1000000" customUpload="true"
+                            (uploadHandler)="uploadFileNew($event)">
+                            <ng-template pTemplate="content">
+                                <ul *ngIf="fileUploades.length">
+                                    <li>{{fileUploades[0]?.name}}</li>
+                                </ul>
+                            </ng-template>
+                        </p-fileUpload>
+                    </div>
+                    <div class="p-field p-col-12 p-md-2"></div>
+                    <div class="p-field p-col-12 p-md-6">
+                        <div class="p-inputgroup">
+                            <span class="p-inputgroup-addon">
+                                <i class="pi pi-user"></i>
+                            </span>
+                            <span class="p-float-label">
+                                <input type="text" id="inputgroup" pInputText formControlName="dni">
+                                <label for="inputgroup">Cedula/código</label>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="p-field p-col-12 p-md-6">
+                        <div class="p-inputgroup">
+                            <span class="p-inputgroup-addon">
+                                <i class="pi pi-id-card"></i>
+                            </span>
+                            <span class="p-float-label">
+                                <input type="text" id="inputgroup" pInputText formControlName="name">
+                                <label for="inputgroup">Nombre</label>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="p-field p-col-12 p-md-6">
+                        <div class="p-inputgroup">
+                            <span class="p-inputgroup-addon">
+                                <i class="pi pi-phone"></i>
+                            </span>
+                            <span class="p-float-label">
+                                <input type="text" id="inputgroup" pInputText formControlName="lastname">
+                                <label for="inputgroup">Apellido</label>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="p-field p-col-12 p-md-6">
+                        <span class="p-float-label">
+                            <p-calendar [showIcon]="true" inputId="icon" dataType="string" formControlName="contractday"></p-calendar>
+                            <label for="inputgroup">Fecha de contratación</label>
+                        </span>
+                    </div>
+                    <div class="p-field p-col-12 p-md-6">
+                        <span class="p-float-label">
+                            <p-calendar [showIcon]="true" dataType="string" inputId="icon" formControlName="birthday"></p-calendar>
+                            <label for="inputgroup">Fecha de nacimiento</label>
+                        </span>
+                    </div>
+                    <div class="p-field p-col-12 p-md-6">
+                        <span class="p-float-label">
+                            <p-dropdown [options]="drop" formControlName="charge"></p-dropdown>
+                            <label for="dropdown">Cargo</label>
+                        </span>
+                    </div>
+                </div>
+                <p-toolbar>
+                    <div class="p-toolbar-group-left">
+                    </div>
+                    <div class="p-toolbar-group-right">
+                        <button pButton pRipple type="button" label="Agregar" icon="pi pi-save"
+                            class="p-button-raised p-button-rounded p-button-success p-mr-2 p-mb-2 "
+                            (click)="validateForm()" style="float: right">
+                        </button>
+                    </div>
+                </p-toolbar>
+            </form>
+        </p-tabPanel>
+    </p-tabView>
+</p-card>

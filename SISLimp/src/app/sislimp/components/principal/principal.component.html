@@ -1,0 +1,25 @@
+<div class="layout-topbar p-shadow-10">
+    <p-menubar [model]="items">
+        <ng-template pTemplate="start">
+            <img src="../../../../../assets/Picture1.png" height="40" class="p-mr-2">
+        </ng-template>
+        <ng-template pTemplate="end">
+            <button pButton pRipple type="button" icon="pi pi-sign-out" (click)=logOut()
+                    class="p-button-raised p-button-rounded p-button-danger p-mr-2 p-mb-2 ">
+                </button>
+        </ng-template>
+    </p-menubar>
+</div>
+<div class="pantalla">
+    <div class="menu-wrapper">
+        <div class="layout-menu-container p-1">
+            <p-menu [model]="items2"></p-menu>
+        </div>
+    </div>
+    <div class="layout-main">
+        <div class="layout-content">
+            <router-outlet></router-outlet>
+        </div>
+        <app-footer-sys></app-footer-sys>
+    </div>
+</div>

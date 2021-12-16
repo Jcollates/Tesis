@@ -13,6 +13,10 @@ import { FooterComponent } from './components/footer/footer.component';
 import { LoginComponent } from './components/login/login.component';
 import { FirstpageComponent } from './components/firstpage/firstpage.component';
 import { NgbModule} from '@ng-bootstrap/ng-bootstrap';
+import { ReactiveFormsModule } from '@angular/forms';
+import {ToastModule} from 'primeng/toast';
+import {MessagesModule} from 'primeng/messages';
+import {MessageModule} from 'primeng/message';
 
 
 @NgModule({
@@ -31,7 +35,11 @@ import { NgbModule} from '@ng-bootstrap/ng-bootstrap';
   imports: [
     CommonModule,
     PageRoutingModule,
-    NgbModule
+    NgbModule,
+    ReactiveFormsModule,
+    ToastModule,
+    MessageModule,
+    MessagesModule
   ]
 })
 export class PageModule { }
