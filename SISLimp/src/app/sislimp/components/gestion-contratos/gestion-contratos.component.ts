@@ -82,7 +82,6 @@ export class GestionContratosComponent implements OnInit {
   }
   getEmployees(event: LazyLoadEvent) {
     this.emplyeeservice.getEmployesToBesAssigned().subscribe(res => {
-      // console.log(res);
       res.forEach( item => {
         item.img = this.sharedFuntions.repair(item.img);
       })
@@ -92,7 +91,6 @@ export class GestionContratosComponent implements OnInit {
   }
   getEmployeesAssigned(event: LazyLoadEvent) {
     this.emplyeeservice.getEmployessAssigned().subscribe(res => {
-      // console.log(res);
       res.forEach( item => {
         item.img = this.sharedFuntions.repair(item.img);
       })
@@ -114,7 +112,6 @@ export class GestionContratosComponent implements OnInit {
   validateForm() {
     if (!this.formcontracts.valid) {
       this.messageService.add({ severity: 'error', detail: 'Formulario no valido' });
-      // console.log('FORM', this.formService.value);
     } else {
       console.log('FORM', this.formcontracts.value);
       this.agreementContainer.ruc = this.formcontracts.controls.ruc.value;

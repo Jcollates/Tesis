@@ -23,14 +23,12 @@
                         </ng-container>
                     </tr>
                 </ng-template>
-
-                <ng-template pTemplate="body" let-dataFrom let-index="rowIndex" let-expanded="expanded"
-                    let-columns="columns">
+                <ng-template pTemplate="body" let-dataFrom let-index="rowIndex" let-expanded="expanded" let-columns="columns">
                     <tr>
                         <td>
-                            <button type="button" pButton pRipple [pRowToggler]="dataFrom"
-                                class="p-button-text p-button-rounded p-button-plain"
-                                [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
+                            <button type="button" pButton pRipple [pRowToggler]="dataFrom" class="p-button-text p-button-rounded p-button-plain"
+                            [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'">
+                            </button>
                         </td>
                         <td>
                             <span class="p-column-title">Usuario</span>
@@ -77,60 +75,59 @@
                                     Listado
                                 </ng-template>
                                 <ng-template pTemplate="header" let-columns>
-                    <tr>
-                        <th style="width: 3rem">
-                            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
-                        </th>
-                        <ng-container *ngFor="let col of columns">
-                            <th>
-                                {{col.header}}
-                            </th>
-                        </ng-container>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="body" let-dataPro let-index="rowIndex" let-columns="columns">
-                    <tr>
-                        <td>
-                            <p-tableCheckbox [value]="dataPro"></p-tableCheckbox>
-                        </td>
-                        <td>
-                            <span class="p-column-title">Código producto</span>
-                            {{dataPro.codeproduct}}
-                        </td>
-                        <td>
-                            <span class="p-column-title">Nombre</span>
-                            {{dataPro.name}}
-                        </td>
-                        <td>
-                            <span class="p-column-title">Cantidad</span>
-                            {{dataPro.quantity}}
-                        </td>
-                        <td>
-                            <span class="p-column-title">PVP</span>
-                            {{dataPro.saleprice}}
+                                    <tr>
+                                        <th style="width: 3rem">
+                                            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                                        </th>
+                                        <ng-container *ngFor="let col of columns">
+                                            <th>
+                                                {{col.header}}
+                                            </th>
+                                        </ng-container>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="body" let-dataPro let-index="rowIndex" let-columns="columns">
+                                    <tr>
+                                        <td>
+                                            <p-tableCheckbox [value]="dataPro"></p-tableCheckbox>
+                                        </td>
+                                        <td>
+                                            <span class="p-column-title">Código producto</span>
+                                            {{dataPro.codeproduct}}
+                                        </td>
+                                        <td>
+                                            <span class="p-column-title">Nombre</span>
+                                            {{dataPro.name}}
+                                        </td>
+                                        <td>
+                                            <span class="p-column-title">Cantidad</span>
+                                            {{dataPro.quantity}}
+                                        </td>
+                                        <td>
+                                            <span class="p-column-title">PVP</span>
+                                            {{dataPro.saleprice}}
+                                        </td>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="emptymessage">
+                                    No hay registros que mostrar
+                                </ng-template>
+                            </p-table>
+                            <p-toolbar>
+                                <div class="p-toolbar-group-left"></div>
+                                <div class="p-toolbar-group-right">
+                                    <button pButton pRipple type="button" label="Confirmar" icon="pi pi-save"
+                                        (click)="saveConfirmation(dataFrom,selectedProduct )"
+                                        class="p-button-raised p-button-rounded p-button-success p-mr-2 p-mb-2 " style="float: center">
+                                    </button>
+                                </div>
+                            </p-toolbar>
                         </td>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="emptymessage">
                     No hay registros que mostrar
                 </ng-template>
-            </p-table>
-            <p-toolbar>
-                <div class="p-toolbar-group-left"></div>
-                <div class="p-toolbar-group-right">
-                    <button pButton pRipple type="button" label="Confirmar" icon="pi pi-save"
-                        (click)="saveConfirmation(dataFrom,selectedProduct )"
-                        class="p-button-raised p-button-rounded p-button-success p-mr-2 p-mb-2 " style="float: center">
-                    </button>
-                </div>
-            </p-toolbar>
-            </td>
-            </tr>
-
-            </ng-template>
-            <ng-template pTemplate="emptymessage">
-                No hay registros que mostrar
-            </ng-template>
             </p-table>
         </p-tabPanel>
         <p-tabPanel header="Solicitudes validadas">
@@ -152,7 +149,6 @@
                         </ng-container>
                     </tr>
                 </ng-template>
-
                 <ng-template pTemplate="body" let-dataFrom let-index="rowIndex" let-expanded="expanded"
                     let-columns="columns">
                     <tr>
@@ -195,48 +191,48 @@
                                     Listado
                                 </ng-template>
                                 <ng-template pTemplate="header" let-columns>
-                    <tr>
-                        <th style="width: 3rem">
-                            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
-                        </th>
-                        <ng-container *ngFor="let col of columns">
-                            <th>
-                                {{col.header}}
-                            </th>
-                        </ng-container>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="body" let-dataPro let-index="rowIndex" let-columns="columns">
-                    <tr>
-                        <td>
-                            <span class="p-column-title">Código producto</span>
-                            {{dataPro.codeproduct}}
-                        </td>
-                        <td>
-                            <span class="p-column-title">Nombre</span>
-                            {{dataPro.name}}
-                        </td>
-                        <td>
-                            <span class="p-column-title">Cantidad</span>
-                            {{dataPro.quantity}}
-                        </td>
-                        <td>
-                            <span class="p-column-title">PVP</span>
-                            {{dataPro.saleprice}}
+                                    <tr>
+                                        <th style="width: 3rem">
+                                            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                                        </th>
+                                        <ng-container *ngFor="let col of columns">
+                                            <th>
+                                                {{col.header}}
+                                            </th>
+                                        </ng-container>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="body" let-dataPro let-index="rowIndex" let-columns="columns">
+                                    <tr>
+                                        <td></td>
+                                        <td>
+                                            <span class="p-column-title">Código producto</span>
+                                            {{dataPro.codeproduct}}
+                                        </td>
+                                        <td>
+                                            <span class="p-column-title">Nombre</span>
+                                            {{dataPro.name}}
+                                        </td>
+                                        <td>
+                                            <span class="p-column-title">Cantidad</span>
+                                            {{dataPro.quantity}}
+                                        </td>
+                                        <td>
+                                            <span class="p-column-title">PVP</span>
+                                            {{dataPro.saleprice}}
+                                        </td>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="emptymessage">
+                                    No hay registros que mostrar
+                                </ng-template>
+                            </p-table>
                         </td>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="emptymessage">
                     No hay registros que mostrar
                 </ng-template>
-            </p-table>
-            </td>
-            </tr>
-
-            </ng-template>
-            <ng-template pTemplate="emptymessage">
-                No hay registros que mostrar
-            </ng-template>
             </p-table>
         </p-tabPanel>
     </p-tabView>

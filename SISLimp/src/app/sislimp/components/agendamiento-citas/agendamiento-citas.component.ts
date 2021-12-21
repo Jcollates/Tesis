@@ -1,21 +1,34 @@
 import { Component, OnInit } from '@angular/core';
-import { LazyLoadEvent } from 'primeng/api';
-
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { LazyLoadEvent, MessageService, SelectItem } from 'primeng/api';
+import { CataloguesService } from 'src/app/sharedAll/serviceShared/catalogues.service';
+import { FuntionsSharedService } from 'src/app/sharedAll/serviceShared/funtions-shared.service';
+import { Simplemeet } from '../../shared/models/simplemeet.model';
+import { AgreementService } from '../gestion-contratos/agreement.service';
+import { EmployeeService } from '../gestion-empleados/employee.service';
+import { SimpleMeetService } from './simple-meet.service';
+const CITYCAT = 'CITYCAT';
+const PROVINCECAT = 'PROVINCECAT';
+const SERVICETYPE = 'SERVICETYPE';
 @Component({
   selector: 'app-agendamiento-citas',
   templateUrl: './agendamiento-citas.component.html',
-  styleUrls: ['./agendamiento-citas.component.css']
+  styleUrls: ['./agendamiento-citas.component.css'],
+  providers: [MessageService]
 })
 export class AgendamientoCitasComponent implements OnInit {
 
   cars: any[] = [];
   products: any[] = [];
-  drop: any[] = [];
+  drop: SelectItem[] = [];
   fordropt: any
+  dropCity: SelectItem[] = [];
+  dropProvince: SelectItem[] = [];
+  dropType: SelectItem[] = [];
   
   //table
   cols: any[];
-  dataFromdb: any[] = [];
+  dataFromdb: Simplemeet[] = [];
   sizeRecords: number = 50;
   pageSize: number = 50;
 
@@ -23,20 +36,29 @@ export class AgendamientoCitasComponent implements OnInit {
   colsEmployees: any[] = [];
   employesToAssig: any[] = [];
   showEmployes: boolean = false;
-  constructor() { }
+
+  //fomrs
+
+  formCita: FormGroup = new FormGroup({});
+  simpleMeet: Simplemeet = new Simplemeet();
+  constructor(
+    private simpleMeetService: SimpleMeetService,
+    private formBuilder: FormBuilder,
+    private catalogueService: CataloguesService,
+    private messageService: MessageService,
+    private agreeService: AgreementService,
+    private emplyeeservice: EmployeeService,
+    private sharedFuntions: FuntionsSharedService,
+  ) { }
   ngOnInit(): void {
     this.products = [
       { code: 1, name: 'NAME', category: 'TESTING', quantity: 1000 },
       { code: 1, name: 'NAME', category: 'TESTING', quantity: 1000 },
       { code: 1, name: 'NAME', category: 'TESTING', quantity: 1000 },
     ];
-    this.drop = [
-      { code: 1, name: 'NAME 1', text: 'Aki' },
-      { code: 2, name: 'NAME 2', text: 'No' },
-      { code: 3, name: 'NAME ', text: 'Se' },
-    ];
     this.createCols();
-    this.chargeData(null);
+    this.createForm();
+    this.getCatalogues();
   }
 
   createCols(){
@@ -58,11 +80,7 @@ export class AgendamientoCitasComponent implements OnInit {
     ]
   }
   chargeData(event: LazyLoadEvent){
-    this.dataFromdb = [
-      {date: '17/12/2021', status: 'PENDIENTE', client: 'Jair', agent: 'Jafferson',employeasi: 'Pablo',daysassigned: 12, basecost: 40,totalcost: 300, toolsneed: 'SI' },
-      {date: '18/12/2021', status: 'CONCLUIDO', client: 'Carlos', agent: 'Jafferson',employeasi: 'Pedro',daysassigned: 12, basecost: 70,totalcost: 900, toolsneed: 'SI' },
-      {date: '20/12/2021', status: 'CANCELADO', client: 'Jose', agent: 'Jafferson',employeasi: 'Pablo',daysassigned: 12, basecost: 60,totalcost: 300, toolsneed: 'SI' },
-    ]
+    this.simpleMeetService.getSimpleMeets().subscribe(rest => this.dataFromdb = rest );
   }
   showAssignation(){
     this.showEmployes = true;
@@ -74,4 +92,62 @@ export class AgendamientoCitasComponent implements OnInit {
     ]
   }
 
+  
+  createForm() {
+    this.formCita = this.formBuilder.group({
+      dni: ['', Validators.required],
+      name: ['', Validators.required],
+      lastname: ['', Validators.required],
+      phone: ['', Validators.required],
+      email: ['', Validators.required],
+      province: ['', Validators.required],
+      city: ['', Validators.required],
+      address: ['', Validators.required],
+      typeService: ['', Validators.required],
+      serviceName: ['', Validators.required],
+      hoursNumber: ['', Validators.required],
+      dateService: ['', Validators.required],
+    });
+  }
+  validateForm(){
+    
+    if (!this.formCita.valid) {
+      this.messageService.add({ severity: 'error', detail: 'Formulario no valido' });
+      console.log(this.formCita.value);
+    } else {
+      console.log(this.formCita.value);
+      this.simpleMeet.dateService = this.formCita.controls.dateService.value;
+      this.simpleMeet.address = this.formCita.controls.address.value;
+      this.simpleMeet.cliName = this.formCita.controls.name.value;
+      this.simpleMeet.cliLastName = this.formCita.controls.lastname.value;
+      this.simpleMeet.cliDni = this.formCita.controls.dni.value;
+      this.simpleMeet.cliEmail = this.formCita.controls.email.value;
+      this.simpleMeet.cliCity = this.formCita.controls.city.value;
+      this.simpleMeet.cliProvince = this.formCita.controls.province.value;
+      this.simpleMeet.typeService = this.formCita.controls.typeService.value;
+      this.simpleMeet.services = this.formCita.controls.serviceName.value;
+      this.simpleMeet.hoursStimated = this.formCita.controls.hoursNumber.value;
+      this.saveFormsimpleMeet(this.simpleMeet);
+    }
+  }
+  saveFormsimpleMeet(container: Simplemeet) {
+    this.simpleMeetService.saveCustomerService(container).subscribe(res => {
+      if(res != null) this.messageService.add({severity:'success', detail: 'Registrado correctamente'});
+      this.formCita.reset();
+      this.chargeData(null);
+    })
+  }
+  async getCatalogues() {
+    await this.catalogueService.getCataloguebyCodeCat(PROVINCECAT).then(rest => {
+      this.dropProvince = this.catalogueService.constructModel(rest);
+    });
+    await this.catalogueService.getCataloguebyCodeCat(SERVICETYPE).then(rest => {
+      this.dropType = this.catalogueService.constructModel(rest);
+    });
+  }
+  onChangueProvince(event: any) {
+    this.catalogueService.getCataloguebyCodeCatAndCodeFather(CITYCAT, PROVINCECAT, event.value).then(rest => {
+      this.dropCity = this.catalogueService.constructModel(rest);
+    });
+  }
 }
