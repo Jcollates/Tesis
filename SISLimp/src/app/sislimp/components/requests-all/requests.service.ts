@@ -27,7 +27,5 @@ export class RequestsService {
   updateSolicitud(item: SolProduct){
     let url = this.url + '/updateSol';
     return this.http.post(url, item).pipe(map( res => res as SolProduct));
-    
-
   }
 }

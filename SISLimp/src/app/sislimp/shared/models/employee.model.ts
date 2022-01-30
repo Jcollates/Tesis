@@ -7,11 +7,14 @@ export class Employee {
     position: string;
     birthday: string;
     assigmentdayte: Date;
+    endassigmentdate: Date;
     img: any;
     datelastmodify: Date;
     datecreate: Date;
     contractday: string;
-    constructor(){
+    seqmeet: number;
+    seqcontractassig: number;
+    constructor() {
         this.datecreate = new Date();
         this.datelastmodify = new Date();
     }

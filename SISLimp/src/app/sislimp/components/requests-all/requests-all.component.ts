@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LazyLoadEvent, MessageService, SelectItem } from 'primeng/api';
 import { PoductsQuantity, ProductEquleton } from 'src/app/page/components/products/products.component';
+import { ProoductShowService } from 'src/app/page/components/products/prooduct-show.service';
 import { SolProduct } from 'src/app/page/components/sharedpage/models/solproduct.model';
 import { AuthService } from 'src/app/sharedAll/serviceShared/auth.service';
 import { CataloguesService } from 'src/app/sharedAll/serviceShared/catalogues.service';
@@ -9,6 +10,7 @@ import { FuntionsSharedService } from 'src/app/sharedAll/serviceShared/funtions-
 import { Agreement } from '../../shared/models/agreements.model';
 import { CatProducts } from '../../shared/models/catproduct.model';
 import { Employee } from '../../shared/models/employee.model';
+import { ProductModel } from '../../shared/models/products.model';
 import { AgreementService } from '../gestion-contratos/agreement.service';
 import { EmployeeService } from '../gestion-empleados/employee.service';
 import { ProductosService } from '../gestion-inventario-products/productos.service';
@@ -63,11 +65,13 @@ export class RequestsAllComponent implements OnInit {
     private sharedFuntions: FuntionsSharedService,
     private requetsService: RequestsService,
     private authService: AuthService,
-    private productsService: ProductosService
+    private productsService: ProductosService,
+    private productShowService: ProoductShowService,
   ) { }
   ngOnInit(): void {
     this.createCols();
     this.getCatalogues();
+    this.getproducts();
   }
 
   createCols() {
@@ -94,15 +98,6 @@ export class RequestsAllComponent implements OnInit {
       { field: 'status', header: 'Estado' }
     ]
   }
-  // chargeData(event: LazyLoadEvent) {
-  //   this.requetsService.getAllSolProducts().subscribe(rest => {
-  //     console.log("1", rest.filter(item =>item.status == 'process'));
-  //     console.log("2", rest.filter(item =>item.status != 'process'));
-      
-  //     this.sizeRecords = rest.length;
-  //   });
-  // }
-
   getCatalogues() {
     this.catalogueService.getCataloguebyCodeCat(REQUESTSTATUSCAT).then(rest => {
       this.drop = this.catalogueService.constructModel(rest);
@@ -114,12 +109,28 @@ export class RequestsAllComponent implements OnInit {
   }
 
   onRowSelect(event: any) {
-    event.data.assigmentdayte = this.selectedFather.datestart;
+    // event.data.assigmentdayte = this.selectedFather.datestart;
     this.selectdProducts.push(event.data);
     console.log("this.selectdProducts", this.selectdProducts);
   }
-  saveConfirmation(father: SolProduct, items: any) {
-    father.products = JSON.stringify(items);
+  saveConfirmation(father: SolProduct, items: ProductModel[]) {
+    father.products = JSON.stringify(this.constructJSON(items));
+  }
+  getproducts() {
+    this.productShowService.getCatProducts().subscribe(rest => {
+      this.pureProducts = rest;
+    });
+  }
+  constructJSON(products: ProductModel[]) {
+    let productsSend: PoductsQuantity[] = [];
+    for (let item of products) {
+      const filtered = this.pureProducts.find(itemfil => itemfil.codeproduct == item.codeproduct);
+      const productsQuantity: PoductsQuantity = new PoductsQuantity();
+      productsQuantity.codeProd = filtered.codeproduct;
+      productsQuantity.quantity = item.quantity;
+      productsSend.push(productsQuantity);
+    }
+    return productsSend;
   }
   onRowSelectFather(event: any) {
     this.selectedFather = event;
@@ -130,9 +141,9 @@ export class RequestsAllComponent implements OnInit {
 
   fillDataToUpdate(item: SolProduct) {
     console.log("this.item)", item);
-    if(item.status != 'process'){
+    if (item.status != 'process') {
       this.requetsService.updateSolicitud(item).subscribe(rest => {
-        if(rest) this.messageService.add({ severity: 'success', detail: 'Solicitud actualizada' });
+        if (rest) this.messageService.add({ severity: 'success', detail: 'Solicitud actualizada' });
         this.getSolProducts(null);
       });
     } else {
@@ -163,11 +174,11 @@ export class RequestsAllComponent implements OnInit {
         item.elementAsArray = await this.getProductsRelated(productsQuantity);
       });
       // this.dataFromdb = rest;
-      this.dataFromdb = rest.filter(item =>item.status == 'process');
-      this.dataFromdbWatch = rest.filter(item =>item.status != 'process');
+      this.dataFromdb = rest.filter(item => item.status == 'process');
+      this.dataFromdbWatch = rest.filter(item => item.status != 'process');
       console.log("VEAMOS ", rest);
     });
   }
-  
+
 
 }
