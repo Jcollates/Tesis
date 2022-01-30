@@ -3,8 +3,7 @@
     <h3>Agendamiento de citas</h3>
 </div>
 <p-card>
-    <p-tabView>
-
+    <p-tabView [(activeIndex)]="activeIndex1">
         <p-tabPanel header="Listado de citas">
             <p-table [value]="dataFromdb" styleClass="p-datatable-customers p-datatable-gridlines p-datatable-striped"
                 [responsive]="true" [paginator]="true" [rows]="pageSize" dataKey="seqsimplemeet"
@@ -80,7 +79,7 @@
                         </td>
                         <td NOWRAP style="text-align: center;">
                             <span class="p-column-title">Procesar</span>
-                            <p-dropdown [options]="drop" [(ngModel)]="dataFrom.status"></p-dropdown>
+                            <p-dropdown [options]="drop" [(ngModel)]="dataFrom.status" ></p-dropdown>
                             &nbsp;
                             <button pButton pRipple type="button" icon="pi pi-save" (click)="fillDataToUpdate(dataFrom)"
                                 class="p-button-raised p-button-rounded p-button-info" style="float: center">
@@ -92,12 +91,29 @@
                 <ng-template pTemplate="rowexpansion" let-dataFrom>
                     <tr>
                         <td colspan="6">
-                            <span class="p-text-bold">Tipo de servicio: </span> <span
-                                class="p-text-italic">{{dataFrom.typeService | selectedItemPipe:dropType}}</span>
-                            <br>
-                            <span class="p-text-bold">Servicio: </span> <span
-                                class="p-text-italic">{{dataFrom.services}}</span>
-                            <br>
+                            <ng-container *ngIf="dataFrom.elementAsArray?.length > 0">
+                                <span class="p-text-bold">Servicios: </span>
+                                <ul>
+                                    <ng-container *ngFor="let item of dataFrom.elementAsArray">
+                                        <li>
+                                            <span class="p-text-bold">Tipo de servicio: </span>
+                                            {{item.typeService |
+                                            selectedItemPipe:dropType}} -
+                                            <span class="p-text-bold">Servicio: </span>
+                                            {{item.serviceName }}
+                                        </li>
+                                    </ng-container>
+                                </ul>
+                            </ng-container>
+                            <ng-container *ngIf="dataFrom.elementAsArray?.length <= 0">
+                                <!-- <br> -->
+                                <span class="p-text-bold">Tipo de servicio: </span> <span
+                                    class="p-text-italic">{{dataFrom.typeService | selectedItemPipe:dropType}}</span>
+                                <br>
+                                <span class="p-text-bold">Servicio: </span> <span
+                                    class="p-text-italic">{{dataFrom.services}}</span>
+                                <br>
+                            </ng-container>
                             <span class="p-text-bold">Provincia: </span> <span
                                 class="p-text-italic">{{dataFrom.cliProvince | selectedItemPipe:dropProvince}}</span>
                             <br>
@@ -124,10 +140,11 @@
             </p-table>
         </p-tabPanel>
         <p-tabPanel header="Citas procesadas">
-            <p-table [value]="dataFromdbProcesed" styleClass="p-datatable-customers p-datatable-gridlines p-datatable-striped"
-                [responsive]="true" [paginator]="true" [rows]="pageSize" dataKey="seqsimplemeet"
-                [rowsPerPageOptions]="[10,30,60]" [totalRecords]="sizeRecords" [lazy]="true" [autoLayout]="true"
-                [columns]="cols" (onLazyLoad)="chargeData($event)" selectionMode="single">
+            <p-table [value]="dataFromdbProcesed"
+                styleClass="p-datatable-customers p-datatable-gridlines p-datatable-striped" [responsive]="true"
+                [paginator]="true" [rows]="pageSize" dataKey="seqsimplemeet" [rowsPerPageOptions]="[10,30,60]"
+                [totalRecords]="sizeRecords" [lazy]="true" [autoLayout]="true" [columns]="cols"
+                (onLazyLoad)="chargeData($event)" selectionMode="single">
                 <ng-template pTemplate="caption">
                     Listado
                 </ng-template>
@@ -201,12 +218,29 @@
                 <ng-template pTemplate="rowexpansion" let-dataFrom>
                     <tr>
                         <td colspan="6">
-                            <span class="p-text-bold">Tipo de servicio: </span> <span
-                                class="p-text-italic">{{dataFrom.typeService | selectedItemPipe:dropType}}</span>
-                            <br>
-                            <span class="p-text-bold">Servicio: </span> <span
-                                class="p-text-italic">{{dataFrom.services}}</span>
-                            <br>
+                            <ng-container *ngIf="dataFrom.elementAsArray?.length > 0">
+                                <span class="p-text-bold">Servicios: </span>
+                                <ul>
+                                    <ng-container *ngFor="let item of dataFrom.elementAsArray">
+                                        <li>
+                                            <span class="p-text-bold">Tipo de servicio: </span>
+                                            {{item.typeService |
+                                            selectedItemPipe:dropType}} -
+                                            <span class="p-text-bold">Servicio: </span>
+                                            {{item.serviceName }}
+                                        </li>
+                                    </ng-container>
+                                </ul>
+                            </ng-container>
+                            <ng-container *ngIf="dataFrom.elementAsArray?.length <= 0">
+                                <!-- <br> -->
+                                <span class="p-text-bold">Tipo de servicio: </span> <span
+                                    class="p-text-italic">{{dataFrom.typeService | selectedItemPipe:dropType}}</span>
+                                <br>
+                                <span class="p-text-bold">Servicio: </span> <span
+                                    class="p-text-italic">{{dataFrom.services}}</span>
+                                <br>
+                            </ng-container>
                             <span class="p-text-bold">Provincia: </span> <span
                                 class="p-text-italic">{{dataFrom.cliProvince | selectedItemPipe:dropProvince}}</span>
                             <br>
@@ -320,23 +354,40 @@
                             </span>
                         </div>
                     </div>
-                    <!-- <div class="p-field p-col-12 p-md-6"></div> -->
-                    <div class="p-field p-col-12 p-md-6">
-                        <span class="p-float-label">
-                            <p-dropdown [options]="dropType" formControlName="typeService"></p-dropdown>
-                            <label for="dropdown">Tipo servicio</label>
-                        </span>
-                    </div>
-                    <div class="p-field p-col-12 p-md-6">
-                        <div class="p-inputgroup">
-                            <span class="p-inputgroup-addon">
-                                <i class="pi pi-lock"></i>
-                            </span>
-                            <span class="p-float-label">
-                                <input type="text" id="inputgroup" pInputText formControlName="serviceName" />
-                                <label for="inputgroup">Nombre servicio</label>
-                            </span>
-                        </div>
+                    <button pButton pRipple type="button" icon="pi pi-plus" (click)="addService()"
+                        class="p-button-raised p-button-rounded p-button-success mb-3">
+                    </button>
+                    <div class="p-field p-col-12 p-md-12 pt-1">
+                        <ng-container formArrayName="services">
+                            <ng-container *ngFor="let serviceForm of services.controls; let i = index">
+                                <div class="p-grid p-fluid p-0 m-0" [formGroup]="serviceForm">
+                                    <div class="p-field p-col-12 p-md-6">
+                                        <span class="p-float-label">
+                                            <p-dropdown [options]="dropType" formControlName="typeService"></p-dropdown>
+                                            <label for="dropdown">Tipo servicio</label>
+                                        </span>
+                                    </div>
+                                    <div class="p-field p-col-12 p-md-6">
+                                        <div class="p-inputgroup">
+                                            <span class="p-inputgroup-addon">
+                                                <i class="pi pi-lock"></i>
+                                            </span>
+                                            <span class="p-float-label">
+                                                <input type="text" id="inputgroup" pInputText
+                                                    formControlName="serviceName" />
+                                                <label for="inputgroup">Nombre servicio</label>
+                                            </span>
+                                            &nbsp;
+                                            <button pButton pRipple type="button" icon="pi pi-trash"
+                                                (click)="deleteService(i)"
+                                                class="p-button-raised p-button-rounded p-button-danger p-0 m-0">
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </ng-container>
+                        </ng-container>
+                        &nbsp;
                     </div>
                     <div class="p-field p-col-12 p-md-6">
                         <div class="p-inputgroup">
