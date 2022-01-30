@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LazyLoadEvent, MessageService, SelectItem } from 'primeng/api';
 import { AuthService } from 'src/app/sharedAll/serviceShared/auth.service';
 import { CataloguesService } from 'src/app/sharedAll/serviceShared/catalogues.service';
@@ -20,7 +20,7 @@ const REQUESTSTATUSCAT = 'REQUESTSTATUSCAT';
   providers: [MessageService]
 })
 export class AgendamientoCitasComponent implements OnInit {
-
+  activeIndex1: number = 0;
   cars: any[] = [];
   drop: SelectItem[] = [];
   fordropt: any
@@ -57,6 +57,7 @@ export class AgendamientoCitasComponent implements OnInit {
 
   //fomrs
   formCita: FormGroup = new FormGroup({});
+  formServices: FormGroup = new FormGroup({});
   simpleMeet: Simplemeet = new Simplemeet();
 
   //sevice extras
@@ -74,6 +75,7 @@ export class AgendamientoCitasComponent implements OnInit {
   ngOnInit(): void {
     this.createCols();
     this.createForm();
+    this.addService();
     this.getCatalogues();
   }
 
@@ -97,6 +99,7 @@ export class AgendamientoCitasComponent implements OnInit {
   chargeData(event: LazyLoadEvent) {
     this.simpleMeetService.getSimpleMeets().subscribe(rest => {
       if (rest.length > 0) {
+        rest.forEach(item => item.elementAsArray = item.addededServices ? JSON.parse(item.addededServices) : [])
         this.dataFromdb = rest.filter(item => item.status !== 'cancel' && item.status !== 'success');
         this.dataFromdbProcesed = rest.filter(item => item.status === 'cancel' || item.status === 'success');
         this.dataFromdb.forEach(item => this.completeCityDrop(item.cliProvince, 'dataFromdb'));
@@ -109,11 +112,10 @@ export class AgendamientoCitasComponent implements OnInit {
   completeCityDrop(codeFather: string, array: string) {
     this.catalogueService.getCataloguebyCodeCatAndCodeFather(CITYCAT, PROVINCECAT, codeFather).then(rest => {
       if (rest) {
-        if(array == 'dataFromdb') this.dropCityTwo.push(rest[0]);
+        if (array == 'dataFromdb') this.dropCityTwo.push(rest[0]);
         else this.dropCityTwoProcesed.push(rest[0]);
       }
     });
-
   }
 
 
@@ -128,42 +130,60 @@ export class AgendamientoCitasComponent implements OnInit {
       province: ['', Validators.required],
       city: ['', Validators.required],
       address: ['', Validators.required],
-      typeService: ['', Validators.required],
-      serviceName: ['', Validators.required],
+      services: this.formBuilder.array([]),
       hoursNumber: ['', Validators.required],
       dateService: ['', Validators.required],
       dateEnd: ['', Validators.required],
       tools: ['', Validators.required],
     });
   }
-  validateForm() {
+  get services() {
+    return this.formCita.controls["services"] as FormArray;
+  }
+  addService() {
+    const formServices = this.formBuilder.group({
+      typeService: ['', Validators.required],
+      serviceName: ['', Validators.required]
+    });
+    this.services.push(formServices);
+  }
 
+  deleteService(serviceIndex: number) {
+    this.services.removeAt(serviceIndex);
+  }
+  validateForm() {
+    // console.log("this.services", JSON.stringify(this.formCita.controls.services.value));
+    this.formCita.markAllAsTouched();
     if (!this.formCita.valid) {
       this.messageService.add({ severity: 'error', detail: 'Formulario no valido' });
       console.log(this.formCita.value);
     } else {
-      console.log(this.formCita.value);
-      this.simpleMeet.dateService = this.formCita.controls.dateService.value;
-      this.simpleMeet.address = this.formCita.controls.address.value;
-      this.simpleMeet.cliName = this.formCita.controls.name.value;
-      this.simpleMeet.cliLastName = this.formCita.controls.lastname.value;
-      this.simpleMeet.cliDni = this.formCita.controls.dni.value;
-      this.simpleMeet.cliEmail = this.formCita.controls.email.value;
-      this.simpleMeet.cliCity = this.formCita.controls.city.value;
-      this.simpleMeet.cliProvince = this.formCita.controls.province.value;
-      this.simpleMeet.typeService = this.formCita.controls.typeService.value;
-      this.simpleMeet.services = this.formCita.controls.serviceName.value;
-      this.simpleMeet.hoursStimated = this.formCita.controls.hoursNumber.value;
-      this.simpleMeet.codeUser = this.authService.codeUser;
-      this.simpleMeet.phone = this.formCita.controls.phone.value;
-      //falta tools, valor estiamdo y fecha fin
-      this.simpleMeet.tools = this.formCita.controls.tools.value;
-      this.simpleMeet.dateEnd = this.formCita.controls.dateEnd.value;
-      this.simpleMeet.stimatedValue = 5.00;
-      this.simpleMeet.status = 'hold';
+      if (this.services.length > 0) {
+        console.log(this.formCita.value);
+        this.simpleMeet.dateService = this.formCita.controls.dateService.value;
+        this.simpleMeet.address = this.formCita.controls.address.value;
+        this.simpleMeet.cliName = this.formCita.controls.name.value;
+        this.simpleMeet.cliLastName = this.formCita.controls.lastname.value;
+        this.simpleMeet.cliDni = this.formCita.controls.dni.value;
+        this.simpleMeet.cliEmail = this.formCita.controls.email.value;
+        this.simpleMeet.cliCity = this.formCita.controls.city.value;
+        this.simpleMeet.cliProvince = this.formCita.controls.province.value;
+        this.simpleMeet.typeService = this.formCita.controls.services.value[0]?.typeService;
+        this.simpleMeet.services = this.formCita.controls.services.value[0]?.serviceName;
+        this.simpleMeet.hoursStimated = this.formCita.controls.hoursNumber.value;
+        this.simpleMeet.codeUser = this.authService.codeUser;
+        this.simpleMeet.phone = this.formCita.controls.phone.value;
+        //falta tools, valor estiamdo y fecha fin
+        this.simpleMeet.tools = this.formCita.controls.tools.value;
+        this.simpleMeet.dateEnd = this.formCita.controls.dateEnd.value;
+        this.simpleMeet.stimatedValue = 5.00;
+        this.simpleMeet.status = 'hold';
+        this.simpleMeet.addededServices = JSON.stringify(this.formCita.controls.services.value);
+        this.saveFormsimpleMeet(this.simpleMeet);
+      } else {
+        this.messageService.add({ severity: 'error', detail: 'Se requiere al menos un servicio' });
+      }
 
-
-      this.saveFormsimpleMeet(this.simpleMeet);
     }
   }
   saveFormsimpleMeet(container: Simplemeet) {
@@ -171,6 +191,7 @@ export class AgendamientoCitasComponent implements OnInit {
       if (res != null) this.messageService.add({ severity: 'success', detail: 'Registrado correctamente' });
       this.formCita.reset();
       this.chargeData(null);
+      this.activeIndex1 = 0;
     })
   }
   async getCatalogues() {
@@ -197,7 +218,6 @@ export class AgendamientoCitasComponent implements OnInit {
   }
   showAssignated() {
     this.showEmployesAssigned = true;
-    // this.getEmployeesAssigned();
   }
   getEmployees(event: LazyLoadEvent) {
     this.emplyeeservice.getEmployesToBesAssigned().subscribe(res => {
@@ -220,7 +240,6 @@ export class AgendamientoCitasComponent implements OnInit {
   }
 
   onRowSelect(event: any) {
-    // this.getEmployeesAssigned();
     event.data.assigmentdayte = this.selectedFather.dateService;
     event.data.endassigmentdate = this.selectedFather.dateEnd;
     event.data.seqmeet = this.selectedFather.seqsimplemeet;
@@ -245,7 +264,6 @@ export class AgendamientoCitasComponent implements OnInit {
   }
   onRowSelectFather(event: Simplemeet) {
     this.selectedFather = event;
-    // this.getEmployeesAssigned();
   }
   onRowSelectAssigned(event: Simplemeet) {
     this.selectedFather = event;
@@ -255,10 +273,23 @@ export class AgendamientoCitasComponent implements OnInit {
   fillDataToUpdate(item: Simplemeet) {
     console.log("this.item)", item);
     if (item.status != 'hold') {
+      if (item.status == 'process') {
+        this.emplyeeservice.getEmployessAssigned(item.seqsimplemeet, null).subscribe(res => {
+          if (res.length <= 0) {
+            this.messageService.add({ severity: 'error', detail: 'Debe haber al menos un empleado asignado' });
+          } else {
+            this.simpleMeetService.updateSimpleMeet(item).subscribe(rest => {
+              if (rest) this.messageService.add({ severity: 'success', detail: 'Solicitud actualizada' });
+              this.chargeData(null);
+            });
+          }
+        })
+      }
       this.simpleMeetService.updateSimpleMeet(item).subscribe(rest => {
         if (rest) this.messageService.add({ severity: 'success', detail: 'Solicitud actualizada' });
         this.chargeData(null);
       });
+
     } else {
       this.messageService.add({ severity: 'error', detail: 'Seleccione un estado diferente a en espera' });
     }

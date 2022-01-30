@@ -6,7 +6,7 @@ import { SelectItem } from 'primeng/api';
 export class SolistatusPipe implements PipeTransform {
 
   transform(value: unknown, solis: SelectItem[]): unknown {
-    value = value ? value : null;
+    value = value ? value : '';
     let nameItem = value.toString();
     if (solis) {
       solis.forEach((sol) => {
