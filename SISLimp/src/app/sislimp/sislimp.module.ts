@@ -55,7 +55,9 @@ import { LegalpersonComponent } from './components/legalperson/legalperson.compo
 import { ProviderPipe } from './shared/pipes/provider.pipe';
 import { RequestsAllComponent } from './components/requests-all/requests-all.component';
 import { SolistatusPipe } from './shared/pipes/solistatus.pipe';
-
+import { HoursPipePipe } from './shared/pipes/hours-pipe.pipe';
+import { CityPipePipe } from './shared/pipes/city-pipe.pipe';
+import { ForCityPipe } from './shared/pipes/for-city.pipe';
 
 
 FullCalendarModule.registerPlugins([ // register FullCalendar plugins
@@ -85,6 +87,9 @@ FullCalendarModule.registerPlugins([ // register FullCalendar plugins
     ProviderPipe,
     RequestsAllComponent,
     SolistatusPipe,
+    HoursPipePipe,
+    CityPipePipe,
+    ForCityPipe,
   ],
   imports: [
     CommonModule,

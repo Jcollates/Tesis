@@ -52,7 +52,7 @@
                             {{employeesAsignated}}
                         </td>
                         <td style="text-align: center;">
-                            <button pButton pRipple type="button" icon="pi pi-eye" (click)="showAssignated()" 
+                            <button pButton pRipple type="button" icon="pi pi-eye"  (click)="onRowSelectAssigned(dataFrom)" (click)="showAssignated()" 
                                 class="p-button-raised p-button-rounded p-button-help" style="float: center">
                             </button>
                         </td>
@@ -279,7 +279,7 @@
         <p-table [value]="employesAssigned" styleClass="p-datatable-customers p-datatable-gridlines p-datatable-striped"
             [responsive]="true" [paginator]="true" [rows]="pageSize" dataKey="seqemploy"
             [rowsPerPageOptions]="[10,30,60]" [totalRecords]="sizeRecordsAsigned" [lazy]="true" [autoLayout]="true"
-            [columns]="colsEmployees" (onLazyLoad)="getEmployeesAssigned($event)">
+            [columns]="colsEmployees">
             <ng-template pTemplate="caption">
                 Listado
             </ng-template>

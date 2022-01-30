@@ -28,7 +28,7 @@ export class GestionContratosComponent implements OnInit {
   pageSize: number = 50;
 
   selectedFather: Agreement = new Agreement();
-  employeesAsignated: number = 0
+  employeesAsignated: number = 0;
 
   //employees
   colsEmployees: any[] = [];
@@ -89,8 +89,8 @@ export class GestionContratosComponent implements OnInit {
       this.sizeRecordsToAsig = res.length;
     })
   }
-  getEmployeesAssigned(event: LazyLoadEvent) {
-    this.emplyeeservice.getEmployessAssigned().subscribe(res => {
+  getEmployeesAssigned() {
+    this.emplyeeservice.getEmployessAssigned(null, this.selectedFather.seqagree).subscribe(res => {
       res.forEach( item => {
         item.img = this.sharedFuntions.repair(item.img);
       })
@@ -178,8 +178,13 @@ export class GestionContratosComponent implements OnInit {
 
   onRowSelect(event: any) {
     event.data.assigmentdayte = this.selectedFather.datestart;
+    event.data.seqcontractassig = this.selectedFather.seqagree;
     this.selectdEmployes.push(event.data);
     console.log("this.selectdEmployes", this.selectdEmployes);
+  }
+  onRowSelectAssigned(event: Agreement){
+    this.selectedFather = event;
+    this.getEmployeesAssigned();
   }
   saveAssigment() {
     if (this.selectdEmployes.length > 0) {
@@ -187,7 +192,7 @@ export class GestionContratosComponent implements OnInit {
         this.emplyeeservice.updateEmployee(item).subscribe(update => {
           if (update) this.messageService.add({ severity: 'success', detail: 'Empleado asignado' })
           else this.messageService.add({ severity: 'error', detail: 'No se logro asignar' });
-          this.getEmployeesAssigned(null);
+          this.getEmployeesAssigned();
           this.showEmployes = false;
         })
       })

@@ -22,6 +22,10 @@ export class SimpleMeetService {
   }
   saveCustomerService(container: Simplemeet): Observable<Simplemeet>{
     let url = this.url + '/saveSimpleMeet';
-    return this.http.post(url, container).pipe(map( res => res as any));
+    return this.http.post(url, container).pipe(map( res => res as Simplemeet));
+  }
+  updateSimpleMeet(item: Simplemeet){
+    let url = this.url + '/updateDataSimpleMeet';
+    return this.http.post(url, item).pipe(map( res => res as Simplemeet));
   }
 }
