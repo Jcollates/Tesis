@@ -10,6 +10,10 @@ const routes: Routes = [
     path: 'page', loadChildren: () => import('./page/page.module').then(r => r.PageModule),
   },
   {
+    path: 'system/login', loadChildren: () => import('./systemLogin/systemlogin.module').then(r => r.SytemloginModule),
+    pathMatch: 'prefix',
+  },
+  {
     path: 'user', loadChildren: () => import('./user/user.module').then(r => r.UserModule), pathMatch: 'prefix',
     canActivate: [CheckLoginGuard, UserGuard],
   },
