@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { AuthService } from 'src/app/sharedAll/serviceShared/auth.service';
 
@@ -13,7 +14,9 @@ export class PrincipalComponent implements OnInit {
   items2: MenuItem[];
   nombre = 'JAIR QUIÑONEZ'
   constructor(
-    private authService: AuthService
+    private authService: AuthService,
+    private router: Router,
+
   ){
 
   }
@@ -114,5 +117,6 @@ export class PrincipalComponent implements OnInit {
   }
   logOut(){
     this.authService.logOut();
+    this.router.navigate(['system/login'])
   }
 }

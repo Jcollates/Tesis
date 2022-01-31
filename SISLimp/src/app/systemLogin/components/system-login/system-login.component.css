@@ -1,0 +1,91 @@
+.pages-body.login-page {
+    /* background: url("../images/pages/login-bg.jpg"); */
+    background-size: cover;
+  }
+  .pages-body.login-page .pages-panel .pages-header {
+    background: #0097A7;
+  }
+  .pages-body.login-page .pages-panel .input-panel {
+    width: 100%;
+  }
+  .pages-body.login-page .pages-panel .input-panel .p-inputtext {
+    width: 100%;
+  }
+  .pages-body.login-page .pages-panel .login-button > * {
+    width: 100%;
+  }
+
+  .pages-body .topbar {
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+    background-color: #1565C0;
+    z-index: 100;
+  }
+  .pages-body .topbar .topbar-left img {
+    height: 4rem;
+  }
+  .pages-body .topbar .p-button.p-button-text.p-button-plain {
+    color: #ffffff;
+  }
+
+  /* THINSS */
+
+  .pages-body .pages-panel {
+    text-align: center;
+    z-index: 200;
+  }
+  .pages-body .pages-panel.card {
+    border: 1.5px solid #E4E4E4;
+    border-radius: 6px;
+  }
+  .pages-body .pages-panel.card img {
+    width: 100%;
+  }
+  .pages-body .pages-panel.card > .card {
+    background-color: #ECEFF1;
+  }
+  .pages-body .pages-panel .pages-header {
+    margin-top: -3rem;
+    color: var(--primary-color-text);
+    border: 1.5px solid #E4E4E4;
+    border-radius: 4px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .pages-body .pages-panel .pages-header h2 {
+    margin: 0;
+  }
+  .pages-body .pages-panel .pages-detail {
+    color: #616161;
+  }
+  .pages-body.login-page {
+    /* background: url("../images/pages/login-bg.jpg"); */
+    background-size: cover;
+  }
+  .pages-body.login-page .pages-panel .pages-header {
+    background: #0097A7;
+  }
+  .pages-body.login-page .pages-panel .input-panel {
+    width: 100%;
+  }
+  .pages-body.login-page .pages-panel .input-panel .p-inputtext {
+    width: 100%;
+  }
+  .pages-body.login-page .pages-panel .login-button > * {
+    width: 100%;
+  }
+
+  .pages-body .pages-panel.card {
+    border: 1.5px solid #E4E4E4;
+    border-radius: 6px;
+  }
+  .pages-body .pages-panel.card img {
+    width: 100%;
+  }
+  .pages-body .pages-panel.card > .card {
+    background-color: #ECEFF1;
+  }
+
+  .pages-body .pages-panel .pages-detail {
+    color: #616161;
+  }
+
