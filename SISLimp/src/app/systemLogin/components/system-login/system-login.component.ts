@@ -32,11 +32,22 @@ export class SystemLoginComponent implements OnInit {
     });
   }
   onLogin() {
-    this.loginService.login(this.formLogin.value).subscribe(rest => {
+    this.formLogin.markAllAsTouched();
+    this.formLogin.markAsDirty();
+    if(!this.formLogin.valid){
+      this.messageService.add({ severity: 'error', detail: 'Formulario no valido' });
+    } else {
+      this.loginService.login(this.formLogin.value).subscribe(rest => {
+        console.log("REST", rest);
       if (rest) {
+        this.messageService.add({ severity: 'success', detail: 'Acceso exitoso' });
         this.router.navigate(['system'])
+      } else {
+        this.messageService.add({ severity: 'error', detail: 'Usuario no valido' });
       }
-    })
+    });
+    }
+    
   }
 
 }
