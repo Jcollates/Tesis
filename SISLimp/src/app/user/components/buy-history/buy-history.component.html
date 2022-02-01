@@ -1,0 +1,48 @@
+<!-- [style]="{'width': 'fit-content'}" -->
+<div class="p-text-italic">
+    <h3>Historial de compras</h3>
+</div>
+
+<p-card>
+    
+    <p-table [value]="dataFromdb" styleClass="p-datatable-customers p-datatable-gridlines p-datatable-striped"
+        [responsive]="true" [paginator]="true" [rows]="pageSize" dataKey="date" [rowsPerPageOptions]="[10,30,60]"
+        [totalRecords]="sizeRecords"  [lazy]="true" [autoLayout]="true"
+        [columns]="cols">
+        <ng-template pTemplate="caption">
+            Listado
+        </ng-template>
+        <ng-template pTemplate="header" let-columns>
+            <tr>
+                <ng-container *ngFor="let col of columns">
+                    <th>
+                        {{col.header}}
+                    </th>
+                </ng-container>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-dataFrom let-index="rowIndex" let-columns="columns">
+            <tr>
+                <td>
+                    <span class="p-column-title">Fecha</span>
+                    {{dataFrom.date}}
+                </td>
+                <td>
+                    <span class="p-column-title">Producto / Servicio</span>
+                    {{dataFrom.productservice}}
+                </td>
+                <td>
+                    <span class="p-column-title">Costo</span>
+                    {{dataFrom.cost}}
+                </td>
+                <td>
+                    <span class="p-column-title">Detalle</span>
+                    {{dataFrom.detail}}
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            No hay registros que mostrar
+        </ng-template>
+    </p-table>
+</p-card>

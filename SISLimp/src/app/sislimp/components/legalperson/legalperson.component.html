@@ -1,0 +1,85 @@
+<p-toast></p-toast>
+<div class="card-header">
+    Formulario de Persona legal
+</div>
+<br>
+<form [formGroup]="formLegalperson" (ngSubmit)="validateForm()">
+    <div class="p-fluid p-grid">
+        <div class="p-field p-col-12 p-md-6">
+            <div class="p-inputgroup">
+                <span class="p-inputgroup-addon">
+                    <i class="pi pi-user"></i>
+                </span>
+                <span class="p-float-label">
+                    <input type="text" id="inputgroup" pInputText formControlName="dni">
+                    <label for="inputgroup">Cédula</label>
+                </span>
+            </div>
+        </div>
+        <div class="p-field p-col-12 p-md-6">
+            <div class="p-inputgroup">
+                <span class="p-inputgroup-addon">
+                    <i class="pi pi-id-card"></i>
+                </span>
+                <span class="p-float-label">
+                    <input type="text" id="inputgroup" pInputText formControlName="name">
+                    <label for="inputgroup">Nombre</label>
+                </span>
+            </div>
+        </div>
+        <div class="p-field p-col-12 p-md-6">
+            <div class="p-inputgroup">
+                <span class="p-inputgroup-addon">
+                    <i class="pi pi-phone"></i>
+                </span>
+                <span class="p-float-label">
+                    <input type="text" id="inputgroup" pInputText formControlName="lastname">
+                    <label for="inputgroup">Apellido</label>
+                </span>
+            </div>
+        </div>
+        <div class="p-field p-col-12 p-md-6">
+            <div class="p-inputgroup">
+                <span class="p-inputgroup-addon">
+                    <i class="pi pi-phone"></i>
+                </span>
+                <span class="p-float-label">
+                    <input type="text" id="inputgroup" pInputText formControlName="position">
+                    <label for="inputgroup">Posición</label>
+                </span>
+            </div>
+        </div>
+        <div class="p-field p-col-12 p-md-6">
+            <div class="p-inputgroup">
+                <span class="p-inputgroup-addon">
+                    <i class="pi pi-phone"></i>
+                </span>
+                <span class="p-float-label">
+                    <input type="text" id="inputgroup" pInputText formControlName="address">
+                    <label for="inputgroup">Dirección de vivienda</label>
+                </span>
+            </div>
+        </div>
+        <div class="p-field p-col-12 p-md-6">
+            <div class="p-inputgroup">
+                <span class="p-inputgroup-addon">
+                    <i class="pi pi-phone"></i>
+                </span>
+                <span class="p-float-label">
+                    <input type="text" id="inputgroup" pInputText formControlName="phone">
+                    <label for="inputgroup">Teléfono</label>
+                </span>
+            </div>
+        </div>
+    </div>
+</form>
+<p-toolbar>
+    <div class="p-toolbar-group-left">
+    </div>
+    <div class="p-toolbar-group-right">
+        <button pButton pRipple type="button" label="Guardar" icon="pi pi-save"
+            class="p-button-raised p-button-rounded p-button-success p-mr-2 p-mb-2 "
+            (click)="validateForm()" style="float: right">
+        </button>
+    </div>
+</p-toolbar>

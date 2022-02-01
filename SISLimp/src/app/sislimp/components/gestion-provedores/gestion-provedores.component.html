@@ -1,0 +1,199 @@
+<p-toast></p-toast>
+<div class="p-mb-3 p-text-italic">
+    <h3>Gestión de proveedores</h3>
+</div>
+<p-card>
+    <p-tabView [(activeIndex)]="activeIndex"> 
+        <p-tabPanel header="Registros">
+            <p-table [value]="dataFromdb" styleClass="p-datatable-customers p-datatable-gridlines p-datatable-striped"
+                [responsive]="true" [paginator]="true" [rows]="pageSize" dataKey="date"
+                [rowsPerPageOptions]="[10,30,60]" [totalRecords]="sizeRecords" [lazy]="true" [autoLayout]="true"
+                [columns]="cols" (onLazyLoad)="chargeData($event)">
+                <ng-template pTemplate="caption">
+                    Listado
+                </ng-template>
+                <ng-template pTemplate="header" let-columns>
+                    <tr>
+                        <ng-container *ngFor="let col of columns">
+                            <th>
+                                {{col.header}}
+                            </th>
+                        </ng-container>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-dataFrom let-index="rowIndex" let-columns="columns">
+                    <tr>
+                        <td>
+                            <span class="p-column-title">Código proveedor</span>
+                            {{dataFrom.seqprovider}}
+                        </td>
+                        <td>
+                            <span class="p-column-title">RUC</span>
+                            {{dataFrom.dni}}
+                        </td>
+                        <td>
+                            <span class="p-column-title">Nombre empresa</span>
+                            {{dataFrom.namenterprice}}
+                        </td>
+                        <td>
+                            <span class="p-column-title">Dirección</span>
+                            {{dataFrom.location}}
+                        </td>
+                        <td>
+                            <span class="p-column-title">Num. Teléfono</span>
+                            {{dataFrom.phone}}
+                        </td>
+                        <td>
+                            <span class="p-column-title">Ciudad</span>
+                            {{dataFrom.city}}
+                        </td>
+                        <td>
+                            <span class="p-column-title">Provincia</span>
+                            {{dataFrom.province}}
+                        </td>
+                        <td>
+                            <span class="p-column-title">Detalles</span>
+                            {{dataFrom.detail}}
+                        </td>
+                        <td>
+                            <span class="p-column-title">Tipo de pago</span>
+                            {{dataFrom.paytype}}
+                        </td>
+                        <td>
+                            <span class="p-column-title">Nombre vendedor</span>
+                            {{dataFrom.salername}}
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    No hay registros que mostrar
+                </ng-template>
+            </p-table>
+            <p-toolbar>
+                <div class="p-toolbar-group-left"></div>
+                <div class="p-toolbar-group-right">
+                    <button pButton pRipple type="button" label="Registrar nueva" (click)="activeIndex = 1" icon="pi pi-plus"
+                        class="p-button-raised p-button-rounded p-button-success p-mr-2 p-mb-2 ">
+                    </button>
+                </div>
+            </p-toolbar>
+        </p-tabPanel>
+        <p-tabPanel header="Formulario de Proveedores">
+            <div class="card-header">
+                Formulario de proveedores
+            </div>
+            <br>
+            <form [formGroup]="formProvider" (ngSubmit)="validateForm()">
+                <div class="p-fluid p-grid">
+                    <div class="p-field p-col-12 p-md-6">
+                        <div class="p-inputgroup">
+                            <span class="p-inputgroup-addon">
+                                <i class="pi pi-user"></i>
+                            </span>
+                            <span class="p-float-label">
+                                <input type="text" id="inputgroup" pInputText formControlName="dni">
+                                <label for="inputgroup">Cedula/RUC</label>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="p-field p-col-12 p-md-6">
+                        <div class="p-inputgroup">
+                            <span class="p-inputgroup-addon">
+                                <i class="pi pi-user"></i>
+                            </span>
+                            <span class="p-float-label">
+                                <input type="text" id="inputgroup" pInputText formControlName="email">
+                                <label for="inputgroup">Correo electrónico</label>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="p-field p-col-12 p-md-6">
+                        <div class="p-inputgroup">
+                            <span class="p-inputgroup-addon">
+                                <i class="pi pi-id-card"></i>
+                            </span>
+                            <span class="p-float-label">
+                                <input type="text" id="inputgroup" pInputText formControlName="enterpricename">
+                                <label for="inputgroup">Nombre Empresa</label>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="p-field p-col-12 p-md-6">
+                        <div class="p-inputgroup">
+                            <span class="p-inputgroup-addon">
+                                <i class="pi pi-phone"></i>
+                            </span>
+                            <span class="p-float-label">
+                                <input type="text" id="inputgroup" pInputText formControlName="address">
+                                <label for="inputgroup">Dirección</label>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="p-field p-col-12 p-md-6">
+                        <div class="p-inputgroup">
+                            <span class="p-inputgroup-addon">
+                                <i class="pi pi-envelope "></i>
+                            </span>
+                            <span class="p-float-label">
+                                <input type="text" id="inputgroup" pInputText formControlName="phone">
+                                <label for="inputgroup">Teléfono</label>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="p-field p-col-12 p-md-6"></div>
+                    <div class="p-field p-col-12 p-md-6">
+                        <span class="p-float-label">
+                            <p-dropdown (onChange)="onChangueProvince($event)" [options]="dropProvince" formControlName="province"></p-dropdown>
+                            <label for="dropdown">Provincia</label>
+                        </span>
+                    </div>
+                    <div class="p-field p-col-12 p-md-6">
+                        <span class="p-float-label">
+                            <p-dropdown [options]="dropCity" formControlName="city"></p-dropdown>
+                            <label for="dropdown">Ciudad</label>
+                        </span>
+                    </div>
+                    <div class="p-field p-col-12 p-md-12">
+                        <div class="p-inputgroup">
+                            <span class="p-inputgroup-addon">
+                                <i class="pi pi-globe"></i>
+                            </span>
+                            <span class="p-float-label">
+                                <textarea id="float-input" rows="5" cols="30" pInputTextarea formControlName="details"></textarea>
+                                <label for="inputgroup">Detalles</label>
+                            </span>
+                        </div>
+                    </div>
+                    <!-- <div class="p-field p-col-12 p-md-6"></div> -->
+                    <div class="p-field p-col-12 p-md-6">
+                        <span class="p-float-label">
+                            <p-dropdown  [options]="dropPay" formControlName="paytype"></p-dropdown>
+                            <label for="dropdown">Tipo pago</label>
+                        </span>
+                    </div>
+                    <div class="p-field p-col-12 p-md-6">
+                        <div class="p-inputgroup">
+                            <span class="p-inputgroup-addon">
+                                <i class="pi pi-lock"></i>
+                            </span>
+                            <span class="p-float-label">
+                                <input type="text" id="inputgroup" pInputText formControlName="salername">
+                                <label for="inputgroup">Nombre vendedor</label>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <p-toolbar>
+                    <div class="p-toolbar-group-left">
+                    </div>
+                    <div class="p-toolbar-group-right">
+                        <button pButton pRipple type="button" label="Registrar" icon="pi pi-save"
+                            class="p-button-raised p-button-rounded p-button-success p-mr-2 p-mb-2 "
+                            style="float: right" (click)="validateForm()">
+                        </button>
+                    </div>
+                </p-toolbar>
+            </form>
+        </p-tabPanel>
+    </p-tabView>
+</p-card>

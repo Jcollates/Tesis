@@ -1,0 +1,68 @@
+<p-toast></p-toast>
+<div class="pages-body login-page p-d-flex p-flex-column">
+    <div class="topbar p-p-3 p-d-flex p-jc-between p-flex-row p-ai-center">
+        <div class="topbar-left p-ml-3 p-d-flex" routerLink="/">
+            <div class="logo">
+                <img src="../../../../assets/Picture1.png" alt="" />
+            </div>
+        </div>
+        <div class="topbar-right p-mr-3 p-d-flex">
+            <button pButton pRipple type="button" label="DASHBOARD"
+                class="p-button-text p-button-plain topbar-button"></button>
+        </div>
+    </div>
+    <br>
+    <br>
+    <br>
+    <br>
+    <div class="p-as-center p-mt-auto p-mb-auto">
+        <div class="pages-panel card p-shadow-24 p-d-flex p-flex-column">
+            <div class="pages-header p-px-3 p-py-1">
+                <h2>INICIO DE SESION</h2>
+            </div>
+            <h4>Bienvenido</h4>
+            <div class="pages-detail p-mb-6 p-px-6">Usa el formulario para iniciar sesion.</div>
+            <form [formGroup]="formLogin">
+                <div class="input-panel p-d-flex p-flex-column p-px-3">
+                    <div class="p-inputgroup pb-2">
+                        <span class="p-inputgroup-addon">
+                            <i class="pi pi-envelope"></i>
+                        </span>
+                        <span class="p-float-label">
+                            <input id="inputEmail" type="email" formControlName="username" pInputText />
+                            <label for="inputgroup">Correo electrónico</label>
+                        </span>
+                    </div>
+                    <small *ngIf="formLogin.get('username').errors && (formLogin.get('username').dirty ||
+                            formLogin.get('username').touched)" id="username2-help" class="p-error block">
+                        <small *ngIf="formLogin.get('username').errors?.required">
+                            Requerido
+                        </small>
+                    </small>
+                    <div class="p-inputgroup">
+                        <span class="p-inputgroup-addon">
+                            <i class="pi pi-lock"></i>
+                        </span>
+                        <span class="p-float-label">
+                            <input id="inputPassword" type="password" formControlName="password" pInputText>
+                            <label for="inputgroup">Contraseña</label>
+                        </span>
+                    </div>
+                    <small *ngIf="formLogin.get('password').errors && (formLogin.get('password').dirty ||
+                            formLogin.get('password').touched)" id="username2-help" class="p-error block">
+                        <small *ngIf="formLogin.get('password').errors?.required">
+                            Requerido
+                        </small>
+                    </small>
+                </div>
+            </form>
+            <button pButton pRipple type="button" label="LOGIN" style="background-color: #1565C0;"
+                class="p-button-raised p-button-secondary p-mt-6 p-mb-6 p-px-3 " (click)="onLogin()">
+            </button>
+
+            <!-- <p-button class="login-button p-mb-6 p-px-3" (onClick)="onLogin()" label="LOGIN"></p-button> -->
+
+
+        </div>
+    </div>
+</div>

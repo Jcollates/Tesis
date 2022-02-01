@@ -1,0 +1,134 @@
+<p-toast></p-toast>
+<div class="p-mb-3 p-text-italic">
+    <h3>Catalogo de productos</h3>
+</div>
+<p-card>
+    <p-tabView>
+        <p-tabPanel header="Productos publicados">
+            <p-table [value]="dataFromdb" styleClass="p-datatable-customers p-datatable-gridlines p-datatable-striped"
+                [responsive]="true" [paginator]="true" [rows]="pageSize" dataKey="code"
+                [rowsPerPageOptions]="[10,30,60]" [totalRecords]="sizeRecords" [lazy]="true" [autoLayout]="true"
+                [columns]="cols" (onLazyLoad)="chargeData($event)">
+                <ng-template pTemplate="caption">
+                    Listado
+                </ng-template>
+                <ng-template pTemplate="header" let-columns>
+                    <tr>
+                        <ng-container *ngFor="let col of columns">
+                            <th>
+                                {{col.header}}
+                            </th>
+                        </ng-container>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-dataFrom let-index="rowIndex" let-columns="columns">
+                    <tr>
+                        <td>
+                            <span class="p-column-title">Código</span>
+                            {{dataFrom.seqcatproduct}}
+                        </td>
+                        <td>
+                            <span class="p-column-title">Nombre</span>
+                            {{dataFrom.nameproduct}}
+                        </td>
+                        <td>
+                            <span class="p-column-title">Descripción</span>
+                            {{dataFrom.description}}
+                        </td>
+                        <td>
+                            <span class="p-column-title">Precio venta</span>
+                            {{dataFrom.saleprize}}
+                        </td>
+                        <td>
+                            <span class="p-column-title">Imagen</span>
+                            <img src="{{dataFrom.img}}" alt="" width="50" height="50" />
+                            <!-- {{dataFrom.img}} -->
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    No hay registros que mostrar
+                </ng-template>
+            </p-table>
+        </p-tabPanel>
+        <p-tabPanel header="Formulario de Productos">
+            <div class="card-header">
+                Formulario de Productos
+            </div>
+            <br>
+            <form [formGroup]="formProduct" (ngSubmit)="validateForm()">
+                <div class="p-fluid p-grid">
+                    <div class="p-field p-col-12 p-md-2"></div>
+                    <div class="p-field p-col-12 p-md-8" style="text-align: center;">
+                        <h5>Imagen</h5>
+                        <p-fileUpload name="demo[]" [files]="myfiles" chooseLabel="Seleccionar" uploadLabel="Subir"
+                            cancelLabel="Cancelar" accept="image/*" maxFileSize="1000000" customUpload="true"
+                            (uploadHandler)="uploadFileNew($event)">
+                            <ng-template pTemplate="content">
+                                <ul *ngIf="fileUploades.length">
+                                    <li>{{fileUploades[0]?.name}}</li>
+                                </ul>
+                            </ng-template>
+                        </p-fileUpload>
+                    </div>
+                    <div class="p-field p-col-12 p-md-2"></div>
+                    <div class="p-field p-col-12 p-md-6">
+                        <div class="p-inputgroup">
+                            <span class="p-inputgroup-addon">
+                                <i class="pi pi-user"></i>
+                            </span>
+                            <span class="p-float-label">
+                                <input type="text" id="inputgroup" pInputText formControlName="codeProd">
+                                <label for="inputgroup">Codigo de producto</label>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="p-field p-col-12 p-md-6">
+                        <div class="p-inputgroup">
+                            <span class="p-inputgroup-addon">
+                                <i class="pi pi-id-card"></i>
+                            </span>
+                            <span class="p-float-label">
+                                <input type="text" id="inputgroup" pInputText formControlName="name">
+                                <label for="inputgroup">Nombre</label>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="p-field p-col-12 p-md-6">
+                        <div class="p-inputgroup">
+                            <span class="p-inputgroup-addon">
+                                <i class="pi pi-phone"></i>
+                            </span>
+                            <span class="p-float-label">
+                                <input type="text" id="inputgroup" pInputText formControlName="saleprize">
+                                <label for="inputgroup">Precio venta</label>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="p-field p-col-12 p-md-12">
+                        <div class="p-inputgroup">
+                            <span class="p-inputgroup-addon">
+                                <i class="pi pi-globe"></i>
+                            </span>
+                            <span class="p-float-label">
+                                <textarea id="float-input" rows="5" cols="30" pInputTextarea
+                                    formControlName="description"></textarea>
+                                <label for="inputgroup">Descripcion</label>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <p-toolbar>
+                <div class="p-toolbar-group-left">
+                </div>
+                <div class="p-toolbar-group-right">
+                    <button pButton pRipple type="button" label="Agregar" icon="pi pi-save"
+                        class="p-button-raised p-button-rounded p-button-success p-mr-2 p-mb-2 "
+                        (click)="validateForm()" style="float: right">
+                    </button>
+                </div>
+            </p-toolbar>
+        </p-tabPanel>
+    </p-tabView>
+</p-card>
