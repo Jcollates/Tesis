@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LazyLoadEvent, MessageService, SelectItem } from 'primeng/api';
 import { AuthService } from 'src/app/sharedAll/serviceShared/auth.service';
 import { CataloguesService } from 'src/app/sharedAll/serviceShared/catalogues.service';
@@ -62,6 +62,9 @@ export class AgendamientoCitasComponent implements OnInit {
 
   //sevice extras
   extraServices: ServiceAdd[] = [];
+
+  fromEdit: boolean = false;
+  meetToUpdate: Simplemeet = new Simplemeet();
   constructor(
     private simpleMeetService: SimpleMeetService,
     private formBuilder: FormBuilder,
@@ -135,7 +138,7 @@ export class AgendamientoCitasComponent implements OnInit {
       dateService: ['', Validators.required],
       dateEnd: ['', Validators.required],
       tools: ['', Validators.required],
-    });
+    }, { validator: this.emailValidator("email") });
   }
   get services() {
     return this.formCita.controls["services"] as FormArray;
@@ -154,12 +157,18 @@ export class AgendamientoCitasComponent implements OnInit {
   validateForm() {
     // console.log("this.services", JSON.stringify(this.formCita.controls.services.value));
     this.formCita.markAllAsTouched();
+    this.formCita.markAsDirty();
     if (!this.formCita.valid) {
       this.messageService.add({ severity: 'error', detail: 'Formulario no valido' });
       console.log(this.formCita.value);
     } else {
       if (this.services.length > 0) {
-        console.log(this.formCita.value);
+        if (this.fromEdit) {
+          this.simpleMeet.seqsimplemeet = this.meetToUpdate.seqsimplemeet;
+          this.simpleMeet.status = this.meetToUpdate.status;
+        } else {
+          this.simpleMeet.status = 'hold';
+        }
         this.simpleMeet.dateService = this.formCita.controls.dateService.value;
         this.simpleMeet.address = this.formCita.controls.address.value;
         this.simpleMeet.cliName = this.formCita.controls.name.value;
@@ -177,7 +186,6 @@ export class AgendamientoCitasComponent implements OnInit {
         this.simpleMeet.tools = this.formCita.controls.tools.value;
         this.simpleMeet.dateEnd = this.formCita.controls.dateEnd.value;
         this.simpleMeet.stimatedValue = 5.00;
-        this.simpleMeet.status = 'hold';
         this.simpleMeet.addededServices = JSON.stringify(this.formCita.controls.services.value);
         this.saveFormsimpleMeet(this.simpleMeet);
       } else {
@@ -188,12 +196,22 @@ export class AgendamientoCitasComponent implements OnInit {
   }
   saveFormsimpleMeet(container: Simplemeet) {
     this.simpleMeetService.saveCustomerService(container).subscribe(res => {
-      if (res != null) this.messageService.add({ severity: 'success', detail: 'Registrado correctamente' });
-      this.formCita.reset();
-      this.chargeData(null);
-      this.activeIndex1 = 0;
+      if (res != null) {
+        this.messageService.add({ severity: 'success', detail: 'Registrado correctamente' });
+        this.formCita.reset();
+        while(this.services.controls.length > 1 ){
+          this.deleteService(0);
+        }
+        this.chargeData(null);
+        this.activeIndex1 = 0;
+        this.fromEdit = false;
+      } else {
+        this.messageService.add({ severity: 'error', detail: 'Ocurrio un error' });
+
+      }
     })
   }
+
   async getCatalogues() {
     await this.catalogueService.getCataloguebyCodeCat(PROVINCECAT).then(rest => {
       this.dropProvince = this.catalogueService.constructModel(rest);
@@ -285,13 +303,74 @@ export class AgendamientoCitasComponent implements OnInit {
           }
         })
       }
-      this.simpleMeetService.updateSimpleMeet(item).subscribe(rest => {
-        if (rest) this.messageService.add({ severity: 'success', detail: 'Solicitud actualizada' });
-        this.chargeData(null);
-      });
+      // this.simpleMeetService.updateSimpleMeet(item).subscribe(rest => {
+      //   if (rest) this.messageService.add({ severity: 'success', detail: 'Solicitud actualizada' });
+      //   this.chargeData(null);
+      // });
 
     } else {
       this.messageService.add({ severity: 'error', detail: 'Seleccione un estado diferente a en espera' });
+    }
+  }
+  onEditMeet(dataFrom: Simplemeet) {
+    console.log('On edit', dataFrom);
+    this.fromEdit = true;
+    this.activeIndex1 = 2;
+    this.populateDataEdit(dataFrom);
+    this.meetToUpdate = dataFrom;
+  }
+  populateDataEdit(data: Simplemeet) {
+    this.formCita.patchValue({
+      dni: data.cliDni,
+      name: data.cliName,
+      lastname: data.cliLastName,
+      phone: data.phone,
+      email: data.cliEmail,
+      province: data.cliProvince,
+      city: data.cliCity,
+      address: data.address,
+      hoursNumber: data.hoursStimated,
+      dateService: new Date(data.dateService),
+      dateEnd: new Date(data.dateEnd),
+      tools: data.tools,
+      services: this.populateServices(data.elementAsArray)
+    });
+    console.warn(this.formCita);
+  }
+  populateServices(service: ServiceAdd[]) {
+    this.deleteService(0);
+    service.forEach(() => this.addService());
+    if (this.services.length == this.services.length) this.services.patchValue(service)
+  }
+  saveUpdate(simplemeet: Simplemeet) {
+  }
+
+  enterOnlyNumbers(evt: any) {
+    if (window.onkeyup) {
+      var keynum = evt.keyCode;
+    } else {
+      keynum = evt.which;
+    }
+    // Comprobamos si se encuentra en el rango numérico y que teclas no recibirá ascii.
+    if ((keynum > 47 && keynum < 58) || keynum == 8 || keynum == 13 || keynum == 6) {
+      return true;
+    } else {
+      //incorporar mensaje
+      return false;
+    }
+  }
+  emailValidator(emailControl: string) {
+    // external validator
+    return (formGroup: FormGroup) => {
+      const control = formGroup.controls[emailControl];
+      if (control.errors && !control.errors.mustMatch) {
+        return;
+      }
+      if (/^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/.test(control?.value)) {
+        control.setErrors(null);
+      } else {
+        control.setErrors({ mustMatch: 'Correo incorrecto' });
+      }
     }
   }
 }
