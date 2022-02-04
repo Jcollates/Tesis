@@ -37,4 +37,9 @@ export class EmployeeService {
     let url = this.url + '/toAssignedEmploy';
     return this.http.get(url).pipe(map(res => res as Employee[] ));
   }
+  getEmployesByName(name: string): Observable<Employee[]>{
+    let url = this.url + `/getEmploy/${name}`;
+    return this.http.get(url).pipe(map(res => res as Employee[] ));
+  }
+  
 }

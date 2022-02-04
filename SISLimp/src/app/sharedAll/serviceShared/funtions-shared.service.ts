@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +14,34 @@ export class FuntionsSharedService {
     let base64String = btoa(STRING_CHAR);
     let base64Stringtwo = atob(base64String);
     return base64Stringtwo;
-
   }
+  enterOnlyNumbers(evt: any) {
+    if (window.onkeyup) {
+      var keynum = evt.keyCode;
+    } else {
+      keynum = evt.which;
+    }
+    // Comprobamos si se encuentra en el rango numérico y que teclas no recibirá ascii.
+    if ((keynum > 47 && keynum < 58) || keynum == 8 || keynum == 13 || keynum == 6) {
+      return true;
+    } else {
+      //incorporar mensaje
+      return false;
+    }
+  }
+  emailValidator(emailControl: string) {
+    // external validator
+    return (formGroup: FormGroup) => {
+      const control = formGroup.controls[emailControl];
+      if (control.errors && !control.errors.mustMatch) {
+        return;
+      }
+      if (/^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/.test(control?.value)) {
+        control.setErrors(null);
+      } else {
+        control.setErrors({ mustMatch: 'Correo incorrecto' });
+      }
+    }
+  }
+  
 }

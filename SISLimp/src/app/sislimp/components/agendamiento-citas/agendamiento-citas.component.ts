@@ -71,7 +71,7 @@ export class AgendamientoCitasComponent implements OnInit {
     private catalogueService: CataloguesService,
     private messageService: MessageService,
     private agreeService: AgreementService,
-    private emplyeeservice: EmployeeService,
+    private employeeService: EmployeeService,
     private sharedFuntions: FuntionsSharedService,
     private authService: AuthService,
   ) { }
@@ -103,8 +103,8 @@ export class AgendamientoCitasComponent implements OnInit {
     this.simpleMeetService.getSimpleMeets().subscribe(rest => {
       if (rest.length > 0) {
         rest.forEach(item => item.elementAsArray = item.addededServices ? JSON.parse(item.addededServices) : [])
-        this.dataFromdb = rest.filter(item => item.status !== 'cancel' && item.status !== 'success');
-        this.dataFromdbProcesed = rest.filter(item => item.status === 'cancel' || item.status === 'success');
+        this.dataFromdb = rest.filter(item => item.status === 'process' || item.status === 'hold');
+        this.dataFromdbProcesed = rest.filter(item => item.status !== 'process' && item.status !== 'hold');
         this.dataFromdb.forEach(item => this.completeCityDrop(item.cliProvince, 'dataFromdb'));
         this.dataFromdbProcesed.forEach(item => this.completeCityDrop(item.cliProvince, 'dataFromdbProcesed'));
         console.log('dataFromdb', this.dataFromdb);
@@ -199,7 +199,7 @@ export class AgendamientoCitasComponent implements OnInit {
       if (res != null) {
         this.messageService.add({ severity: 'success', detail: 'Registrado correctamente' });
         this.formCita.reset();
-        while(this.services.controls.length > 1 ){
+        while (this.services.controls.length > 1) {
           this.deleteService(0);
         }
         this.chargeData(null);
@@ -238,7 +238,7 @@ export class AgendamientoCitasComponent implements OnInit {
     this.showEmployesAssigned = true;
   }
   getEmployees(event: LazyLoadEvent) {
-    this.emplyeeservice.getEmployesToBesAssigned().subscribe(res => {
+    this.employeeService.getEmployesToBesAssigned().subscribe(res => {
       res.forEach(item => {
         item.img = this.sharedFuntions.repair(item.img);
       })
@@ -247,7 +247,7 @@ export class AgendamientoCitasComponent implements OnInit {
     })
   }
   getEmployeesAssigned() {
-    this.emplyeeservice.getEmployessAssigned(this.selectedFather.seqsimplemeet, null).subscribe(res => {
+    this.employeeService.getEmployessAssigned(this.selectedFather.seqsimplemeet, null).subscribe(res => {
       res.forEach(item => {
         item.img = this.sharedFuntions.repair(item.img);
       })
@@ -267,7 +267,7 @@ export class AgendamientoCitasComponent implements OnInit {
   saveAssigment() {
     if (this.selectdEmployes.length > 0) {
       this.selectdEmployes.forEach(item => {
-        this.emplyeeservice.updateEmployee(item).subscribe(update => {
+        this.employeeService.updateEmployee(item).subscribe(update => {
           if (update) this.messageService.add({ severity: 'success', detail: 'Empleado asignado' })
           else this.messageService.add({ severity: 'error', detail: 'No se logro asignar' });
           this.getEmployeesAssigned();
@@ -292,7 +292,7 @@ export class AgendamientoCitasComponent implements OnInit {
     console.log("this.item)", item);
     if (item.status != 'hold') {
       if (item.status == 'process') {
-        this.emplyeeservice.getEmployessAssigned(item.seqsimplemeet, null).subscribe(res => {
+        this.employeeService.getEmployessAssigned(item.seqsimplemeet, null).subscribe(res => {
           if (res.length <= 0) {
             this.messageService.add({ severity: 'error', detail: 'Debe haber al menos un empleado asignado' });
           } else {
@@ -302,15 +302,32 @@ export class AgendamientoCitasComponent implements OnInit {
             });
           }
         })
+      } else {
+        this.getEmployesAndUpdate(item.seqsimplemeet);
+        this.simpleMeetService.updateSimpleMeet(item).subscribe(rest => {
+          if (rest) this.messageService.add({ severity: 'success', detail: 'Solicitud actualizada' });
+          this.chargeData(null);
+        });
       }
-      // this.simpleMeetService.updateSimpleMeet(item).subscribe(rest => {
-      //   if (rest) this.messageService.add({ severity: 'success', detail: 'Solicitud actualizada' });
-      //   this.chargeData(null);
-      // });
+
 
     } else {
       this.messageService.add({ severity: 'error', detail: 'Seleccione un estado diferente a en espera' });
     }
+  }
+  getEmployesAndUpdate(seqmeet: number){
+    this.employeeService.getEmployessAssigned(seqmeet, null).subscribe(rest => {
+      if(rest){
+        rest.forEach(item => {
+          item.img = this.sharedFuntions.repair(item.img);
+          item.assigmentdayte = null;
+          item.endassigmentdate = null;
+          item.seqmeet = null;
+          this.employeeService.updateEmployee(item).subscribe(() => console.log('employee removed'));
+        })
+      }
+    })
+    
   }
   onEditMeet(dataFrom: Simplemeet) {
     console.log('On edit', dataFrom);
