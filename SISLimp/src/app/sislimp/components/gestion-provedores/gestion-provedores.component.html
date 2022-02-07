@@ -3,65 +3,144 @@
     <h3>Gestión de proveedores</h3>
 </div>
 <p-card>
-    <p-tabView [(activeIndex)]="activeIndex"> 
+    <p-tabView [(activeIndex)]="activeIndex">
         <p-tabPanel header="Registros">
             <p-table [value]="dataFromdb" styleClass="p-datatable-customers p-datatable-gridlines p-datatable-striped"
-                [responsive]="true" [paginator]="true" [rows]="pageSize" dataKey="date"
+                [responsive]="true" [paginator]="true" [rows]="pageSize" dataKey="seqprovider"
                 [rowsPerPageOptions]="[10,30,60]" [totalRecords]="sizeRecords" [lazy]="true" [autoLayout]="true"
-                [columns]="cols" (onLazyLoad)="chargeData($event)">
+                [columns]="cols" (onLazyLoad)="chargeData($event)" editMode="row">
                 <ng-template pTemplate="caption">
                     Listado
                 </ng-template>
                 <ng-template pTemplate="header" let-columns>
                     <tr>
                         <ng-container *ngFor="let col of columns">
-                            <th>
+                            <th NOWRAP>
                                 {{col.header}}
                             </th>
                         </ng-container>
                     </tr>
                 </ng-template>
-                <ng-template pTemplate="body" let-dataFrom let-index="rowIndex" let-columns="columns">
-                    <tr>
+                <ng-template pTemplate="body" let-dataFrom let-index="rowIndex" let-columns="columns"
+                    let-editing="editing">
+                    <tr [pEditableRow]="dataFrom">
                         <td>
                             <span class="p-column-title">Código proveedor</span>
                             {{dataFrom.seqprovider}}
                         </td>
                         <td>
                             <span class="p-column-title">RUC</span>
-                            {{dataFrom.dni}}
+                            <p-cellEditor>
+                                <ng-template pTemplate="input">
+                                    <input pInputText type="text" maxlength="13" [(ngModel)]="dataFrom.dni">
+                                </ng-template>
+                                <ng-template pTemplate="output">
+                                    {{dataFrom.dni}}
+                                </ng-template>
+                            </p-cellEditor>
                         </td>
                         <td>
                             <span class="p-column-title">Nombre empresa</span>
-                            {{dataFrom.namenterprice}}
+                            <p-cellEditor>
+                                <ng-template pTemplate="input">
+                                    <input pInputText type="text" [(ngModel)]="dataFrom.namenterprice">
+                                </ng-template>
+                                <ng-template pTemplate="output">
+                                    {{dataFrom.namenterprice}}
+                                </ng-template>
+                            </p-cellEditor>
                         </td>
                         <td>
                             <span class="p-column-title">Dirección</span>
-                            {{dataFrom.location}}
+                            <p-cellEditor>
+                                <ng-template pTemplate="input">
+                                    <input pInputText type="text" [(ngModel)]="dataFrom.location">
+                                </ng-template>
+                                <ng-template pTemplate="output">
+                                    {{dataFrom.location}}
+                                </ng-template>
+                            </p-cellEditor>
                         </td>
                         <td>
                             <span class="p-column-title">Num. Teléfono</span>
-                            {{dataFrom.phone}}
+                            <p-cellEditor>
+                                <ng-template pTemplate="input">
+                                    <input pInputText type="text" maxlength="10" [(ngModel)]="dataFrom.phone">
+                                </ng-template>
+                                <ng-template pTemplate="output">
+                                    {{dataFrom.phone}}
+                                </ng-template>
+                            </p-cellEditor>
                         </td>
                         <td>
                             <span class="p-column-title">Ciudad</span>
-                            {{dataFrom.city}}
+                            <p-cellEditor>
+                                <ng-template pTemplate="input">
+                                    <p-dropdown [options]="dropCity" [(ngModel)]="dataFrom.city"></p-dropdown>
+                                </ng-template>
+                                <ng-template pTemplate="output">
+                                    {{dataFrom.city | forCityPipe:dataFrom.province:dropCityTwo}}
+                                </ng-template>
+                            </p-cellEditor>
                         </td>
                         <td>
                             <span class="p-column-title">Provincia</span>
-                            {{dataFrom.province}}
+                            <p-cellEditor>
+                                <ng-template pTemplate="input">
+                                    <p-dropdown [options]="dropProvince" (onChange)="onChangueProvince($event)"
+                                        [(ngModel)]="dataFrom.province"></p-dropdown>
+                                </ng-template>
+                                <ng-template pTemplate="output">
+                                    {{dataFrom.province | selectedItemPipe:dropProvince }}
+                                </ng-template>
+                            </p-cellEditor>
                         </td>
                         <td>
                             <span class="p-column-title">Detalles</span>
-                            {{dataFrom.detail}}
+                            <p-cellEditor>
+                                <ng-template pTemplate="input">
+                                    <textarea id="float-input" rows="3" cols="30" pInputTextarea
+                                        [(ngModel)]="dataFrom.detail"></textarea>
+                                </ng-template>
+                                <ng-template pTemplate="output">
+                                    {{dataFrom.detail}}
+                                </ng-template>
+                            </p-cellEditor>
                         </td>
                         <td>
                             <span class="p-column-title">Tipo de pago</span>
-                            {{dataFrom.paytype}}
+                            <p-cellEditor>
+                                <ng-template pTemplate="input">
+                                    <p-dropdown [options]="dropPay" [(ngModel)]="dataFrom.paytype"></p-dropdown>
+                                </ng-template>
+                                <ng-template pTemplate="output">
+                                    {{dataFrom.paytype | selectedItemPipe:dropPay }}
+                                </ng-template>
+                            </p-cellEditor>
                         </td>
                         <td>
                             <span class="p-column-title">Nombre vendedor</span>
-                            {{dataFrom.salername}}
+                            <p-cellEditor>
+                                <ng-template pTemplate="input">
+                                    <input pInputText type="text" [(ngModel)]="dataFrom.salername">
+                                </ng-template>
+                                <ng-template pTemplate="output">
+                                    {{dataFrom.salername}}
+                                </ng-template>
+                            </p-cellEditor>
+                        </td>
+                        <td style="text-align:center">
+                            <button *ngIf="!editing" (click)="onRowEditInit(dataFrom)" pButton pRipple type="button"
+                                pInitEditableRow icon="pi pi-pencil" class="p-button-rounded p-button-text"></button>
+                            <button *ngIf="!editing" pButton pRipple type="button" pCancelEditableRow icon="pi pi-trash"
+                                (click)="deleteCustomerService(dataFrom.seqprovider)"
+                                class="p-button-rounded p-button-text p-button-danger"></button>
+                            <button *ngIf="editing" pButton pRipple type="button" pSaveEditableRow icon="pi pi-check"
+                                (click)="onRowEditSave(dataFrom)"
+                                class="p-button-rounded p-button-text p-button-success p-mr-2"></button>
+                            <button *ngIf="editing" pButton pRipple type="button" pCancelEditableRow icon="pi pi-times"
+                                (click)="onRowEditCancel(dataFrom, index)"
+                                class="p-button-rounded p-button-text p-button-danger"></button>
                         </td>
                     </tr>
                 </ng-template>
@@ -72,8 +151,8 @@
             <p-toolbar>
                 <div class="p-toolbar-group-left"></div>
                 <div class="p-toolbar-group-right">
-                    <button pButton pRipple type="button" label="Registrar nueva" (click)="activeIndex = 1" icon="pi pi-plus"
-                        class="p-button-raised p-button-rounded p-button-success p-mr-2 p-mb-2 ">
+                    <button pButton pRipple type="button" label="Registrar nueva" (click)="activeIndex = 1"
+                        icon="pi pi-plus" class="p-button-raised p-button-rounded p-button-success p-mr-2 p-mb-2 ">
                     </button>
                 </div>
             </p-toolbar>
@@ -91,10 +170,16 @@
                                 <i class="pi pi-user"></i>
                             </span>
                             <span class="p-float-label">
-                                <input type="text" id="inputgroup" pInputText formControlName="dni">
-                                <label for="inputgroup">Cedula/RUC</label>
+                                <input type="text" id="inputgroup" pInputText formControlName="dni" maxlength="13">
+                                <label for="inputgroup">RUC</label>
                             </span>
                         </div>
+                        <small *ngIf="formProvider.get('dni')?.errors && (formProvider.get('dni')?.dirty ||
+                        formProvider.get('dni')?.touched)" class="p-error block">
+                            <small *ngIf="formProvider.get('dni').errors?.required">
+                                Requerido
+                            </small>
+                        </small>
                     </div>
                     <div class="p-field p-col-12 p-md-6">
                         <div class="p-inputgroup">
@@ -106,6 +191,12 @@
                                 <label for="inputgroup">Correo electrónico</label>
                             </span>
                         </div>
+                        <small *ngIf="formProvider.get('email')?.errors && (formProvider.get('email')?.dirty ||
+                        formProvider.get('email')?.touched)" class="p-error block">
+                            <small *ngIf="formProvider.get('email').errors?.required">
+                                Requerido
+                            </small>
+                        </small>
                     </div>
                     <div class="p-field p-col-12 p-md-6">
                         <div class="p-inputgroup">
@@ -128,6 +219,12 @@
                                 <label for="inputgroup">Dirección</label>
                             </span>
                         </div>
+                        <small *ngIf="formProvider.get('address')?.errors && (formProvider.get('address')?.dirty ||
+                        formProvider.get('address')?.touched)" class="p-error block">
+                            <small *ngIf="formProvider.get('address').errors?.required">
+                                Requerido
+                            </small>
+                        </small>
                     </div>
                     <div class="p-field p-col-12 p-md-6">
                         <div class="p-inputgroup">
@@ -139,19 +236,34 @@
                                 <label for="inputgroup">Teléfono</label>
                             </span>
                         </div>
+                        <small *ngIf="formProvider.get('phone')?.errors && (formProvider.get('phone')?.dirty ||
+                        formProvider.get('phone')?.touched)" class="p-error block">
+                            <small *ngIf="formProvider.get('phone').errors?.required">
+                                Requerido
+                            </small>
+                        </small>
                     </div>
                     <div class="p-field p-col-12 p-md-6"></div>
                     <div class="p-field p-col-12 p-md-6">
-                        <span class="p-float-label">
-                            <p-dropdown (onChange)="onChangueProvince($event)" [options]="dropProvince" formControlName="province"></p-dropdown>
-                            <label for="dropdown">Provincia</label>
-                        </span>
+                        <span for="dropdown">Provincia</span>
+                        <p-dropdown (onChange)="onChangueProvince($event)" [options]="dropProvince"
+                            formControlName="province"></p-dropdown>
+                        <small *ngIf="formProvider.get('province')?.errors && (formProvider.get('province')?.dirty ||
+                        formProvider.get('province')?.touched)" class="p-error block">
+                            <small *ngIf="formProvider.get('province').errors?.required">
+                                Requerido
+                            </small>
+                        </small>
                     </div>
                     <div class="p-field p-col-12 p-md-6">
-                        <span class="p-float-label">
-                            <p-dropdown [options]="dropCity" formControlName="city"></p-dropdown>
-                            <label for="dropdown">Ciudad</label>
-                        </span>
+                        <span for="dropdown">Ciudad</span>
+                        <p-dropdown [options]="dropCity" formControlName="city"></p-dropdown>
+                        <small *ngIf="formProvider.get('city')?.errors && (formProvider.get('city')?.dirty ||
+                        formProvider.get('city')?.touched)" class="p-error block">
+                            <small *ngIf="formProvider.get('city').errors?.required">
+                                Requerido
+                            </small>
+                        </small>
                     </div>
                     <div class="p-field p-col-12 p-md-12">
                         <div class="p-inputgroup">
@@ -159,28 +271,42 @@
                                 <i class="pi pi-globe"></i>
                             </span>
                             <span class="p-float-label">
-                                <textarea id="float-input" rows="5" cols="30" pInputTextarea formControlName="details"></textarea>
+                                <textarea id="float-input" rows="5" cols="30" pInputTextarea
+                                    formControlName="details"></textarea>
                                 <label for="inputgroup">Detalles</label>
                             </span>
                         </div>
+                        <small *ngIf="formProvider.get('details')?.errors && (formProvider.get('details')?.dirty ||
+                        formProvider.get('details')?.touched)" class="p-error block">
+                            <small *ngIf="formProvider.get('details').errors?.required">
+                                Requerido
+                            </small>
+                        </small>
                     </div>
-                    <!-- <div class="p-field p-col-12 p-md-6"></div> -->
                     <div class="p-field p-col-12 p-md-6">
-                        <span class="p-float-label">
-                            <p-dropdown  [options]="dropPay" formControlName="paytype"></p-dropdown>
-                            <label for="dropdown">Tipo pago</label>
-                        </span>
+                        <span for="dropdown">Tipo pago</span>
+                        <p-dropdown [options]="dropPay" formControlName="paytype"></p-dropdown>
+                        <small *ngIf="formProvider.get('paytype')?.errors && (formProvider.get('paytype')?.dirty ||
+                        formProvider.get('paytype')?.touched)" class="p-error block">
+                            <small *ngIf="formProvider.get('paytype').errors?.required">
+                                Requerido
+                            </small>
+                        </small>
                     </div>
                     <div class="p-field p-col-12 p-md-6">
+                        <span for="inputgroup">Nombre vendedor</span>
                         <div class="p-inputgroup">
                             <span class="p-inputgroup-addon">
                                 <i class="pi pi-lock"></i>
                             </span>
-                            <span class="p-float-label">
-                                <input type="text" id="inputgroup" pInputText formControlName="salername">
-                                <label for="inputgroup">Nombre vendedor</label>
-                            </span>
+                            <input type="text" id="inputgroup" pInputText formControlName="salername">
                         </div>
+                        <small *ngIf="formProvider.get('salername')?.errors && (formProvider.get('salername')?.dirty ||
+                        formProvider.get('salername')?.touched)" class="p-error block">
+                            <small *ngIf="formProvider.get('salername').errors?.required">
+                                Requerido
+                            </small>
+                        </small>
                     </div>
                 </div>
                 <p-toolbar>

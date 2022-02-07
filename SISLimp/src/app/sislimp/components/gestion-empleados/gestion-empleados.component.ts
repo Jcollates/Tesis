@@ -30,10 +30,13 @@ export class GestionEmpleadosComponent implements OnInit {
   newFile: NewFile = new NewFile();
 
 
+  //edit 
+  activeIndex1: number = 0;
+  clonedProducts: { [s: string]: Employee; } = {};
 
   constructor(
     private formBuilder: FormBuilder,
-    private sharedFuntions: FuntionsSharedService,
+    public sharedFuntions: FuntionsSharedService,
     private messageService: MessageService,
     private catalogueService: CataloguesService,
     private employeService: EmployeeService
@@ -44,28 +47,31 @@ export class GestionEmpleadosComponent implements OnInit {
     this.createForm();
     this.getCatalogues()
   }
-  createCols(){
+  createCols() {
     this.cols = [
       { field: 'cedula', header: 'Cedula' },
       { field: 'name', header: 'Nombre' },
-      { field: 'lastname', header: 'Apellido'},
-      { field: 'birthday', header: 'Fecha nacimiento'},
-      { field: 'contractday', header: 'Fecha contratación'},
-      { field: 'charge', header: 'Cargo'},
-      { field: 'image', header: 'Imagen'},
+      { field: 'lastname', header: 'Apellido' },
+      { field: 'birthday', header: 'Fecha nacimiento' },
+      { field: 'contractday', header: 'Fecha contratación' },
+      { field: 'charge', header: 'Cargo' },
+      { field: 'image', header: 'Imagen' },
+      { field: '', header: 'Editar/Eliminar' },
     ];
   }
   chargeData(event: LazyLoadEvent) {
     this.employeService.getEmployess().subscribe(rest => {
       console.log(rest);
-      rest.forEach( item => {
+      rest.forEach(item => {
         item.img = this.sharedFuntions.repair(item.img);
+        item.birthday = new Date(item.birthday);
+        item.contractday = new Date(item.contractday);
       })
       this.dataFromdb = rest;
       this.sizeRecords = rest.length;
     });
   }
-  getCatalogues(){
+  getCatalogues() {
     this.catalogueService.getCataloguebyCodeCat(CODECAT).then(rest => {
       this.drop = this.catalogueService.constructModel(rest);
     })
@@ -83,11 +89,10 @@ export class GestionEmpleadosComponent implements OnInit {
   }
 
   validateForm() {
+    this.formEmployee.markAllAsTouched();
     if (!this.formEmployee.valid) {
-      this.messageService.add({severity:'error', detail: 'Formulario no valido'});
-      console.log('FORM', this.formEmployee.value);
+      this.messageService.add({ severity: 'error', detail: 'Formulario no valido' });
     } else {
-      console.log('FORM', this.formEmployee.value);
       this.employeContainer.dni = this.formEmployee.controls.dni.value;
       this.employeContainer.img = this.formEmployee.controls.img.value;
       this.employeContainer.name = this.formEmployee.controls.name.value;
@@ -116,16 +121,63 @@ export class GestionEmpleadosComponent implements OnInit {
       }
     }
   }
+  async uploadFileEdit(event, dataFrom: Employee) {
+    if (event) {
+      this.myfiles = []
+      this.fileUploades = event.files;
+      const reader = new FileReader();
+      this.newFile.type = event.files[0].type;
+      this.newFile.name = event.files[0].name;
+      reader.readAsDataURL(event.files[0]);
+      reader.onload = () => {
+        dataFrom.img = (reader.result as string);
+      }
+      reader.onerror = (error) => {
+        console.log(error);
+      }
+    }
+  }
 
-  
+
 
   saveForm(container: Employee) {
     this.employeService.saveEmployee(container).subscribe(res => {
-      if(res != null) this.messageService.add({severity:'success', detail: 'Registrado correctamente'});
+      if (res != null) this.messageService.add({ severity: 'success', detail: 'Registrado correctamente' });
       this.formEmployee.reset();
       this.fileUploades = [];
       this.chargeData(null);
+      this.activeIndex1 = 0;
       // console.log("SAVED?", res);
+    })
+  }
+
+  onRowEditInit(customer: Employee) {
+    this.clonedProducts[customer.seqemploy] = { ...customer };
+  }
+  onRowEditSave(customer: Employee) {
+    this.employeService.updateEmployee(customer).subscribe(rest => {
+      if (rest) {
+        this.messageService.add({ severity: 'success', detail: 'Actualizado' });
+        this.chargeData(null);
+        delete this.clonedProducts[customer.seqemploy];
+      } else {
+        this.messageService.add({ severity: 'error', detail: 'Error al actualizar' });
+      }
+    });
+
+  }
+  onRowEditCancel(customer: Employee, index: number) {
+    this.dataFromdb[index] = this.clonedProducts[customer.seqemploy];
+    delete this.clonedProducts[customer.seqemploy];
+  }
+  deleteCustomerService(seqcustomer: any) {
+    this.employeService.deleteEmployee(seqcustomer).subscribe(rest => {
+      if (rest) {
+        this.messageService.add({ severity: 'success', detail: 'Registro eliminado' });
+        this.chargeData(null);
+      } else {
+        this.messageService.add({ severity: 'error', detail: 'Error al eliminar' });
+      }
     })
   }
 

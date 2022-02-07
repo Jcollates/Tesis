@@ -116,5 +116,10 @@
     border-radius: 50%;
 }
 
-
+:host ::ng-deep  .p-menubar{
+    background-color: #256eb8 !important;
+}
+:host ::ng-deep .p-menuitem-text{
+    color: whitesmoke;
+}
   

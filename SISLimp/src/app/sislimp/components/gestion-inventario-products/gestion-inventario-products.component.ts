@@ -26,12 +26,14 @@ export class GestionInventarioProductsComponent implements OnInit {
 
   formProducts: FormGroup = new FormGroup({});
   productContainer: ProductModel = new ProductModel();
+  clonedProducts: { [s: string]: ProductModel; } = {};
+  activeIndex1: number = 0;
 
   constructor(
     private productService: ProductosService,
     private formBuilder: FormBuilder,
     private messageService: MessageService,
-    private prodivderService: ProviderService
+    private providerService: ProviderService
   ) {
 
   }
@@ -48,12 +50,16 @@ export class GestionInventarioProductsComponent implements OnInit {
       { field: 'cuantity', header: 'Cantidad' },
       { field: 'name', header: 'Nombre' },
       { field: 'saleprice', header: 'Precio venta' },
+      { field: 'pricebought', header: 'Precio compra' },
       { field: 'datebuy', header: 'Fecha compra' },
-      { field: 'provider', header: 'Poveedor' }
+      { field: 'provider', header: 'Poveedor' },
+      { field: 'description', header: 'Detalle' },
+      { field: '', header: 'Editar/Eliminar' },
+
     ];
   }
 
-  createForm(){
+  createForm() {
     this.formProducts = this.formBuilder.group({
       quantity: ['', Validators.required],
       codeprod: ['', Validators.required],
@@ -68,16 +74,19 @@ export class GestionInventarioProductsComponent implements OnInit {
 
   chargeData(event: LazyLoadEvent) {
     this.productService.getProducts().subscribe(rest => {
-      console.log(rest);
-      this.dataFromdb = rest;
-      this.sizeRecords = rest.length;
+      if (rest.length > 0) {
+        console.log(rest);
+        this.dataFromdb = rest;
+        this.sizeRecords = rest.length;
+        this.dataFromdb.forEach(item => item.datebought = new Date(item.datebought))
+      }
     });
   }
 
   validateForm() {
+    this.formProducts.markAllAsTouched();
     if (!this.formProducts.valid) {
-      this.messageService.add({severity:'error', detail: 'Formulario no valido'});
-      // console.log('FORM', this.formService.value);
+      this.messageService.add({ severity: 'error', detail: 'Formulario no valido' });
     } else {
       console.log('FORM', this.formProducts.value);
       this.productContainer.codeproduct = this.formProducts.controls.codeprod.value;
@@ -94,17 +103,14 @@ export class GestionInventarioProductsComponent implements OnInit {
   }
 
   saveForm(container: ProductModel) {
-    // console.log('cotainer', container);
     this.productService.saveProducts(container).subscribe(res => {
-      if(res != null) this.messageService.add({severity:'success', detail: 'Registrado correctamente'});
+      if (res != null) this.messageService.add({ severity: 'success', detail: 'Registrado correctamente' });
       this.formProducts.reset();
       this.chargeData(null);
-      // console.log("SAVED?", res);
     })
   }
-  createProviderCombo(){
-    this.prodivderService.getProviders().subscribe(rest => {
-      // console.log('providers',rest);
+  createProviderCombo() {
+    this.providerService.getProviders().then(rest => {
       this.providers = rest;
       this.drop = this.crateCombo(rest);
     });
@@ -116,5 +122,34 @@ export class GestionInventarioProductsComponent implements OnInit {
       label: value.namenterprice + ' - ' + value.seqprovider,
       value: value.seqprovider.toString()
     })));
+  }
+  onRowEditInit(customer: ProductModel) {
+    this.clonedProducts[customer.seqprod] = { ...customer };
+  }
+
+  onRowEditSave(customer: ProductModel) {
+    console.log(customer)
+    this.productService.updateProducts(customer).subscribe(rest => {
+      if (rest) {
+        this.messageService.add({ severity: 'success', detail: 'Actualizado' });
+        this.chargeData(null);
+        delete this.clonedProducts[customer.seqprod];
+      } else {
+        this.messageService.add({ severity: 'error', detail: 'Error al actualizar' });
+      }
+    });
+
+  }
+  onRowEditCancel(customer: ProductModel, index: number) {
+    this.dataFromdb[index] = this.clonedProducts[customer.seqprod];
+    delete this.clonedProducts[customer.seqprod];
+  }
+  deleteCustomerService(seqcustomer: any) {
+    this.productService.deleteProducts(seqcustomer).subscribe(rest => {
+      if (rest) {
+        this.messageService.add({ severity: 'success', detail: 'Registro eliminado' });
+        this.chargeData(null);
+      }
+    })
   }
 }

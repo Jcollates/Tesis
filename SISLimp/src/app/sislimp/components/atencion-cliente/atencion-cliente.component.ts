@@ -66,7 +66,7 @@ export class AtencionClienteComponent implements OnInit {
   chargeData(event: LazyLoadEvent) {
     this.customerService.getCustomerService().subscribe(rest => {
       if (rest.length > 0) {
-        rest.forEach(item => item.dateobservation = new Date(item.dateobservation))
+        rest.forEach(item => item.dateobservation = new Date(item.dateobservation));
         this.dataFromdb = rest;
         this.sizeRecords = rest.length;
         console.log(rest);

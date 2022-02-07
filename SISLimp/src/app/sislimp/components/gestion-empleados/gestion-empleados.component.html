@@ -3,53 +3,130 @@
     <h3>Gestión de empleados</h3>
 </div>
 <p-card>
-    <p-tabView>
+    <p-tabView [(activeIndex)]="activeIndex1">
         <p-tabPanel header="Empleados">
             <p-table [value]="dataFromdb" styleClass="p-datatable-customers p-datatable-gridlines p-datatable-striped"
-                [responsive]="true" [paginator]="true" [rows]="pageSize" dataKey="code"
+                [responsive]="true" [paginator]="true" [rows]="pageSize" dataKey="seqemploy"
                 [rowsPerPageOptions]="[10,30,60]" [totalRecords]="sizeRecords" [lazy]="true" [autoLayout]="true"
-                [columns]="cols" (onLazyLoad)="chargeData($event)">
+                [columns]="cols" (onLazyLoad)="chargeData($event)" editMode="row">
                 <ng-template pTemplate="caption">
                     Empleados
                 </ng-template>
                 <ng-template pTemplate="header" let-columns>
                     <tr>
                         <ng-container *ngFor="let col of columns">
-                            <th>
+                            <th NOWRAP>
                                 {{col.header}}
                             </th>
                         </ng-container>
                     </tr>
                 </ng-template>
-                <ng-template pTemplate="body" let-dataFrom let-index="rowIndex" let-columns="columns">
-                    <tr>
+                <ng-template pTemplate="body" let-dataFrom let-index="rowIndex" let-columns="columns"
+                    let-editing="editing">
+                    <tr [pEditableRow]="dataFrom">
                         <td>
                             <span class="p-column-title">Cedula</span>
-                            {{dataFrom.dni}}
+                            <p-cellEditor>
+                                <ng-template pTemplate="input">
+                                    <input pInputText type="text" maxlength="10" [(ngModel)]="dataFrom.dni">
+                                </ng-template>
+                                <ng-template pTemplate="output">
+                                    {{dataFrom.dni}}
+                                </ng-template>
+                            </p-cellEditor>
                         </td>
                         <td>
                             <span class="p-column-title">Nombre</span>
-                            {{dataFrom.name}}
+                            <p-cellEditor>
+                                <ng-template pTemplate="input">
+                                    <input pInputText type="text" [(ngModel)]="dataFrom.name">
+                                </ng-template>
+                                <ng-template pTemplate="output">
+                                    {{dataFrom.name}}
+                                </ng-template>
+                            </p-cellEditor>
                         </td>
                         <td>
                             <span class="p-column-title">Apellido</span>
-                            {{dataFrom.lastname}}
+                            <p-cellEditor>
+                                <ng-template pTemplate="input">
+                                    <input pInputText type="text" [(ngModel)]="dataFrom.lastname">
+                                </ng-template>
+                                <ng-template pTemplate="output">
+                                    {{dataFrom.lastname}}
+                                </ng-template>
+                            </p-cellEditor>
                         </td>
                         <td>
                             <span class="p-column-title">Fecha nacimiento</span>
-                            {{dataFrom.birthday | date }}
+                            <p-cellEditor>
+                                <ng-template pTemplate="input">
+                                    <p-calendar [showIcon]="true" dataType="string" inputId="icon" appendTo="body"
+                                        [(ngModel)]="dataFrom.birthday">
+                                    </p-calendar>
+                                </ng-template>
+                                <ng-template pTemplate="output">
+                                    {{dataFrom.birthday | date }}
+                                </ng-template>
+                            </p-cellEditor>
+
                         </td>
                         <td>
                             <span class="p-column-title">Fecha contratación</span>
-                            {{dataFrom.contractday | date}}
+                            <p-cellEditor>
+                                <ng-template pTemplate="input">
+                                    <p-calendar [showIcon]="true" dataType="string" inputId="icon" appendTo="body"
+                                        [(ngModel)]="dataFrom.contractday">
+                                    </p-calendar>
+                                </ng-template>
+                                <ng-template pTemplate="output">
+                                    {{dataFrom.contractday | date }}
+                                </ng-template>
+                            </p-cellEditor>
                         </td>
                         <td>
                             <span class="p-column-title">Cargo</span>
-                            {{dataFrom.position}}
+                            <p-cellEditor>
+                                <ng-template pTemplate="input">
+                                    <p-dropdown [options]="drop" [(ngModel)]="dataFrom.position"></p-dropdown>
+                                </ng-template>
+                                <ng-template pTemplate="output">
+                                    {{dataFrom.position | selectedItemPipe:drop}}
+                                </ng-template>
+                            </p-cellEditor>
                         </td>
                         <td>
                             <span class="p-column-title">Imagen</span>
-                            <img src="{{dataFrom.img}}" alt="" width="50" height="50"/>
+                            <p-cellEditor>
+                                <ng-template pTemplate="input">
+                                    <p-fileUpload name="demo[]" [files]="myfiles" chooseLabel="Seleccionar"
+                                        uploadLabel="Subir" cancelLabel="Cancelar" accept="image/*"
+                                        maxFileSize="1000000" customUpload="true"
+                                        (uploadHandler)="uploadFileEdit($event, dataFrom)">
+                                        <ng-template pTemplate="content">
+                                            <ul *ngIf="fileUploades.length">
+                                                <li>{{fileUploades[0]?.name}}</li>
+                                            </ul>
+                                        </ng-template>
+                                    </p-fileUpload>
+                                </ng-template>
+                                <ng-template pTemplate="output">
+                                    <img src="{{dataFrom.img}}" alt="" width="50" height="50" />
+                                </ng-template>
+                            </p-cellEditor>
+                        </td>
+                        <td style="text-align:center">
+                            <button *ngIf="!editing" (click)="onRowEditInit(dataFrom)" pButton pRipple type="button"
+                                pInitEditableRow icon="pi pi-pencil" class="p-button-rounded p-button-text"></button>
+                            <button *ngIf="!editing" pButton pRipple type="button" pCancelEditableRow icon="pi pi-trash"
+                                (click)="deleteCustomerService(dataFrom.seqemploy)"
+                                class="p-button-rounded p-button-text p-button-danger"></button>
+                            <button *ngIf="editing" pButton pRipple type="button" pSaveEditableRow icon="pi pi-check"
+                                (click)="onRowEditSave(dataFrom)"
+                                class="p-button-rounded p-button-text p-button-success p-mr-2"></button>
+                            <button *ngIf="editing" pButton pRipple type="button" pCancelEditableRow icon="pi pi-times"
+                                (click)="onRowEditCancel(dataFrom, index)"
+                                class="p-button-rounded p-button-text p-button-danger"></button>
                         </td>
                     </tr>
                 </ng-template>
@@ -78,6 +155,12 @@
                                 </ul>
                             </ng-template>
                         </p-fileUpload>
+                        <small *ngIf="formEmployee.get('img')?.errors && (formEmployee.get('img')?.dirty ||
+                        formEmployee.get('img')?.touched)" class="p-error block">
+                            <small *ngIf="formEmployee.get('img').errors?.required">
+                                Requerido
+                            </small>
+                        </small>
                     </div>
                     <div class="p-field p-col-12 p-md-2"></div>
                     <div class="p-field p-col-12 p-md-6">
@@ -86,10 +169,17 @@
                                 <i class="pi pi-user"></i>
                             </span>
                             <span class="p-float-label">
-                                <input type="text" id="inputgroup" pInputText formControlName="dni">
-                                <label for="inputgroup">Cedula/código</label>
+                                <input type="text" id="inputgroup" pInputText formControlName="dni" maxlength="10"
+                                    (keypress)="sharedFuntions.enterOnlyNumbers($event)">
+                                <label for="inputgroup">DNI</label>
                             </span>
                         </div>
+                        <small *ngIf="formEmployee.get('dni')?.errors && (formEmployee.get('dni')?.dirty ||
+                        formEmployee.get('dni')?.touched)" class="p-error block">
+                            <small *ngIf="formEmployee.get('dni').errors?.required">
+                                Requerido
+                            </small>
+                        </small>
                     </div>
                     <div class="p-field p-col-12 p-md-6">
                         <div class="p-inputgroup">
@@ -101,6 +191,12 @@
                                 <label for="inputgroup">Nombre</label>
                             </span>
                         </div>
+                        <small *ngIf="formEmployee.get('name')?.errors && (formEmployee.get('name')?.dirty ||
+                        formEmployee.get('name')?.touched)" class="p-error block">
+                            <small *ngIf="formEmployee.get('name').errors?.required">
+                                Requerido
+                            </small>
+                        </small>
                     </div>
                     <div class="p-field p-col-12 p-md-6">
                         <div class="p-inputgroup">
@@ -112,24 +208,46 @@
                                 <label for="inputgroup">Apellido</label>
                             </span>
                         </div>
+                        <small *ngIf="formEmployee.get('lastname')?.errors && (formEmployee.get('lastname')?.dirty ||
+                        formEmployee.get('lastname')?.touched)" class="p-error block">
+                            <small *ngIf="formEmployee.get('lastname').errors?.required">
+                                Requerido
+                            </small>
+                        </small>
                     </div>
                     <div class="p-field p-col-12 p-md-6">
                         <span class="p-float-label">
-                            <p-calendar [showIcon]="true" inputId="icon" dataType="string" formControlName="contractday"></p-calendar>
+                            <p-calendar [showIcon]="true" inputId="icon" dataType="string" appendTo="body"
+                                formControlName="contractday"></p-calendar>
                             <label for="inputgroup">Fecha de contratación</label>
                         </span>
+                        <small *ngIf="formEmployee.get('contractday')?.errors && (formEmployee.get('contractday')?.dirty ||
+                        formEmployee.get('contractday')?.touched)" class="p-error block">
+                            <small *ngIf="formEmployee.get('contractday').errors?.required">
+                                Requerido
+                            </small>
+                        </small>
                     </div>
                     <div class="p-field p-col-12 p-md-6">
-                        <span class="p-float-label">
-                            <p-calendar [showIcon]="true" dataType="string" inputId="icon" formControlName="birthday"></p-calendar>
-                            <label for="inputgroup">Fecha de nacimiento</label>
-                        </span>
+                        <span>Fecha de nacimiento</span>
+                        <p-calendar [showIcon]="true" dataType="string" inputId="icon" appendTo="body" formControlName="birthday">
+                        </p-calendar>
+                        <small *ngIf="formEmployee.get('birthday')?.errors && (formEmployee.get('birthday')?.dirty ||
+                        formEmployee.get('birthday')?.touched)" class="p-error block">
+                            <small *ngIf="formEmployee.get('birthday').errors?.required">
+                                Requerido
+                            </small>
+                        </small>
                     </div>
                     <div class="p-field p-col-12 p-md-6">
-                        <span class="p-float-label">
-                            <p-dropdown [options]="drop" formControlName="charge"></p-dropdown>
-                            <label for="dropdown">Cargo</label>
-                        </span>
+                        <span>Cargo</span>
+                        <p-dropdown [options]="drop" formControlName="charge"></p-dropdown>
+                        <small *ngIf="formEmployee.get('charge')?.errors && (formEmployee.get('charge')?.dirty ||
+                        formEmployee.get('charge')?.touched)" class="p-error block">
+                            <small *ngIf="formEmployee.get('charge').errors?.required">
+                                Requerido
+                            </small>
+                        </small>
                     </div>
                 </div>
                 <p-toolbar>

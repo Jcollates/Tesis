@@ -96,7 +96,7 @@ export class PrincipalComponent implements OnInit {
         style: 'font-size: 0.9rem !important',
         items: [
           {
-            label: 'Agregar producto',
+            label: 'Productos',
             icon: 'pi pi-book',
             routerLink: ['/system/inventory/products']
           }

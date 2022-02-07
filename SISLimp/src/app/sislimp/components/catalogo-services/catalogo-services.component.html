@@ -3,53 +3,119 @@
     <h3>Catalogo de servicios</h3>
 </div>
 <p-card>
-    <p-tabView>
+    <p-tabView [(activeIndex)]="activeIndex1">
         <p-tabPanel header="Servicios publicados">
             <p-table [value]="dataFromdb" styleClass="p-datatable-customers p-datatable-gridlines p-datatable-striped"
                 [responsive]="true" [paginator]="true" [rows]="pageSize" dataKey="seqcatservice"
                 [rowsPerPageOptions]="[10,30,60]" [totalRecords]="sizeRecords" [lazy]="true" [autoLayout]="true"
-                [columns]="cols" (onLazyLoad)="chargeData($event)">
+                [columns]="cols" (onLazyLoad)="chargeData($event)" responsiveLayout="scroll" editMode="row">
                 <ng-template pTemplate="caption">
                     Listado
                 </ng-template>
                 <ng-template pTemplate="header" let-columns>
                     <tr>
                         <ng-container *ngFor="let col of columns">
-                            <th>
+                            <th NOWRAP>
                                 {{col.header}}
                             </th>
                         </ng-container>
                     </tr>
                 </ng-template>
-                <ng-template pTemplate="body" let-dataFrom let-index="rowIndex" let-columns="columns">
-                    <tr>
+                <ng-template pTemplate="body" let-dataFrom let-index="rowIndex" let-editing="editing"
+                    let-columns="columns">
+                    <tr [pEditableRow]="dataFrom">
                         <td>
                             <span class="p-column-title">Código</span>
                             {{dataFrom.seqcatservice}}
                         </td>
                         <td>
                             <span class="p-column-title">Tipo</span>
-                            {{dataFrom.type}}
+                            <p-cellEditor>
+                                <ng-template pTemplate="input">
+                                    <p-dropdown [options]="drop" [(ngModel)]="dataFrom.type"></p-dropdown>
+                                </ng-template>
+                                <ng-template pTemplate="output">
+                                    {{dataFrom.type | selectedItemPipe:drop}}
+                                </ng-template>
+                            </p-cellEditor>
                         </td>
                         <td>
                             <span class="p-column-title">Nombre</span>
-                            {{dataFrom.nameservice}}
+                            <p-cellEditor>
+                                <ng-template pTemplate="input">
+                                    <input pInputText type="text" [(ngModel)]="dataFrom.nameservice">
+                                </ng-template>
+                                <ng-template pTemplate="output">
+                                    {{dataFrom.nameservice}}
+                                </ng-template>
+                            </p-cellEditor>
                         </td>
                         <td>
                             <span class="p-column-title">Precio por metro</span>
-                            {{dataFrom.meterprize}}
+                            <p-cellEditor>
+                                <ng-template pTemplate="input">
+                                    <input pInputText type="text" [(ngModel)]="dataFrom.meterprize">
+                                </ng-template>
+                                <ng-template pTemplate="output">
+                                    {{dataFrom.meterprize}}
+                                </ng-template>
+                            </p-cellEditor>
                         </td>
                         <td>
                             <span class="p-column-title">Precio por hora</span>
-                            {{dataFrom.hourprize}}
+                            <p-cellEditor>
+                                <ng-template pTemplate="input">
+                                    <input pInputText type="text" [(ngModel)]="dataFrom.hourprize">
+                                </ng-template>
+                                <ng-template pTemplate="output">
+                                    {{dataFrom.hourprize}}
+                                </ng-template>
+                            </p-cellEditor>
                         </td>
                         <td>
                             <span class="p-column-title">Descripción</span>
-                            {{dataFrom.description}}
+                            <p-cellEditor>
+                                <ng-template pTemplate="input">
+                                    <textarea id="float-input" rows="3" cols="30" pInputTextarea
+                                        [(ngModel)]="dataFrom.description"></textarea>
+                                </ng-template>
+                                <ng-template pTemplate="output">
+                                    {{dataFrom.description}}
+                                </ng-template>
+                            </p-cellEditor>
                         </td>
                         <td>
                             <span class="p-column-title">Imagen</span>
-                            <img src="{{dataFrom.img}}" alt="" width="50" height="50"/>
+                            <p-cellEditor>
+                                <ng-template pTemplate="input">
+                                    <p-fileUpload name="demo[]" [files]="myfiles" chooseLabel="Seleccionar"
+                                        uploadLabel="Subir" cancelLabel="Cancelar" accept="image/*"
+                                        maxFileSize="1000000" customUpload="true"
+                                        (uploadHandler)="uploadFileEdit($event, dataFrom)">
+                                        <ng-template pTemplate="content">
+                                            <ul *ngIf="fileUploades.length">
+                                                <li>{{fileUploades[0]?.name}}</li>
+                                            </ul>
+                                        </ng-template>
+                                    </p-fileUpload>
+                                </ng-template>
+                                <ng-template pTemplate="output">
+                                    <img src="{{dataFrom.img}}" alt="" width="50" height="50" />
+                                </ng-template>
+                            </p-cellEditor>
+                        </td>
+                        <td style="text-align:center">
+                            <button *ngIf="!editing" (click)="onRowEditInit(dataFrom)" pButton pRipple type="button"
+                                pInitEditableRow icon="pi pi-pencil" class="p-button-rounded p-button-text"></button>
+                            <button *ngIf="!editing" pButton pRipple type="button" pCancelEditableRow icon="pi pi-trash"
+                                (click)="deleteCustomerService(dataFrom.seqcatservice)"
+                                class="p-button-rounded p-button-text p-button-danger"></button>
+                            <button *ngIf="editing" pButton pRipple type="button" pSaveEditableRow icon="pi pi-check"
+                                (click)="onRowEditSave(dataFrom)"
+                                class="p-button-rounded p-button-text p-button-success p-mr-2"></button>
+                            <button *ngIf="editing" pButton pRipple type="button" pCancelEditableRow icon="pi pi-times"
+                                (click)="onRowEditCancel(dataFrom, index)"
+                                class="p-button-rounded p-button-text p-button-danger"></button>
                         </td>
                     </tr>
                 </ng-template>
@@ -77,69 +143,95 @@
                                 </ul>
                             </ng-template>
                         </p-fileUpload>
+                        <small *ngIf="formService.get('img')?.errors && (formService.get('img')?.dirty ||
+                        formService.get('img')?.touched)" class="p-error block">
+                            <small *ngIf="formService.get('img').errors?.required">
+                                Requerido
+                            </small>
+                        </small>
                     </div>
                     <div class="p-field p-col-12 p-md-2"></div>
                     <div class="p-field p-col-12 p-md-6">
-                        <div class="p-inputgroup">
-                            <span class="p-inputgroup-addon">
-                                <i class="pi pi-user"></i>
-                            </span>
-                            <span class="p-float-label">
-                                <input type="text" id="inputgroup" pInputText formControlName="codeService">
-                                <label for="inputgroup">Codigo de servicio</label>
-                            </span>
-                        </div>
+                        <span>Código de servicio</span>
+                        <p-inputMask mask="aaa-9999" formControlName="codeService" placeholder="AAA-9999">
+                        </p-inputMask>
+                        <small *ngIf="formService.get('codeService')?.errors && (formService.get('codeService')?.dirty ||
+                        formService.get('codeService')?.touched)" class="p-error block">
+                            <small *ngIf="formService.get('codeService').errors?.required">
+                                Requerido
+                            </small>
+                        </small>
                     </div>
                     <div class="p-field p-col-12 p-md-6">
+                        <span for="inputgroup">Nombre</span>
                         <div class="p-inputgroup">
                             <span class="p-inputgroup-addon">
                                 <i class="pi pi-id-card"></i>
                             </span>
-                            <span class="p-float-label">
-                                <input type="text" id="inputgroup" pInputText formControlName="name">
-                                <label for="inputgroup">Nombre</label>
-                            </span>
+                            <input type="text" id="inputgroup" pInputText formControlName="name">
                         </div>
+                        <small *ngIf="formService.get('name')?.errors && (formService.get('name')?.dirty ||
+                        formService.get('name')?.touched)" class="p-error block">
+                            <small *ngIf="formService.get('name').errors?.required">
+                                Requerido
+                            </small>
+                        </small>
                     </div>
                     <div class="p-field p-col-12 p-md-6">
-                        <span class="p-float-label">
-                            <p-dropdown [options]="drop" formControlName="type"></p-dropdown>
-                            <label for="dropdown">Tipo</label>
-                        </span>
+                        <span>Tipo</span>
+                        <p-dropdown [options]="drop" formControlName="type"></p-dropdown>
+                        <small *ngIf="formService.get('type')?.errors && (formService.get('type')?.dirty ||
+                        formService.get('type')?.touched)" class="p-error block">
+                            <small *ngIf="formService.get('type').errors?.required">
+                                Requerido
+                            </small>
+                        </small>
                     </div>
                     <div class="p-field p-col-12 p-md-6">
+                        <span>Precio por hora</span>
                         <div class="p-inputgroup">
                             <span class="p-inputgroup-addon">
                                 <i class="pi pi-phone"></i>
                             </span>
-                            <span class="p-float-label">
-                                <input type="text" id="inputgroup" pInputText formControlName="hourprice">
-                                <label for="inputgroup">Precio por hora</label>
-                            </span>
+                            <input type="text" id="inputgroup" pInputText formControlName="hourprice">
                         </div>
+                        <small *ngIf="formService.get('hourprice')?.errors && (formService.get('hourprice')?.dirty ||
+                        formService.get('hourprice')?.touched)" class="p-error block">
+                            <small *ngIf="formService.get('hourprice').errors?.required">
+                                Requerido
+                            </small>
+                        </small>
                     </div>
                     <div class="p-field p-col-12 p-md-6">
+                        <span for="inputgroup">Precio por metro</span>
                         <div class="p-inputgroup">
                             <span class="p-inputgroup-addon">
                                 <i class="pi pi-phone"></i>
                             </span>
-                            <span class="p-float-label">
-                                <input type="text" id="inputgroup" pInputText formControlName="meterprice">
-                                <label for="inputgroup">Precio por metro</label>
-                            </span>
+                            <input type="text" id="inputgroup" pInputText formControlName="meterprice">
                         </div>
+                        <small *ngIf="formService.get('meterprice')?.errors && (formService.get('meterprice')?.dirty ||
+                        formService.get('meterprice')?.touched)" class="p-error block">
+                            <small *ngIf="formService.get('meterprice').errors?.required">
+                                Requerido
+                            </small>
+                        </small>
                     </div>
                     <div class="p-field p-col-12 p-md-12">
+                        <span>Descripcion</span>
                         <div class="p-inputgroup">
                             <span class="p-inputgroup-addon">
                                 <i class="pi pi-globe"></i>
                             </span>
-                            <span class="p-float-label">
                                 <textarea id="float-input" rows="5" cols="30" pInputTextarea
                                     formControlName="description"></textarea>
-                                <label for="inputgroup">Descripcion</label>
-                            </span>
                         </div>
+                        <small *ngIf="formService.get('description')?.errors && (formService.get('description')?.dirty ||
+                        formService.get('description')?.touched)" class="p-error block">
+                            <small *ngIf="formService.get('description').errors?.required">
+                                Requerido
+                            </small>
+                        </small>
                     </div>
                 </div>
             </form>

@@ -5,13 +5,13 @@ export class Employee {
     name: string;
     lastname: string;
     position: string;
-    birthday: string;
+    birthday: any;
     assigmentdayte: Date;
     endassigmentdate: Date;
     img: any;
     datelastmodify: Date;
     datecreate: Date;
-    contractday: string;
+    contractday: any;
     seqmeet: number;
     seqcontractassig: number;
     constructor() {

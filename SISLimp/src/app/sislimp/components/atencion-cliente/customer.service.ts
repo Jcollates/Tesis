@@ -28,7 +28,7 @@ export class CustomerService {
 
   }
   deleteCustomer(seqcustomer: number): Observable<any>{
-    let url = this.url + `/addCustomerSer/${seqcustomer}`;
+    let url = this.url + `/deleteCustomer/${seqcustomer}`;
     return this.http.delete(url).pipe(map( res => res as any));
 
   }

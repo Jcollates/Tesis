@@ -42,7 +42,7 @@ export class RequestsAllComponent implements OnInit {
   selectedProduct: any;
   selectedSoli: any;
 
-  selectedFather: Agreement = new Agreement();
+  selectedFather: SolProduct = new SolProduct();
   employeesAsignated: number = 0
 
   //employees
@@ -52,7 +52,7 @@ export class RequestsAllComponent implements OnInit {
   showEmployesAssigned: boolean = false;
   showEmployes: boolean = false;
   showLegalperson: boolean = false;
-  selectdProducts: ProductEquleton[] = [];
+  selectdProducts: any[] = [];
   formcontracts: FormGroup = new FormGroup({});
   agreementContainer: Agreement = new Agreement();
   seqLegalperson: number = 0;
@@ -60,8 +60,6 @@ export class RequestsAllComponent implements OnInit {
     private formBuilder: FormBuilder,
     private catalogueService: CataloguesService,
     private messageService: MessageService,
-    private agreeService: AgreementService,
-    private emplyeeservice: EmployeeService,
     private sharedFuntions: FuntionsSharedService,
     private requetsService: RequestsService,
     private authService: AuthService,
@@ -104,17 +102,21 @@ export class RequestsAllComponent implements OnInit {
     })
   }
 
-  saveForm(container: Agreement) {
-
-  }
 
   onRowSelect(event: any) {
     // event.data.assigmentdayte = this.selectedFather.datestart;
     this.selectdProducts.push(event.data);
-    console.log("this.selectdProducts", this.selectdProducts);
+  }
+  onRowUnselectChild(event: any) {
+    this.selectdProducts = this.selectdProducts.filter(item => item.seqprod != event.data.seqprod);
   }
   saveConfirmation(father: SolProduct, items: ProductModel[]) {
-    father.products = JSON.stringify(this.constructJSON(items));
+    if (items.length > 0) {
+      father.products = JSON.stringify(this.constructJSON(items));
+      this.messageService.add({ severity: 'success', detail: 'Confirmado' });
+    } else {
+      this.messageService.add({ severity: 'error', detail: 'Seleccione al menos uno.' });
+    }
   }
   getproducts() {
     this.productShowService.getCatProducts().subscribe(rest => {
@@ -133,22 +135,37 @@ export class RequestsAllComponent implements OnInit {
     return productsSend;
   }
   onRowSelectFather(event: any) {
-    this.selectedFather = event;
+    this.selectedFather = event.data;
   }
   transformFromJSON(value: string) {
     return JSON.parse(value);
   }
 
   fillDataToUpdate(item: SolProduct) {
-    console.log("this.item)", item);
-    if (item.status != 'process') {
-      this.requetsService.updateSolicitud(item).subscribe(rest => {
-        if (rest) this.messageService.add({ severity: 'success', detail: 'Solicitud actualizada' });
-        this.getSolProducts(null);
-      });
+    if (item.status != 'hold') {
+      if (item.status != 'process') {
+        this.requetsService.updateSolicitud(item).subscribe(rest => {
+          if (rest) {
+            this.messageService.add({ severity: 'success', detail: 'Solicitud actualizada' });
+            this.getSolProducts(null);
+          }
+        });
+      } else {
+        if (item.products == '') {
+          this.messageService.add({ severity: 'error', detail: 'Debe confirmar al menos un producto' });
+        } else {
+          this.requetsService.updateSolicitud(item).subscribe(rest => {
+            if (rest) {
+              this.messageService.add({ severity: 'success', detail: 'Solicitud actualizada' });
+              this.getSolProducts(null);
+            }
+          });
+        }
+      }
     } else {
-      this.messageService.add({ severity: 'error', detail: 'Seleccione un estado' });
+      this.messageService.add({ severity: 'error', detail: 'Seleccione un estado diferente' });
     }
+
   }
   //para llenar
   async getProductsRelated(products: PoductsQuantity[]) {
@@ -174,9 +191,9 @@ export class RequestsAllComponent implements OnInit {
         item.elementAsArray = await this.getProductsRelated(productsQuantity);
       });
       // this.dataFromdb = rest;
-      this.dataFromdb = rest.filter(item => item.status == 'process');
-      this.dataFromdbWatch = rest.filter(item => item.status != 'process');
-      console.log("VEAMOS ", rest);
+      this.dataFromdb = rest.filter(item => item.status == 'process' || item.status == 'hold');
+      // this.dataFromdb.forEach(item => item.products = '');
+      this.dataFromdbWatch = rest.filter(item => item.status != 'process' && item.status != 'hold');
     });
   }
 
