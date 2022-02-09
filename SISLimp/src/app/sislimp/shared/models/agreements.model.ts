@@ -13,6 +13,10 @@ export class Agreement{
     servicedetail: string;
     subtotal: number;
     area: number;
-    loginuser_codeuser: number;
+    legalperson_seqlegalperson: number;
+    addededServices: string;
+
+    ///no persist
+    elementAsArray: any;
 
 }

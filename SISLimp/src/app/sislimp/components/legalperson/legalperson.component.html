@@ -15,6 +15,12 @@
                     <label for="inputgroup">Cédula</label>
                 </span>
             </div>
+            <small *ngIf="formLegalperson.get('dni')?.errors && (formLegalperson.get('dni')?.dirty ||
+            formLegalperson.get('dni')?.touched)" class="p-error block">
+                <small *ngIf="formLegalperson.get('dni').errors?.required">
+                    Requerido
+                </small>
+            </small>
         </div>
         <div class="p-field p-col-12 p-md-6">
             <div class="p-inputgroup">
@@ -26,6 +32,12 @@
                     <label for="inputgroup">Nombre</label>
                 </span>
             </div>
+            <small *ngIf="formLegalperson.get('name')?.errors && (formLegalperson.get('name')?.dirty ||
+            formLegalperson.get('name')?.touched)" class="p-error block">
+                <small *ngIf="formLegalperson.get('name').errors?.required">
+                    Requerido
+                </small>
+            </small>
         </div>
         <div class="p-field p-col-12 p-md-6">
             <div class="p-inputgroup">
@@ -37,6 +49,12 @@
                     <label for="inputgroup">Apellido</label>
                 </span>
             </div>
+            <small *ngIf="formLegalperson.get('lastname')?.errors && (formLegalperson.get('lastname')?.dirty ||
+            formLegalperson.get('lastname')?.touched)" class="p-error block">
+                <small *ngIf="formLegalperson.get('lastname').errors?.required">
+                    Requerido
+                </small>
+            </small>
         </div>
         <div class="p-field p-col-12 p-md-6">
             <div class="p-inputgroup">
@@ -48,6 +66,12 @@
                     <label for="inputgroup">Posición</label>
                 </span>
             </div>
+            <small *ngIf="formLegalperson.get('position')?.errors && (formLegalperson.get('position')?.dirty ||
+            formLegalperson.get('position')?.touched)" class="p-error block">
+                <small *ngIf="formLegalperson.get('position').errors?.required">
+                    Requerido
+                </small>
+            </small>
         </div>
         <div class="p-field p-col-12 p-md-6">
             <div class="p-inputgroup">
@@ -59,6 +83,12 @@
                     <label for="inputgroup">Dirección de vivienda</label>
                 </span>
             </div>
+            <small *ngIf="formLegalperson.get('address')?.errors && (formLegalperson.get('address')?.dirty ||
+            formLegalperson.get('address')?.touched)" class="p-error block">
+                <small *ngIf="formLegalperson.get('address').errors?.required">
+                    Requerido
+                </small>
+            </small>
         </div>
         <div class="p-field p-col-12 p-md-6">
             <div class="p-inputgroup">
@@ -70,16 +100,30 @@
                     <label for="inputgroup">Teléfono</label>
                 </span>
             </div>
+            <small *ngIf="formLegalperson.get('phone')?.errors && (formLegalperson.get('phone')?.dirty ||
+            formLegalperson.get('phone')?.touched)" class="p-error block">
+                <small *ngIf="formLegalperson.get('phone').errors?.required">
+                    Requerido
+                </small>
+            </small>
         </div>
     </div>
 </form>
+<div class="p-field p-col-12 p-md-6">
+    <h6>Seleccione si ya esta registrado</h6>
+    <p-dropdown [options]="options" [(ngModel)]="valueCombo" (onChange)="onChangeCombo($event)"></p-dropdown>
+</div>
 <p-toolbar>
     <div class="p-toolbar-group-left">
+        <button pButton pRipple type="button" label="Cancelar" icon="pi pi-exclamation-triangle"
+            class="p-button-raised p-button-rounded p-button-warning p-mr-2 p-mb-2 "
+            style="float: right">
+        </button>
     </div>
     <div class="p-toolbar-group-right">
         <button pButton pRipple type="button" label="Guardar" icon="pi pi-save"
-            class="p-button-raised p-button-rounded p-button-success p-mr-2 p-mb-2 "
-            (click)="validateForm()" style="float: right">
+            class="p-button-raised p-button-rounded p-button-success p-mr-2 p-mb-2 " (click)="prevalidate()"
+            style="float: right">
         </button>
     </div>
 </p-toolbar>

@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
+import { Component, Inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { AuthService } from 'src/app/sharedAll/serviceShared/auth.service';
@@ -12,8 +13,11 @@ export class PrincipalComponent implements OnInit {
 
   items: MenuItem[];
   items2: MenuItem[];
-  nombre = 'JAIR QUIÑONEZ'
+  nombre = 'JAIR QUIÑONEZ';
+  thechild: any;
+  thehead: any;
   constructor(
+    @Inject(DOCUMENT) private document: Document,
     private authService: AuthService,
     private router: Router,
 
@@ -114,9 +118,35 @@ export class PrincipalComponent implements OnInit {
         ]
       }
     ];
+    this.loadStyle();
+  }
+  ngOnDestroy() {
+    this.removeStyle();
+
   }
   logOut(){
     this.authService.logOut();
     this.router.navigate(['system/login'])
+  }
+  loadStyle(styleName: string = 'ngzorro.css') {
+    const head = this.document.getElementsByTagName('head')[0];
+    let themeLink = this.document.getElementById(
+      'client-theme'
+    ) as HTMLLinkElement;
+    if (themeLink) {
+      console.log(styleName);
+      themeLink.href = styleName;
+    } else {
+      const style = this.document.createElement('link');
+      style.id = 'client-theme';
+      style.rel = 'stylesheet';
+      style.href = `${styleName}`;
+      head.appendChild(style);
+      this.thehead = head;
+      this.thechild = style;
+    }
+  }
+  removeStyle() {
+    this.thehead.removeChild(this.thechild);
   }
 }

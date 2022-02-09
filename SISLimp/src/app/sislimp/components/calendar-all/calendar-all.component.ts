@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { CalendarOptions } from '@fullcalendar/angular';
+import { NzCalendarMode } from 'ng-zorro-antd/calendar';
 import { LazyLoadEvent } from 'primeng/api';
+import { registerLocaleData } from '@angular/common';
+import en from '@angular/common/locales/en';
+
+
 
 @Component({
   selector: 'app-calendar-all',
@@ -14,9 +18,12 @@ export class CalendarAllComponent implements OnInit {
   pageSize: number = 50;
   drop: any[] = [];
   fordropt: any;
+  date = new Date();
+  mode: NzCalendarMode = 'month';
   constructor() { }
 
   ngOnInit(): void {
+    registerLocaleData(en);
     this.createCols();
     this.chargeData(null);
   }
@@ -50,6 +57,11 @@ export class CalendarAllComponent implements OnInit {
       },
 
     ];
+  }
+  
+
+  panelChange(change: { date: Date; mode: string }): void {
+    console.log(change.date, change.mode);
   }
 
 }

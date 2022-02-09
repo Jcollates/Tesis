@@ -58,6 +58,8 @@ import { SolistatusPipe } from './shared/pipes/solistatus.pipe';
 import { HoursPipePipe } from './shared/pipes/hours-pipe.pipe';
 import { CityPipePipe } from './shared/pipes/city-pipe.pipe';
 import { ForCityPipe } from './shared/pipes/for-city.pipe';
+import { NzCalendarModule } from 'ng-zorro-antd/calendar';
+import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 
 
 FullCalendarModule.registerPlugins([ // register FullCalendar plugins
@@ -128,7 +130,9 @@ FullCalendarModule.registerPlugins([ // register FullCalendar plugins
     DialogModule,
     FileUploadModule,
     HttpClientModule,
+    NzCalendarModule,
+    NzDatePickerModule,
     
-  ]
+  ],
 })
 export class SislimpModule { }
