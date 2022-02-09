@@ -60,6 +60,10 @@ import { CityPipePipe } from './shared/pipes/city-pipe.pipe';
 import { ForCityPipe } from './shared/pipes/for-city.pipe';
 import { NzCalendarModule } from 'ng-zorro-antd/calendar';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
+import { registerLocaleData } from '@angular/common';
+import en from '@angular/common/locales/es';
+import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
+registerLocaleData(en);
 
 
 FullCalendarModule.registerPlugins([ // register FullCalendar plugins
@@ -132,7 +136,9 @@ FullCalendarModule.registerPlugins([ // register FullCalendar plugins
     HttpClientModule,
     NzCalendarModule,
     NzDatePickerModule,
-    
   ],
+  providers:[ 
+    { provide: NZ_I18N, useValue: en_US }
+  ]
 })
 export class SislimpModule { }
