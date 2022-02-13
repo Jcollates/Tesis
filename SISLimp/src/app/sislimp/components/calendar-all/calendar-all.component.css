@@ -1,13 +1,23 @@
-.events {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
 
-  .events .ant-badge-status {
-    overflow: hidden;
-    white-space: nowrap;
-    width: 100%;
-    text-overflow: ellipsis;
-    font-size: 12px;
-  }
+ul {
+  list-style: none !important;
+  margin: 0;
+  padding: 0;
+}
+
+li {
+  font-size: 0.75rem;
+  padding: 0.4rem;
+  color: rgb(0, 0, 0);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  border-radius: 4rem;
+  margin-bottom: 1px;
+}
+.meetstyle{
+  background: #09b009;
+}
+.contractstyle{
+  background: #dfbf0a;
+}

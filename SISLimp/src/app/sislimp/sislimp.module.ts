@@ -139,6 +139,9 @@ FullCalendarModule.registerPlugins([ // register FullCalendar plugins
   ],
   providers:[ 
     { provide: NZ_I18N, useValue: en_US }
+  ],
+  exports: [
+    SolistatusPipe
   ]
 })
 export class SislimpModule { }

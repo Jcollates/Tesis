@@ -15,17 +15,24 @@
                 <ng-template #dateCellTpl let-date>
                     <ul>
                         <ng-container *ngFor="let meet of meets">
-                            <li *ngIf="meet.dateService == date.toISOString() || meet.dateEnd == date.toISOString() ">
-                                <span> Código cita: {{meet.seqsimplemeet}}</span>
+                            <li *ngIf="meet.dateService == date.toISOString() || meet.dateEnd == date.toISOString() " class="meetstyle">
+                                <span> Cita: {{meet.seqsimplemeet}}</span>
                                 <br>
                                 <span> Cliente: {{meet.cliName}} {{meet.cliLastName}} </span>
+                            </li>
+                        </ng-container>
+                        <ng-container *ngFor="let contract of contracts">
+                            <li *ngIf="contract.datestart == date.toISOString() || contract.dateend == date.toISOString() " class="contractstyle">
+                                <span> Contrato: {{contract.seqagree}}</span>
+                                <br>
+                                <span> Cliente: {{contract.name}}</span>
                             </li>
                         </ng-container>
                     </ul>
                 </ng-template>
             </div>
         </p-tabPanel>
-        <p-tabPanel header="Lista de horarios">
+        <!-- <p-tabPanel header="Lista de horarios">
             <p-table [value]="dataFromdb" styleClass="p-datatable-customers p-datatable-gridlines p-datatable-striped"
                 [responsive]="true" [paginator]="true" [rows]="pageSize" dataKey="code"
                 [rowsPerPageOptions]="[10,30,60]" [totalRecords]="sizeRecords" [lazy]="true" [autoLayout]="true"
@@ -86,6 +93,6 @@
                     No hay registros que mostrar
                 </ng-template>
             </p-table>
-        </p-tabPanel>
+        </p-tabPanel> -->
     </p-tabView>
 </p-card>

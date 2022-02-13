@@ -2,8 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { NzCalendarMode } from 'ng-zorro-antd/calendar';
 import { es_ES, NzI18nService } from 'ng-zorro-antd/i18n';
 import { LazyLoadEvent } from 'primeng/api';
+import { Agreement } from '../../shared/models/agreements.model';
 import { Simplemeet } from '../../shared/models/simplemeet.model';
 import { SimpleMeetService } from '../agendamiento-citas/simple-meet.service';
+import { AgreementService } from '../gestion-contratos/agreement.service';
 
 
 
@@ -25,9 +27,11 @@ export class CalendarAllComponent implements OnInit {
 
   //data
   meets: Simplemeet[] = [];
+  contracts: Agreement[] = [];
   constructor(
     private i18n: NzI18nService,
     private simpleMeetService: SimpleMeetService,
+    private agreeService: AgreementService,
     ) {
   }
 
@@ -79,7 +83,13 @@ export class CalendarAllComponent implements OnInit {
         this.meets = rest.filter(item => item.status !== 'process' && item.status !== 'hold');
         console.log('dataFromdb', this.meets);
       }
-
+    });
+    this.agreeService.getAgreements().subscribe(rest => {
+      if (rest.length > 0) {
+        console.log(rest);
+        rest.forEach(item => item.elementAsArray = item.addededServices ? JSON.parse(item.addededServices) : [])
+        this.contracts = rest;
+      }
     });
   }
   getMonthData(date: Date, dateCalendar: Date): true | false {
