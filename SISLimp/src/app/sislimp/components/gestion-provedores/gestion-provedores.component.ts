@@ -16,6 +16,7 @@ const PAYCAT = 'TYPEPAYPROVIDERCAT';
 export class GestionProvedoresComponent implements OnInit {
   products: any[] = [];
   dropCity: SelectItem[] = [];
+  dropCityThree: SelectItem[] = [];
   dropProvince: SelectItem[] = [];
   dropPay: SelectItem[] = [];
   fordropt: any
@@ -28,7 +29,10 @@ export class GestionProvedoresComponent implements OnInit {
   codeProvince: string;
   providerContainer: Provider = new Provider();
   formProvider: FormGroup = new FormGroup({});
-  activeIndex: number
+  activeIndex: number;
+  dropCityTwo: SelectItem[] = [];
+  dropCityTwoProcesed: SelectItem[] = [];
+  clonedProducts: { [s: string]: Provider; } = {};
   constructor(
     private prodicerService: ProviderService,
     private catalogueService: CataloguesService,
@@ -39,7 +43,7 @@ export class GestionProvedoresComponent implements OnInit {
   ngOnInit(): void {
     this.createCols();
     this.getCatalogues();
-    this.createForm()
+    this.createForm();
   }
 
   createCols() {
@@ -54,9 +58,10 @@ export class GestionProvedoresComponent implements OnInit {
       { field: 'detail', header: 'Detalles' },
       { field: 'typepay', header: 'Tipo de pago' },
       { field: 'salesmanname', header: 'Nombre vendedor' },
+      { field: '', header: 'Editar/Eliminar' },
     ];
   }
-  createForm(){
+  createForm() {
     this.formProvider = this.formBuilder.group({
       dni: ['', Validators.required],
       email: ['', Validators.required],
@@ -72,8 +77,9 @@ export class GestionProvedoresComponent implements OnInit {
   }
 
   validateForm() {
+    this.formProvider.markAllAsTouched();
     if (!this.formProvider.valid) {
-      this.messageService.add({severity:'error', detail: 'Formulario no valido'});
+      this.messageService.add({ severity: 'error', detail: 'Formulario no valido' });
       // console.log('FORM', this.formService.value);
     } else {
       console.log('FORM', this.formProvider.value);
@@ -90,27 +96,30 @@ export class GestionProvedoresComponent implements OnInit {
       this.saveForm(this.providerContainer);
     }
   }
-saveForm(container: Provider) {
+  saveForm(container: Provider) {
     // console.log('cotainer', container);
     this.prodicerService.saveProvider(container).subscribe(res => {
-      if(res != null) this.messageService.add({severity:'success', detail: 'Registrado correctamente'});
+      if (res != null) this.messageService.add({ severity: 'success', detail: 'Registrado correctamente' });
       this.formProvider.reset();
-      // console.log("SAVED?", res);
       this.chargeData(null);
     })
   }
 
-  chargeData(event: LazyLoadEvent) {
-    this.prodicerService.getProviders().subscribe(rest => {
-      console.log("rest", rest);
-      this.dataFromdb = rest;
+  async chargeData(event: LazyLoadEvent) {
+     await this.prodicerService.getProviders().then(rest => {
+      if (rest.length > 0) {
+        console.log("rest", rest);
+        this.dataFromdb = rest;
+        this.dataFromdb.forEach(async item => await this.completeCityDrop(item.province, 'dataFromdb'));
+      }
     })
+    
   }
   async getCatalogues() {
     await this.catalogueService.getCataloguebyCodeCat(PROVINCECAT).then(rest => {
       this.dropProvince = this.catalogueService.constructModel(rest);
     });
-    
+
     await this.catalogueService.getCataloguebyCodeCat(PAYCAT).then(rest => {
       this.dropPay = this.catalogueService.constructModel(rest);
     });
@@ -119,6 +128,43 @@ saveForm(container: Provider) {
     console.log(event.value)
     this.catalogueService.getCataloguebyCodeCatAndCodeFather(CITYCAT, PROVINCECAT, event.value).then(rest => {
       this.dropCity = this.catalogueService.constructModel(rest);
+    })
+  }
+  async completeCityDrop(codeFather: string, array: string) {
+     await this.catalogueService.getCataloguebyCodeCatAndCodeFather(CITYCAT, PROVINCECAT, codeFather).then(rest => {
+      if (rest) {
+        this.dropCityTwo.push(rest[0]);
+      }
+    });
+  }
+
+  onRowEditInit(customer: Provider) {
+    this.clonedProducts[customer.seqprovider] = { ...customer };
+  }
+  onRowEditSave(customer: Provider) {
+    this.prodicerService.updateProvider(customer).subscribe(rest => {
+      if (rest) {
+        this.messageService.add({ severity: 'success', detail: 'Actualizado' });
+        this.chargeData(null);
+        delete this.clonedProducts[customer.seqprovider];
+      } else {
+        this.messageService.add({ severity: 'error', detail: 'Error al actualizar' });
+      }
+    });
+
+  }
+  onRowEditCancel(customer: Provider, index: number) {
+    this.dataFromdb[index] = this.clonedProducts[customer.seqprovider];
+    delete this.clonedProducts[customer.seqprovider];
+  }
+  deleteCustomerService(seqcustomer: any) {
+    this.prodicerService.deleteProvider(seqcustomer).subscribe(rest => {
+      if (rest) {
+        this.messageService.add({ severity: 'success', detail: 'Registro eliminado' });
+        this.chargeData(null);
+      } else {
+        this.messageService.add({ severity: 'error', detail: 'Error al eliminar' });
+      }
     })
   }
 

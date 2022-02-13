@@ -36,6 +36,9 @@ import {PasswordModule} from 'primeng/password';
 import {ToastModule} from 'primeng/toast';
 import {MessagesModule} from 'primeng/messages';
 import {MessageModule} from 'primeng/message';
+import { SislimpModule } from '../sislimp/sislimp.module';
+import {DynamicDialogModule} from 'primeng/dynamicdialog';
+import {DialogModule} from 'primeng/dialog';
 
 
 
@@ -83,8 +86,10 @@ import {MessageModule} from 'primeng/message';
     PasswordModule, 
     ToastModule,
     MessageModule,
-    MessagesModule
-    
+    MessagesModule,
+    SislimpModule,
+    DynamicDialogModule,
+    DialogModule
   ], 
   providers:[
   ]

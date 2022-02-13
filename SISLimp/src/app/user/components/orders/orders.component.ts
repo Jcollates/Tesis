@@ -1,11 +1,13 @@
 import { Component, OnInit } from '@angular/core';
+import { SelectItem } from 'primeng/api';
 import { PoductsQuantity } from 'src/app/page/components/products/products.component';
 import { SolProduct } from 'src/app/page/components/sharedpage/models/solproduct.model';
 import { AuthService } from 'src/app/sharedAll/serviceShared/auth.service';
+import { CataloguesService } from 'src/app/sharedAll/serviceShared/catalogues.service';
 import { ProductosService } from 'src/app/sislimp/components/gestion-inventario-products/productos.service';
 import { ProductModel } from 'src/app/sislimp/shared/models/products.model';
 import { OdersService } from './oders.service';
-
+const REQUESTSTATUSCAT = 'REQUESTSTATUSCAT';
 @Component({
   selector: 'app-orders',
   templateUrl: './orders.component.html',
@@ -17,15 +19,24 @@ export class OrdersComponent implements OnInit {
   comingProducts: PoductsQuantity[] = [];
   realPRoducts: ProductModel[] = [];
   solProduct: SolProduct[] = [];
+  drop: SelectItem[] = [];
   constructor(
     private orderService: OdersService,
     private authService: AuthService,
-    private productsService: ProductosService
+    private productsService: ProductosService,
+    private catalogueService: CataloguesService,
   ) { }
 
   ngOnInit(): void {
     this.getSolProducts();
+    this.getCatalogues();
   }
+  getCatalogues() {
+    this.catalogueService.getCataloguebyCodeCat(REQUESTSTATUSCAT).then(rest => {
+      this.drop = this.catalogueService.constructModel(rest);
+    })
+  }
+
   transformFromJSON(value: string) {
     return JSON.parse(value);
   }
@@ -36,7 +47,6 @@ export class OrdersComponent implements OnInit {
     const filtered = products.filter(item => {
       const duplicate = seen.has(item.codeProd);
       seen.add(item.codeProd);
-      // console.log("du",duplicate);
       return !duplicate;
     });
     for (let item of filtered) {

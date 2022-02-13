@@ -27,4 +27,9 @@ export class CustomerService {
     return this.http.post(url, container).pipe(map( res => res as any));
 
   }
+  deleteCustomer(seqcustomer: number): Observable<any>{
+    let url = this.url + `/deleteCustomer/${seqcustomer}`;
+    return this.http.delete(url).pipe(map( res => res as any));
+
+  }
 }

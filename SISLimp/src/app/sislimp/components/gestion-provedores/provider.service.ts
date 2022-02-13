@@ -17,13 +17,20 @@ export class ProviderService {
     this.url = environment.API_URL;
   }
 
-  getProviders(): Observable<Provider[]>{
+  getProviders(): Promise<Provider[]>{
     let url = this.url + '/providers';
-    return this.http.get(url).pipe(map(res => res as Provider[] ));
+    return this.http.get(url).pipe(map(res => res as Provider[] )).toPromise();
   }
   saveProvider(container: Provider): Observable<any>{
     let url = this.url + '/createProvider';
     return this.http.post(url, container).pipe(map( res => res as any));
-
+  }
+  deleteProvider(id: number): Observable<any>{
+    let url = this.url + `/deleteProvider/${id}`;
+    return this.http.delete(url).pipe(map( res => res as any));
+  }
+  updateProvider(container: Provider){
+    let url = this.url + '/updateProvider';
+    return this.http.post(url, container).pipe(map( res => res as any));
   }
 }

@@ -23,5 +23,14 @@ export class CatServiceService {
     let url = this.url + '/createCatServices';
     return this.http.post(url, container).pipe(map( res => res as any));
   }
+  deleteServicesCat(seqcarservice: number): Observable<any>{
+    let url = this.url + `/deleteService/${seqcarservice}`;
+    return this.http.delete(url).pipe(map( res => res as any));
+  }
+  updateServiceCat(container: CatServices){
+    let url = this.url + '/updateCatservices';
+    return this.http.post(url, container).pipe(map( res => res as any));
+  }
+  
   
 }

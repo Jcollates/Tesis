@@ -8,7 +8,7 @@
         </div>
         <div class="topbar-right p-mr-3 p-d-flex">
             <button pButton pRipple type="button" label="DASHBOARD"
-                class="p-button-text p-button-plain topbar-button"></button>
+                class="p-button-text p-button-plain topbar-button" (click)="goToPage()"></button>
         </div>
     </div>
     <br>
@@ -59,10 +59,6 @@
             <button pButton pRipple type="button" label="LOGIN" style="background-color: #1565C0;"
                 class="p-button-raised p-button-secondary p-mt-6 p-mb-6 p-px-3 " (click)="onLogin()">
             </button>
-
-            <!-- <p-button class="login-button p-mb-6 p-px-3" (onClick)="onLogin()" label="LOGIN"></p-button> -->
-
-
         </div>
     </div>
 </div>

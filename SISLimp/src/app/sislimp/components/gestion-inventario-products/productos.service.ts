@@ -30,4 +30,12 @@ export class ProductosService {
     let url = this.url + `/getUniqueProduct/${codeprod}`;
     return this.http.get(url).pipe(map(res => res as ProductModel )).toPromise();;
   }
+  deleteProducts(id: number): Observable<any>{
+    let url = this.url + `/deleteProducts/${id}`;
+    return this.http.delete(url).pipe(map( res => res as any));
+  }
+  updateProducts(container: ProductModel){
+    let url = this.url + '/updateProducts';
+    return this.http.post(url, container).pipe(map( res => res as any));
+  }
 }

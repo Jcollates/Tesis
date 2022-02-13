@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LazyLoadEvent, MessageService, SelectItem } from 'primeng/api';
 import { AuthService } from 'src/app/sharedAll/serviceShared/auth.service';
 import { CataloguesService } from 'src/app/sharedAll/serviceShared/catalogues.service';
@@ -62,13 +62,16 @@ export class AgendamientoCitasComponent implements OnInit {
 
   //sevice extras
   extraServices: ServiceAdd[] = [];
+
+  fromEdit: boolean = false;
+  meetToUpdate: Simplemeet = new Simplemeet();
   constructor(
     private simpleMeetService: SimpleMeetService,
     private formBuilder: FormBuilder,
     private catalogueService: CataloguesService,
     private messageService: MessageService,
     private agreeService: AgreementService,
-    private emplyeeservice: EmployeeService,
+    private employeeService: EmployeeService,
     private sharedFuntions: FuntionsSharedService,
     private authService: AuthService,
   ) { }
@@ -100,8 +103,8 @@ export class AgendamientoCitasComponent implements OnInit {
     this.simpleMeetService.getSimpleMeets().subscribe(rest => {
       if (rest.length > 0) {
         rest.forEach(item => item.elementAsArray = item.addededServices ? JSON.parse(item.addededServices) : [])
-        this.dataFromdb = rest.filter(item => item.status !== 'cancel' && item.status !== 'success');
-        this.dataFromdbProcesed = rest.filter(item => item.status === 'cancel' || item.status === 'success');
+        this.dataFromdb = rest.filter(item => item.status === 'process' || item.status === 'hold');
+        this.dataFromdbProcesed = rest.filter(item => item.status !== 'process' && item.status !== 'hold');
         this.dataFromdb.forEach(item => this.completeCityDrop(item.cliProvince, 'dataFromdb'));
         this.dataFromdbProcesed.forEach(item => this.completeCityDrop(item.cliProvince, 'dataFromdbProcesed'));
         console.log('dataFromdb', this.dataFromdb);
@@ -135,7 +138,7 @@ export class AgendamientoCitasComponent implements OnInit {
       dateService: ['', Validators.required],
       dateEnd: ['', Validators.required],
       tools: ['', Validators.required],
-    });
+    }, { validator: this.emailValidator("email") });
   }
   get services() {
     return this.formCita.controls["services"] as FormArray;
@@ -154,12 +157,18 @@ export class AgendamientoCitasComponent implements OnInit {
   validateForm() {
     // console.log("this.services", JSON.stringify(this.formCita.controls.services.value));
     this.formCita.markAllAsTouched();
+    this.formCita.markAsDirty();
     if (!this.formCita.valid) {
       this.messageService.add({ severity: 'error', detail: 'Formulario no valido' });
       console.log(this.formCita.value);
     } else {
       if (this.services.length > 0) {
-        console.log(this.formCita.value);
+        if (this.fromEdit) {
+          this.simpleMeet.seqsimplemeet = this.meetToUpdate.seqsimplemeet;
+          this.simpleMeet.status = this.meetToUpdate.status;
+        } else {
+          this.simpleMeet.status = 'hold';
+        }
         this.simpleMeet.dateService = this.formCita.controls.dateService.value;
         this.simpleMeet.address = this.formCita.controls.address.value;
         this.simpleMeet.cliName = this.formCita.controls.name.value;
@@ -177,7 +186,6 @@ export class AgendamientoCitasComponent implements OnInit {
         this.simpleMeet.tools = this.formCita.controls.tools.value;
         this.simpleMeet.dateEnd = this.formCita.controls.dateEnd.value;
         this.simpleMeet.stimatedValue = 5.00;
-        this.simpleMeet.status = 'hold';
         this.simpleMeet.addededServices = JSON.stringify(this.formCita.controls.services.value);
         this.saveFormsimpleMeet(this.simpleMeet);
       } else {
@@ -188,12 +196,22 @@ export class AgendamientoCitasComponent implements OnInit {
   }
   saveFormsimpleMeet(container: Simplemeet) {
     this.simpleMeetService.saveCustomerService(container).subscribe(res => {
-      if (res != null) this.messageService.add({ severity: 'success', detail: 'Registrado correctamente' });
-      this.formCita.reset();
-      this.chargeData(null);
-      this.activeIndex1 = 0;
+      if (res != null) {
+        this.messageService.add({ severity: 'success', detail: 'Registrado correctamente' });
+        this.formCita.reset();
+        while (this.services.controls.length > 1) {
+          this.deleteService(0);
+        }
+        this.chargeData(null);
+        this.activeIndex1 = 0;
+        this.fromEdit = false;
+      } else {
+        this.messageService.add({ severity: 'error', detail: 'Ocurrio un error' });
+
+      }
     })
   }
+
   async getCatalogues() {
     await this.catalogueService.getCataloguebyCodeCat(PROVINCECAT).then(rest => {
       this.dropProvince = this.catalogueService.constructModel(rest);
@@ -220,7 +238,7 @@ export class AgendamientoCitasComponent implements OnInit {
     this.showEmployesAssigned = true;
   }
   getEmployees(event: LazyLoadEvent) {
-    this.emplyeeservice.getEmployesToBesAssigned().subscribe(res => {
+    this.employeeService.getEmployesToBesAssigned().subscribe(res => {
       res.forEach(item => {
         item.img = this.sharedFuntions.repair(item.img);
       })
@@ -229,7 +247,7 @@ export class AgendamientoCitasComponent implements OnInit {
     })
   }
   getEmployeesAssigned() {
-    this.emplyeeservice.getEmployessAssigned(this.selectedFather.seqsimplemeet, null).subscribe(res => {
+    this.employeeService.getEmployessAssigned(this.selectedFather.seqsimplemeet, null).subscribe(res => {
       res.forEach(item => {
         item.img = this.sharedFuntions.repair(item.img);
       })
@@ -249,7 +267,7 @@ export class AgendamientoCitasComponent implements OnInit {
   saveAssigment() {
     if (this.selectdEmployes.length > 0) {
       this.selectdEmployes.forEach(item => {
-        this.emplyeeservice.updateEmployee(item).subscribe(update => {
+        this.employeeService.updateEmployee(item).subscribe(update => {
           if (update) this.messageService.add({ severity: 'success', detail: 'Empleado asignado' })
           else this.messageService.add({ severity: 'error', detail: 'No se logro asignar' });
           this.getEmployeesAssigned();
@@ -274,7 +292,7 @@ export class AgendamientoCitasComponent implements OnInit {
     console.log("this.item)", item);
     if (item.status != 'hold') {
       if (item.status == 'process') {
-        this.emplyeeservice.getEmployessAssigned(item.seqsimplemeet, null).subscribe(res => {
+        this.employeeService.getEmployessAssigned(item.seqsimplemeet, null).subscribe(res => {
           if (res.length <= 0) {
             this.messageService.add({ severity: 'error', detail: 'Debe haber al menos un empleado asignado' });
           } else {
@@ -284,14 +302,92 @@ export class AgendamientoCitasComponent implements OnInit {
             });
           }
         })
+      } else {
+        this.getEmployesAndUpdate(item.seqsimplemeet);
+        this.simpleMeetService.updateSimpleMeet(item).subscribe(rest => {
+          if (rest) this.messageService.add({ severity: 'success', detail: 'Solicitud actualizada' });
+          this.chargeData(null);
+        });
       }
-      this.simpleMeetService.updateSimpleMeet(item).subscribe(rest => {
-        if (rest) this.messageService.add({ severity: 'success', detail: 'Solicitud actualizada' });
-        this.chargeData(null);
-      });
+
 
     } else {
       this.messageService.add({ severity: 'error', detail: 'Seleccione un estado diferente a en espera' });
+    }
+  }
+  getEmployesAndUpdate(seqmeet: number){
+    this.employeeService.getEmployessAssigned(seqmeet, null).subscribe(rest => {
+      if(rest){
+        rest.forEach(item => {
+          item.img = this.sharedFuntions.repair(item.img);
+          item.assigmentdayte = null;
+          item.endassigmentdate = null;
+          item.seqmeet = null;
+          this.employeeService.updateEmployee(item).subscribe(() => console.log('employee removed'));
+        })
+      }
+    })
+    
+  }
+  onEditMeet(dataFrom: Simplemeet) {
+    console.log('On edit', dataFrom);
+    this.fromEdit = true;
+    this.activeIndex1 = 2;
+    this.populateDataEdit(dataFrom);
+    this.meetToUpdate = dataFrom;
+  }
+  populateDataEdit(data: Simplemeet) {
+    this.formCita.patchValue({
+      dni: data.cliDni,
+      name: data.cliName,
+      lastname: data.cliLastName,
+      phone: data.phone,
+      email: data.cliEmail,
+      province: data.cliProvince,
+      city: data.cliCity,
+      address: data.address,
+      hoursNumber: data.hoursStimated,
+      dateService: new Date(data.dateService),
+      dateEnd: new Date(data.dateEnd),
+      tools: data.tools,
+      services: this.populateServices(data.elementAsArray)
+    });
+    console.warn(this.formCita);
+  }
+  populateServices(service: ServiceAdd[]) {
+    this.deleteService(0);
+    service.forEach(() => this.addService());
+    if (this.services.length == this.services.length) this.services.patchValue(service)
+  }
+  saveUpdate(simplemeet: Simplemeet) {
+  }
+
+  enterOnlyNumbers(evt: any) {
+    if (window.onkeyup) {
+      var keynum = evt.keyCode;
+    } else {
+      keynum = evt.which;
+    }
+    // Comprobamos si se encuentra en el rango numérico y que teclas no recibirá ascii.
+    if ((keynum > 47 && keynum < 58) || keynum == 8 || keynum == 13 || keynum == 6) {
+      return true;
+    } else {
+      //incorporar mensaje
+      return false;
+    }
+  }
+  emailValidator(emailControl: string) {
+    // external validator
+    return (formGroup: FormGroup) => {
+      const control = formGroup.controls[emailControl];
+      if (control.errors && !control.errors.mustMatch) {
+        return;
+      }
+      if (/^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/.test(control?.value)) {
+        control.setErrors(null);
+      } else {
+        control.setErrors({ mustMatch: 'Correo incorrecto' });
+      }
     }
   }
 }

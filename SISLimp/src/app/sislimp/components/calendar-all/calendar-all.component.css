@@ -1,0 +1,23 @@
+
+ul {
+  list-style: none !important;
+  margin: 0;
+  padding: 0;
+}
+
+li {
+  font-size: 0.75rem;
+  padding: 0.4rem;
+  color: rgb(0, 0, 0);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  border-radius: 4rem;
+  margin-bottom: 1px;
+}
+.meetstyle{
+  background: #09b009;
+}
+.contractstyle{
+  background: #dfbf0a;
+}

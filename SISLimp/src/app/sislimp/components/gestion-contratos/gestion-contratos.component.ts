@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LazyLoadEvent, MessageService, SelectItem } from 'primeng/api';
 import { CataloguesService } from 'src/app/sharedAll/serviceShared/catalogues.service';
 import { FuntionsSharedService } from 'src/app/sharedAll/serviceShared/funtions-shared.service';
 import { Agreement } from '../../shared/models/agreements.model';
 import { Employee } from '../../shared/models/employee.model';
+import { ServiceAdd } from '../agendamiento-citas/agendamiento-citas.component';
 import { EmployeeService } from '../gestion-empleados/employee.service';
 import { AgreementService } from './agreement.service';
 const CODECAT = 'SERVICETYPE'
@@ -41,6 +42,13 @@ export class GestionContratosComponent implements OnInit {
   formcontracts: FormGroup = new FormGroup({});
   agreementContainer: Agreement = new Agreement();
   seqLegalperson: number = 0;
+
+  activeIndex1: number = 0;
+  fromEdit: boolean = false;
+  agrrementToUpdate: Agreement = new Agreement();
+  fromChangeEdit: boolean = false;
+  formServices: FormGroup = new FormGroup({});
+
   constructor(
     private formBuilder: FormBuilder,
     private catalogueService: CataloguesService,
@@ -53,6 +61,7 @@ export class GestionContratosComponent implements OnInit {
     this.createCols();
     this.createForm();
     this.getCatalogues();
+    this.addService();
   }
 
   createCols() {
@@ -62,11 +71,8 @@ export class GestionContratosComponent implements OnInit {
       { field: 'dateend', header: 'Fecha fin' },
       { field: 'nameEnterprice', header: 'Nombre empresa' },
       { field: 'respresent', header: 'Responsable empresa' },
-      { field: 'typeservice', header: 'Tipo servicio' },
-      { field: 'employees', header: 'Cantidad de empleados' },
-      { field: '', header: 'Empleados asignados' },
-      { field: 'tools', header: 'Utencilios' },
-      { field: '', header: 'Asignar empleado' },
+      { field: '', header: 'Ver/Asignar empleado' },
+      { field: '', header: 'Editar' },
     ]
     this.colsEmployees = [
       { field: 'nameEmploye', header: 'Nombre' },
@@ -82,7 +88,7 @@ export class GestionContratosComponent implements OnInit {
   }
   getEmployees(event: LazyLoadEvent) {
     this.emplyeeservice.getEmployesToBesAssigned().subscribe(res => {
-      res.forEach( item => {
+      res.forEach(item => {
         item.img = this.sharedFuntions.repair(item.img);
       })
       this.employesToAssig = res;
@@ -91,7 +97,7 @@ export class GestionContratosComponent implements OnInit {
   }
   getEmployeesAssigned() {
     this.emplyeeservice.getEmployessAssigned(null, this.selectedFather.seqagree).subscribe(res => {
-      res.forEach( item => {
+      res.forEach(item => {
         item.img = this.sharedFuntions.repair(item.img);
       })
       this.employesAssigned = res;
@@ -104,37 +110,59 @@ export class GestionContratosComponent implements OnInit {
     this.showLegalperson = true;
   }
   getLegal(event) {
-    this.seqLegalperson = event.seqlegalperson;
-    this.formcontracts.patchValue({
-      legalperson: event.name + " " + event.lastname
-    });
+    if (event) {
+      this.seqLegalperson = event.seqlegalperson;
+      this.formcontracts.patchValue({
+        legalperson: event.name + " " + event.lastname
+      });
+      this.fromChangeEdit = true;
+      this.showLegalperson = false;
+
+    }
+
+
   }
   validateForm() {
+    this.formcontracts.markAllAsTouched();
     if (!this.formcontracts.valid) {
       this.messageService.add({ severity: 'error', detail: 'Formulario no valido' });
     } else {
-      console.log('FORM', this.formcontracts.value);
-      this.agreementContainer.ruc = this.formcontracts.controls.ruc.value;
-      this.agreementContainer.name = this.formcontracts.controls.name.value;
-      this.agreementContainer.location = this.formcontracts.controls.serviceAddress.value;
-      this.agreementContainer.principallocation = this.formcontracts.controls.principaladdress.value;
-      this.agreementContainer.phone = this.formcontracts.controls.phone.value;
-      this.agreementContainer.type = this.formcontracts.controls.type.value;
-      this.agreementContainer.datestart = this.formcontracts.controls.stardate.value;
-      this.agreementContainer.dateend = this.formcontracts.controls.endate.value;
-      this.agreementContainer.schedule = this.formcontracts.controls.schedule.value;
-      this.agreementContainer.servicedetail = this.formcontracts.controls.detailService.value;
-      this.agreementContainer.subtotal = this.formcontracts.controls.subtotal.value;
-      this.agreementContainer.area = this.formcontracts.controls.workarea.value;
-      this.agreementContainer.loginuser_codeuser = this.seqLegalperson;
-      this.saveForm(this.agreementContainer);
+      if (this.services.length > 0) {
+        if (this.fromEdit && !this.fromChangeEdit) {
+          this.agreementContainer.seqagree = this.agrrementToUpdate.seqagree;
+          this.agreementContainer.legalperson_seqlegalperson = this.formcontracts.controls.legalperson.value;
+        } else {
+          this.agreementContainer.legalperson_seqlegalperson = this.seqLegalperson;
+        }
+        this.agreementContainer.ruc = this.formcontracts.controls.ruc.value;
+        this.agreementContainer.name = this.formcontracts.controls.name.value;
+        this.agreementContainer.location = this.formcontracts.controls.serviceAddress.value;
+        this.agreementContainer.principallocation = this.formcontracts.controls.principaladdress.value;
+        this.agreementContainer.phone = this.formcontracts.controls.phone.value;
+        this.agreementContainer.type = this.formcontracts.controls.services.value[0]?.typeService;
+        this.agreementContainer.datestart = this.formcontracts.controls.stardate.value;
+        this.agreementContainer.dateend = this.formcontracts.controls.endate.value;
+        this.agreementContainer.schedule = this.formcontracts.controls.schedule.value;
+        this.agreementContainer.servicedetail = this.formcontracts.controls.detailService.value;
+        this.agreementContainer.subtotal = this.formcontracts.controls.subtotal.value;
+        this.agreementContainer.area = this.formcontracts.controls.workarea.value;
+        this.agreementContainer.addededServices = JSON.stringify(this.formcontracts.controls.services.value);
+        this.fromChangeEdit = false;
+        this.saveForm(this.agreementContainer);
+      } else {
+        this.messageService.add({ severity: 'error', detail: 'Se requiere al menos un servicio' });
+      }
     }
   }
   chargeData(event: LazyLoadEvent) {
     this.agreeService.getAgreements().subscribe(rest => {
-      console.log(rest);
-      this.dataFromdb = rest;
-      this.sizeRecords = rest.length;
+      if (rest.length > 0) {
+        console.log(rest);
+        rest.forEach(item => item.elementAsArray = item.addededServices ? JSON.parse(item.addededServices) : [])
+        this.dataFromdb = rest;
+        this.sizeRecords = rest.length;
+      }
+
     });
   }
 
@@ -142,17 +170,17 @@ export class GestionContratosComponent implements OnInit {
     this.formcontracts = this.formBuilder.group({
       ruc: ['', Validators.required],
       name: ['', Validators.required],
-      legalperson: [{ value: '', disabled: true }, [Validators.required]],
+      legalperson: ['', [Validators.required]],
       principaladdress: ['', Validators.required],
       serviceAddress: ['', Validators.required],
       phone: ['', Validators.required],
       workarea: ['', Validators.required],
-      type: ['', Validators.required],
       stardate: ['', Validators.required],
       endate: ['', Validators.required],
       subtotal: ['', Validators.required],
       schedule: ['', Validators.required],
       detailService: ['', Validators.required],
+      services: this.formBuilder.array([]),
     });
   }
 
@@ -163,16 +191,25 @@ export class GestionContratosComponent implements OnInit {
   }
 
   saveForm(container: Agreement) {
-    if (container.loginuser_codeuser > 0) {
+    if (container.legalperson_seqlegalperson > 0) {
       this.agreeService.saveAgreement(container).subscribe(res => {
         if (res != null) {
           this.messageService.add({ severity: 'success', detail: 'Registrado correctamente' });
           this.formcontracts.reset();
-          // console.log("SAVED?", res);
+          while (this.services.controls.length > 1) {
+            this.deleteService(0);
+          }
           this.seqLegalperson = 0;
           this.chargeData(null);
+          this.activeIndex1 = 0;
+          this.fromEdit = false
+        } else {
+          this.messageService.add({ severity: 'error', detail: 'Ocurrio un error' });
+
         }
       });
+    } else {
+      this.messageService.add({ severity: 'error', detail: 'Seleccione una persona legal' });
     }
   }
 
@@ -182,7 +219,7 @@ export class GestionContratosComponent implements OnInit {
     this.selectdEmployes.push(event.data);
     console.log("this.selectdEmployes", this.selectdEmployes);
   }
-  onRowSelectAssigned(event: Agreement){
+  onRowSelectAssigned(event: Agreement) {
     this.selectedFather = event;
     this.getEmployeesAssigned();
   }
@@ -204,5 +241,50 @@ export class GestionContratosComponent implements OnInit {
   onRowSelectFather(event: Agreement) {
     // console.log(event);
     this.selectedFather = event;
+  }
+
+  // for edit 
+  get services() {
+    return this.formcontracts.controls["services"] as FormArray;
+  }
+  addService() {
+    const formServices = this.formBuilder.group({
+      typeService: ['', Validators.required],
+      serviceName: ['', Validators.required]
+    });
+    this.services.push(formServices);
+  }
+  onEditContract(dataFrom: Agreement) {
+    console.log('On edit', dataFrom);
+    this.fromEdit = true;
+    this.activeIndex1 = 1;
+    this.populateDataEdit(dataFrom);
+    this.agrrementToUpdate = dataFrom;
+  }
+  populateDataEdit(data: Agreement) {
+    this.formcontracts.patchValue({
+      ruc: data.ruc,
+      name: data.name,
+      legalperson: data.legalperson_seqlegalperson,
+      principaladdress: data.principallocation,
+      serviceAddress: data.location,
+      phone: data.phone,
+      workarea: data.area,
+      stardate: new Date(data.datestart),
+      endate: new Date(data.dateend),
+      subtotal: data.subtotal,
+      schedule: data.schedule,
+      detailService: data.servicedetail,
+      services: this.populateServices(data.elementAsArray)
+    });
+    console.warn(this.formcontracts.value);
+  }
+  populateServices(service: ServiceAdd[]) {
+    this.deleteService(0);
+    service.forEach(() => this.addService());
+    if (this.services.length == this.services.length) this.services.patchValue(service)
+  }
+  deleteService(serviceIndex: number) {
+    this.services.removeAt(serviceIndex);
   }
 }

@@ -3,49 +3,130 @@
     <h3>Inventario de productos</h3>
 </div>
 <p-card>
-    <p-tabView>
+    <p-tabView [(activeIndex)]="activeIndex1">
         <p-tabPanel header="Registros">
             <p-table [value]="dataFromdb" styleClass="p-datatable-customers p-datatable-gridlines p-datatable-striped"
-                [responsive]="true" [paginator]="true" [rows]="pageSize" dataKey="date"
+                [responsive]="true" [paginator]="true" [rows]="pageSize" dataKey="seqprod"
                 [rowsPerPageOptions]="[10,30,60]" [totalRecords]="sizeRecords" [lazy]="true" [autoLayout]="true"
-                [columns]="cols" (onLazyLoad)="chargeData($event)">
+                [columns]="cols" (onLazyLoad)="chargeData($event)" editMode="row">
                 <ng-template pTemplate="caption">
                     Listado
                 </ng-template>
                 <ng-template pTemplate="header" let-columns>
                     <tr>
                         <ng-container *ngFor="let col of columns">
-                            <th>
+                            <th NOWRAP>
                                 {{col.header}}
                             </th>
                         </ng-container>
                     </tr>
                 </ng-template>
-                <ng-template pTemplate="body" let-dataFrom let-index="rowIndex" let-columns="columns">
-                    <tr>
+                <ng-template pTemplate="body" let-dataFrom let-index="rowIndex" let-columns="columns"
+                    let-editing="editing">
+                    <tr [pEditableRow]="dataFrom">
                         <td>
                             <span class="p-column-title">Código producto</span>
-                            {{dataFrom.codeproduct}}
+                            <p-cellEditor>
+                                <ng-template pTemplate="input">
+                                    <input pInputText type="text" [(ngModel)]="dataFrom.codeproduct">
+                                </ng-template>
+                                <ng-template pTemplate="output">
+                                    {{dataFrom.codeproduct}}
+                                </ng-template>
+                            </p-cellEditor>
                         </td>
                         <td>
                             <span class="p-column-title">Cantidad</span>
-                            {{dataFrom.quantity}}
+                            <p-cellEditor>
+                                <ng-template pTemplate="input">
+                                    <input pInputText type="text" [(ngModel)]="dataFrom.quantity">
+                                </ng-template>
+                                <ng-template pTemplate="output">
+                                    {{dataFrom.quantity}}
+                                </ng-template>
+                            </p-cellEditor>
                         </td>
                         <td>
                             <span class="p-column-title">Nombre</span>
-                            {{dataFrom.name}}
+                            <p-cellEditor>
+                                <ng-template pTemplate="input">
+                                    <input pInputText type="text" [(ngModel)]="dataFrom.name">
+                                </ng-template>
+                                <ng-template pTemplate="output">
+                                    {{dataFrom.name}}
+                                </ng-template>
+                            </p-cellEditor>
                         </td>
                         <td>
                             <span class="p-column-title">Precio venta</span>
-                            {{dataFrom.saleprice}}
+                            <p-cellEditor>
+                                <ng-template pTemplate="input">
+                                    <input pInputText type="text" [(ngModel)]="dataFrom.saleprice">
+                                </ng-template>
+                                <ng-template pTemplate="output">
+                                    {{dataFrom.saleprice}}
+                                </ng-template>
+                            </p-cellEditor>
+                        </td>
+                        <td>
+                            <span class="p-column-title">Precio compra</span>
+                            <p-cellEditor>
+                                <ng-template pTemplate="input">
+                                    <input pInputText type="text" [(ngModel)]="dataFrom.pricebought">
+                                </ng-template>
+                                <ng-template pTemplate="output">
+                                    {{dataFrom.pricebought}}
+                                </ng-template>
+                            </p-cellEditor>
                         </td>
                         <td>
                             <span class="p-column-title">Fecha compra</span>
-                            {{dataFrom.datebought | date}}
+                            <p-cellEditor>
+                                <ng-template pTemplate="input">
+                                    <p-calendar [showIcon]="true" inputId="icon" [(ngModel)]="dataFrom.datebought"
+                                        appendTo="body">
+                                    </p-calendar>
+                                </ng-template>
+                                <ng-template pTemplate="output">
+                                    {{dataFrom.datebought | date:'dd/mm/yyyy'}}
+                                </ng-template>
+                            </p-cellEditor>
+
+                        </td>
+                        <td NOWRAP>
+                            <span class="p-column-title">Proveedor</span>
+                            <p-cellEditor>
+                                <ng-template pTemplate="input">
+                                    <p-dropdown [options]="drop" [(ngModel)]="dataFrom.provider_seq"></p-dropdown>
+                                </ng-template>
+                                <ng-template pTemplate="output">
+                                    {{dataFrom.provider_seq | providerpipe:providers}}
+                                </ng-template>
+                            </p-cellEditor>
                         </td>
                         <td>
-                            <span class="p-column-title">Proveedor</span>
-                            {{dataFrom.provider_seq | providerpipe:providers}}
+                            <span class="p-column-title">Descripcion</span>
+                            <p-cellEditor>
+                                <ng-template pTemplate="input">
+                                    <input pInputText type="text" [(ngModel)]="dataFrom.description">
+                                </ng-template>
+                                <ng-template pTemplate="output">
+                                    {{dataFrom.description }}
+                                </ng-template>
+                            </p-cellEditor>
+                        </td>
+                        <td style="text-align:center">
+                            <button *ngIf="!editing" (click)="onRowEditInit(dataFrom)" pButton pRipple type="button"
+                                pInitEditableRow icon="pi pi-pencil" class="p-button-rounded p-button-text"></button>
+                            <button *ngIf="!editing" pButton pRipple type="button" pCancelEditableRow icon="pi pi-trash"
+                                (click)="deleteCustomerService(dataFrom.seqprod)"
+                                class="p-button-rounded p-button-text p-button-danger"></button>
+                            <button *ngIf="editing" pButton pRipple type="button" pSaveEditableRow icon="pi pi-check"
+                                (click)="onRowEditSave(dataFrom)"
+                                class="p-button-rounded p-button-text p-button-success p-mr-2"></button>
+                            <button *ngIf="editing" pButton pRipple type="button" pCancelEditableRow icon="pi pi-times"
+                                (click)="onRowEditCancel(dataFrom, index)"
+                                class="p-button-rounded p-button-text p-button-danger"></button>
                         </td>
                     </tr>
                 </ng-template>
@@ -71,6 +152,12 @@
                                 <label for="inputgroup">Código producto</label>
                             </span>
                         </div>
+                        <small *ngIf="formProducts.get('codeprod')?.errors && (formProducts.get('codeprod')?.dirty ||
+                        formProducts.get('codeprod')?.touched)" class="p-error block">
+                            <small *ngIf="formProducts.get('codeprod').errors?.required">
+                                Requerido
+                            </small>
+                        </small>
                     </div>
                     <div class="p-field p-col-12 p-md-6">
                         <div class="p-inputgroup">
@@ -82,6 +169,12 @@
                                 <label for="inputgroup">Cantidad</label>
                             </span>
                         </div>
+                        <small *ngIf="formProducts.get('quantity')?.errors && (formProducts.get('quantity')?.dirty ||
+                        formProducts.get('quantity')?.touched)" class="p-error block">
+                            <small *ngIf="formProducts.get('quantity').errors?.required">
+                                Requerido
+                            </small>
+                        </small>
                     </div>
                     <div class="p-field p-col-12 p-md-6">
                         <div class="p-inputgroup">
@@ -93,6 +186,12 @@
                                 <label for="inputgroup">Nombre</label>
                             </span>
                         </div>
+                        <small *ngIf="formProducts.get('nameprod')?.errors && (formProducts.get('nameprod')?.dirty ||
+                        formProducts.get('nameprod')?.touched)" class="p-error block">
+                            <small *ngIf="formProducts.get('nameprod').errors?.required">
+                                Requerido
+                            </small>
+                        </small>
                     </div>
                     <div class="p-field p-col-12 p-md-6">
                         <div class="p-inputgroup">
@@ -104,6 +203,12 @@
                                 <label for="inputgroup">Precio compra</label>
                             </span>
                         </div>
+                        <small *ngIf="formProducts.get('pricebougth')?.errors && (formProducts.get('pricebougth')?.dirty ||
+                        formProducts.get('pricebougth')?.touched)" class="p-error block">
+                            <small *ngIf="formProducts.get('pricebougth').errors?.required">
+                                Requerido
+                            </small>
+                        </small>
                     </div>
                     <div class="p-field p-col-12 p-md-6">
                         <div class="p-inputgroup">
@@ -115,19 +220,34 @@
                                 <label for="inputgroup">Precio venta</label>
                             </span>
                         </div>
+                        <small *ngIf="formProducts.get('saleprice')?.errors && (formProducts.get('saleprice')?.dirty ||
+                        formProducts.get('saleprice')?.touched)" class="p-error block">
+                            <small *ngIf="formProducts.get('saleprice').errors?.required">
+                                Requerido
+                            </small>
+                        </small>
                     </div>
                     <div class="p-field p-col-12 p-md-6">
-
                         <span class="p-float-label">
                             <p-calendar [showIcon]="true" inputId="icon" formControlName="datebought"></p-calendar>
                             <label for="inputgroup">Fecha compra</label>
                         </span>
+                        <small *ngIf="formProducts.get('datebought')?.errors && (formProducts.get('datebought')?.dirty ||
+                        formProducts.get('datebought')?.touched)" class="p-error block">
+                            <small *ngIf="formProducts.get('datebought').errors?.required">
+                                Requerido
+                            </small>
+                        </small>
                     </div>
                     <div class="p-field p-col-12 p-md-6">
-                        <span class="p-float-label">
-                            <p-dropdown [options]="drop" formControlName="provider"></p-dropdown>
-                            <label for="inputgroup">Proveedor</label>
-                        </span>
+                        <span for="inputgroup">Proveedor</span>
+                        <p-dropdown [options]="drop" formControlName="provider"></p-dropdown>
+                        <small *ngIf="formProducts.get('provider')?.errors && (formProducts.get('provider')?.dirty ||
+                        formProducts.get('provider')?.touched)" class="p-error block">
+                            <small *ngIf="formProducts.get('provider').errors?.required">
+                                Requerido
+                            </small>
+                        </small>
                     </div>
                     <div class="p-field p-col-12 p-md-12">
                         <div class="p-inputgroup">
@@ -140,8 +260,13 @@
                                 <label for="inputgroup">Descripción</label>
                             </span>
                         </div>
+                        <small *ngIf="formProducts.get('description')?.errors && (formProducts.get('description')?.dirty ||
+                        formProducts.get('description')?.touched)" class="p-error block">
+                            <small *ngIf="formProducts.get('description').errors?.required">
+                                Requerido
+                            </small>
+                        </small>
                     </div>
-
                 </div>
                 <p-toolbar>
                     <div class="p-toolbar-group-left">

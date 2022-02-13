@@ -23,14 +23,6 @@ export class ServicesCliComponent implements OnInit {
     this.getServices()
   }
   setservices() {
-    // this.service = [
-    //   { serviceName: "Fumigación", serviceDesq: "Compraeste cepillo o vete a mimir", idProd: 1, cantidad: 1 },
-    //   { serviceName: "Limpieza interna", serviceDesq: "Compraeste cepillo o vete a mimir", idProd: 2, cantidad: 1 },
-    //   { serviceName: "Limpieza de colchones", serviceDesq: "Compraeste cepillo o vete a mimir", idProd: 3, cantidad: 1 },
-    //   { serviceName: "Limpieza externa", serviceDesq: "Compraeste cepillo o vete a mimir", idProd: 4, cantidad: 1 },
-    //   { serviceName: "Alfombras", serviceDesq: "Compraeste cepillo o vete a mimir", idProd: 5, cantidad: 1 },
-    //   { serviceName: "Desinfección", serviceDesq: "Compraeste cepillo o vete a mimir", idProd: 6, cantidad: 1 },
-    // ]
   }
   addservice(idProd: number) {
     this.serviceSelected = this.service.find(item => idProd == item.idProd);

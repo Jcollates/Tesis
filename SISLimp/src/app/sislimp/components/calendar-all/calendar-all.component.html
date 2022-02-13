@@ -9,71 +9,90 @@
             </div>
             <br>
             <div>
-               
-
+                <nz-calendar [nzDateCell]="dateCellTpl" [(ngModel)]="date" [(nzMode)]="mode"
+                    (nzPanelChange)="panelChange($event)">
+                </nz-calendar>
+                <ng-template #dateCellTpl let-date>
+                    <ul>
+                        <ng-container *ngFor="let meet of meets">
+                            <li *ngIf="meet.dateService == date.toISOString() || meet.dateEnd == date.toISOString() " class="meetstyle">
+                                <span> Cita: {{meet.seqsimplemeet}}</span>
+                                <br>
+                                <span> Cliente: {{meet.cliName}} {{meet.cliLastName}} </span>
+                            </li>
+                        </ng-container>
+                        <ng-container *ngFor="let contract of contracts">
+                            <li *ngIf="contract.datestart == date.toISOString() || contract.dateend == date.toISOString() " class="contractstyle">
+                                <span> Contrato: {{contract.seqagree}}</span>
+                                <br>
+                                <span> Cliente: {{contract.name}}</span>
+                            </li>
+                        </ng-container>
+                    </ul>
+                </ng-template>
             </div>
         </p-tabPanel>
-        <p-tabPanel header="Lista de horarios">
+        <!-- <p-tabPanel header="Lista de horarios">
             <p-table [value]="dataFromdb" styleClass="p-datatable-customers p-datatable-gridlines p-datatable-striped"
-            [responsive]="true" [paginator]="true" [rows]="pageSize" dataKey="code"
-            [rowsPerPageOptions]="[10,30,60]" [totalRecords]="sizeRecords" [lazy]="true" [autoLayout]="true"
-            [columns]="cols">
-            <ng-template pTemplate="caption">
-                Listado
-            </ng-template>
-            <ng-template pTemplate="header" let-columns>
-                <tr>
-                    <ng-container *ngFor="let col of columns">
-                        <th>
-                            {{col.header}}
-                        </th>
-                    </ng-container>
-                </tr>
-            </ng-template>
-            <ng-template pTemplate="body" let-dataFrom let-index="rowIndex" let-columns="columns">
-                <tr>
-                    <td>
-                        <span class="p-column-title">Código cita</span>
-                        {{dataFrom.code}}
-                    </td>
-                    <td>
-                        <span class="p-column-title">Código contrato</span>
-                        {{dataFrom.contractCode}}
-                    </td>
-                    <td>
-                        <span class="p-column-title">Código empleado</span>
-                        {{dataFrom.employeecode}}
-                    </td>
-                    <td>
-                        <span class="p-column-title">Día</span>
-                        {{dataFrom.day}}
-                    </td>
-                    <td>
-                        <span class="p-column-title">Mes</span>
-                        {{dataFrom.month}}
-                    </td>
-                    <td>
-                        <span class="p-column-title">Horario</span>
-                        {{dataFrom.schedule}}
-                    </td>
-                    <td>
-                        <span class="p-column-title">Tipo servicio</span>
-                        {{dataFrom.typeservice}}
-                    </td>
-                    <td>
-                        <span class="p-column-title">Materiales</span>
-                        {{dataFrom.tools}}
-                    </td>
-                    <td>
-                        <span class="p-column-title">Estado</span>
-                        {{dataFrom.status}}
-                    </td>
-                </tr>
-            </ng-template>
-            <ng-template pTemplate="emptymessage">
-                No hay registros que mostrar
-            </ng-template>
-        </p-table>
-        </p-tabPanel>
+                [responsive]="true" [paginator]="true" [rows]="pageSize" dataKey="code"
+                [rowsPerPageOptions]="[10,30,60]" [totalRecords]="sizeRecords" [lazy]="true" [autoLayout]="true"
+                [columns]="cols">
+                <ng-template pTemplate="caption">
+                    Listado
+                </ng-template>
+                <ng-template pTemplate="header" let-columns>
+                    <tr>
+                        <ng-container *ngFor="let col of columns">
+                            <th>
+                                {{col.header}}
+                            </th>
+                        </ng-container>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-dataFrom let-index="rowIndex" let-columns="columns">
+                    <tr>
+                        <td>
+                            <span class="p-column-title">Código cita</span>
+                            {{dataFrom.code}}
+                        </td>
+                        <td>
+                            <span class="p-column-title">Código contrato</span>
+                            {{dataFrom.contractCode}}
+                        </td>
+                        <td>
+                            <span class="p-column-title">Código empleado</span>
+                            {{dataFrom.employeecode}}
+                        </td>
+                        <td>
+                            <span class="p-column-title">Día</span>
+                            {{dataFrom.day}}
+                        </td>
+                        <td>
+                            <span class="p-column-title">Mes</span>
+                            {{dataFrom.month}}
+                        </td>
+                        <td>
+                            <span class="p-column-title">Horario</span>
+                            {{dataFrom.schedule}}
+                        </td>
+                        <td>
+                            <span class="p-column-title">Tipo servicio</span>
+                            {{dataFrom.typeservice}}
+                        </td>
+                        <td>
+                            <span class="p-column-title">Materiales</span>
+                            {{dataFrom.tools}}
+                        </td>
+                        <td>
+                            <span class="p-column-title">Estado</span>
+                            {{dataFrom.status}}
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    No hay registros que mostrar
+                </ng-template>
+            </p-table>
+        </p-tabPanel> -->
     </p-tabView>
 </p-card>

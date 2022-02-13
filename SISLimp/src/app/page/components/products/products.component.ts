@@ -119,6 +119,7 @@ export class ProductsComponent implements OnInit {
     itemToSend.nameuser = this.authService.username;
     itemToSend.contacnumber = this.phoneNumberUser || '';
     itemToSend.email = this.emailUser || '';
+    itemToSend.status = 'hold'
 
     this.productShowService.savesolProduct(itemToSend).subscribe(rest => {
       if (rest != null) this.messageService.add({ severity: 'success', detail: 'Solicitud registrada, un asesor se contactara con usted.' });

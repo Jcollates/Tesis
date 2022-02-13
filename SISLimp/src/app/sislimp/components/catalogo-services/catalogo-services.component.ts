@@ -29,6 +29,10 @@ export class CatalogoServicesComponent implements OnInit {
   myfiles: any[] = [];
   fileUploades: any[] = [];
   newFile: NewFile = new NewFile();
+
+  //edit table 
+  activeIndex1: number = 0;
+  clonedProducts: { [s: string]: CatServices; } = {};
   constructor(
     private catalogueService: CataloguesService,
     private formBuilder: FormBuilder,
@@ -51,25 +55,26 @@ export class CatalogoServicesComponent implements OnInit {
       { field: 'pricehour', header: 'Precio por hora' },
       { field: 'description', header: 'Descripción' },
       { field: 'image', header: 'Imagen' },
+      { field: '', header: 'Editar/Eliminar' },
 
     ];
   }
   chargeData(event: LazyLoadEvent) {
     this.catService.getCatServices().subscribe(rest => {
       console.log(rest);
-      rest.forEach( item => {
+      rest.forEach(item => {
         item.img = this.sharedFuntions.repair(item.img);
       })
       this.dataFromdb = rest;
       this.sizeRecords = rest.length;
     });
   }
-  getCatalogues(){
+  getCatalogues() {
     this.catalogueService.getCataloguebyCodeCat(CODECAT).then(rest => {
       this.drop = this.catalogueService.constructModel(rest);
     })
   }
-  createForm(){
+  createForm() {
     this.formService = this.formBuilder.group({
       img: ['', Validators.required],
       codeService: ['', Validators.required],
@@ -82,9 +87,10 @@ export class CatalogoServicesComponent implements OnInit {
   }
 
   validateForm() {
+    this.formService.markAllAsTouched();
     if (!this.formService.valid) {
-      this.messageService.add({severity:'error', detail: 'Formulario no valido'});
-      // console.log('FORM', this.formService.value);
+      this.messageService.add({ severity: 'error', detail: 'Formulario no valido' });
+      console.log(this.formService.value);
     } else {
       console.log('FORM', this.formService.value);
       this.catServiceContainer.codeservice = this.formService.controls.codeService.value;
@@ -103,7 +109,6 @@ export class CatalogoServicesComponent implements OnInit {
     if (event) {
       this.myfiles = []
       this.fileUploades = event.files;
-      // console.log("fileUploades", this.fileUploades);
       const reader = new FileReader();
       this.newFile.type = event.files[0].type;
       this.newFile.name = event.files[0].name;
@@ -118,14 +123,62 @@ export class CatalogoServicesComponent implements OnInit {
       }
     }
   }
+  async uploadFileEdit(event, datafrom: CatServices) {
+    if (event) {
+      this.myfiles = []
+      this.fileUploades = event.files;
+      const reader = new FileReader();
+      this.newFile.type = event.files[0].type;
+      this.newFile.name = event.files[0].name;
+      reader.readAsDataURL(event.files[0]);
+      reader.onload = () => {
+        datafrom.img = (reader.result as string);
+      }
+      reader.onerror = (error) => {
+        console.log(error);
+      }
+    }
+  }
   saveForm(container: CatServices) {
-    // console.log('cotainer', container);
     this.catService.saveServicesCat(container).subscribe(res => {
-      if(res != null) this.messageService.add({severity:'success', detail: 'Registrado correctamente'});
-      this.formService.reset();
-      this.fileUploades = [];
-      // console.log("SAVED?", res);
+      if (res != null) {
+        this.messageService.add({ severity: 'success', detail: 'Registrado correctamente' });
+        this.formService.reset();
+        this.fileUploades = [];
+        this.activeIndex1 = 0;
+      };
+
     })
   }
+  onRowEditInit(customer: CatServices) {
+    this.clonedProducts[customer.seqcatservice] = { ...customer };
+  }
+  onRowEditSave(customer: CatServices) {
+    this.catService.updateServiceCat(customer).subscribe(rest => {
+      if (rest) {
+        this.messageService.add({ severity: 'success', detail: 'Actualizado' });
+        this.chargeData(null);
+        delete this.clonedProducts[customer.seqcatservice];
+      } else {
+        this.messageService.add({ severity: 'error', detail: 'Error al actualizar' });
+      }
+    });
+
+  }
+  onRowEditCancel(customer: CatServices, index: number) {
+    this.dataFromdb[index] = this.clonedProducts[customer.seqcatservice];
+    delete this.clonedProducts[customer.seqcatservice];
+  }
+  deleteCustomerService(seqcustomer: any) {
+    this.catService.deleteServicesCat(seqcustomer).subscribe(rest => {
+      if (rest) {
+        this.messageService.add({ severity: 'success', detail: 'Registro eliminado' });
+        this.chargeData(null);
+      } else {
+        this.messageService.add({ severity: 'error', detail: 'Error al eliminar' });
+      }
+    })
+  }
+
 
 }

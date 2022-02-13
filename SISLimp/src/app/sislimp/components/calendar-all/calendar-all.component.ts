@@ -1,6 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { CalendarOptions } from '@fullcalendar/angular';
+import { NzCalendarMode } from 'ng-zorro-antd/calendar';
+import { es_ES, NzI18nService } from 'ng-zorro-antd/i18n';
 import { LazyLoadEvent } from 'primeng/api';
+import { Agreement } from '../../shared/models/agreements.model';
+import { Simplemeet } from '../../shared/models/simplemeet.model';
+import { SimpleMeetService } from '../agendamiento-citas/simple-meet.service';
+import { AgreementService } from '../gestion-contratos/agreement.service';
+
+
+
 
 @Component({
   selector: 'app-calendar-all',
@@ -14,11 +22,24 @@ export class CalendarAllComponent implements OnInit {
   pageSize: number = 50;
   drop: any[] = [];
   fordropt: any;
-  constructor() { }
+  date = new Date();
+  mode: NzCalendarMode = 'month';
+
+  //data
+  meets: Simplemeet[] = [];
+  contracts: Agreement[] = [];
+  constructor(
+    private i18n: NzI18nService,
+    private simpleMeetService: SimpleMeetService,
+    private agreeService: AgreementService,
+    ) {
+  }
 
   ngOnInit(): void {
     this.createCols();
     this.chargeData(null);
+    this.i18n.setLocale(es_ES);
+    this.chargeMeets(null);
   }
   createCols() {
     this.cols = [
@@ -50,6 +71,34 @@ export class CalendarAllComponent implements OnInit {
       },
 
     ];
+  }
+  
+  panelChange(change: { date: Date; mode: string }): void {
+    console.log(change.date, change.mode);
+  }
+  chargeMeets(event: LazyLoadEvent) {
+    this.simpleMeetService.getSimpleMeets().subscribe(rest => {
+      if (rest.length > 0) {
+        rest.forEach(item => item.elementAsArray = item.addededServices ? JSON.parse(item.addededServices) : [])
+        this.meets = rest.filter(item => item.status !== 'process' && item.status !== 'hold');
+        console.log('dataFromdb', this.meets);
+      }
+    });
+    this.agreeService.getAgreements().subscribe(rest => {
+      if (rest.length > 0) {
+        console.log(rest);
+        rest.forEach(item => item.elementAsArray = item.addededServices ? JSON.parse(item.addededServices) : [])
+        this.contracts = rest;
+      }
+    });
+  }
+  getMonthData(date: Date, dateCalendar: Date): true | false {
+    console.log(new Date(date).getTime(), dateCalendar.getTime());
+    if (new Date(date) == date) {
+      
+      return true;
+    }
+    return false;
   }
 
 }

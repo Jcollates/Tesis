@@ -3,37 +3,45 @@
     <h3>Gestion de contratos</h3>
 </div>
 <p-card>
-    <p-tabView>
+    <p-tabView [(activeIndex)]="activeIndex1">
         <p-tabPanel header="Listado de contratos">
             <p-table [value]="dataFromdb" styleClass="p-datatable-customers p-datatable-gridlines p-datatable-striped"
                 [responsive]="true" [paginator]="true" [rows]="pageSize" dataKey="seqagree"
-                [rowsPerPageOptions]="[10,30,60]" [totalRecords]="sizeRecords" [lazy]="true" [autoLayout]="true" selectionMode="single"
-                [columns]="cols" (onLazyLoad)="chargeData($event)" >
+                [rowsPerPageOptions]="[10,30,60]" [totalRecords]="sizeRecords" [lazy]="true" [autoLayout]="true"
+                selectionMode="single" [columns]="cols" (onLazyLoad)="chargeData($event)">
                 <ng-template pTemplate="caption">
                     Listado
                 </ng-template>
                 <ng-template pTemplate="header" let-columns>
                     <tr>
+                        <th>Detalle</th>
                         <ng-container *ngFor="let col of columns">
-                            <th>
+                            <th NOWRAP>
                                 {{col.header}}
                             </th>
                         </ng-container>
                     </tr>
                 </ng-template>
-                <ng-template pTemplate="body" let-dataFrom let-index="rowIndex" let-columns="columns">
-                    <tr> 
+                <ng-template pTemplate="body" let-dataFrom let-index="rowIndex" let-columns="columns"
+                    let-expanded="expanded">
+                    <tr>
+                        <td>
+                            <button type="button" pButton pRipple [pRowToggler]="dataFrom"
+                                class="p-button-text p-button-rounded p-button-plain"
+                                [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'">
+                            </button>
+                        </td>
                         <td>
                             <span class="p-column-title">Código contrato</span>
                             {{dataFrom.seqagree}}
                         </td>
                         <td>
                             <span class="p-column-title">Fecha inicio</span>
-                            {{dataFrom.datestart | date}}
+                            {{dataFrom.datestart | date:'dd/mm/yyyy'}}
                         </td>
                         <td>
                             <span class="p-column-title">Fecha fin</span>
-                            {{dataFrom.dateend | date}}
+                            {{dataFrom.dateend | date:'dd/mm/yyyy'}}
                         </td>
                         <td>
                             <span class="p-column-title">Nombre empresa</span>
@@ -41,31 +49,68 @@
                         </td>
                         <td>
                             <span class="p-column-title">Responsable empresa</span>
-                            {{dataFrom.loginuser_codeuser}}
-                        </td>
-                        <td>
-                            <span class="p-column-title">Tipo servicio</span>
-                            {{dataFrom.type}}
-                        </td>
-                        <td>
-                            <span class="p-column-title">Cantidad de empleados</span>
-                            {{employeesAsignated}}
+                            {{dataFrom.legalperson_seqlegalperson}}
                         </td>
                         <td style="text-align: center;">
-                            <button pButton pRipple type="button" icon="pi pi-eye"  (click)="onRowSelectAssigned(dataFrom)" (click)="showAssignated()" 
+                            <button pButton pRipple type="button" icon="pi pi-eye"
+                                (click)="onRowSelectAssigned(dataFrom)" (click)="showAssignated()"
                                 class="p-button-raised p-button-rounded p-button-help" style="float: center">
                             </button>
-                        </td>
-                        <td>
-                            <span class="p-column-title">Utencilios</span>
-                            {{dataFrom.tools}}
-                        </td>
-                        <td style="text-align: center;">
-                            <button pButton pRipple type="button" icon="pi pi-user-plus" (click)="showAssignation()" (click)="onRowSelectFather(dataFrom)"
+                            &nbsp;
+                            <button pButton pRipple type="button" icon="pi pi-user-plus" (click)="showAssignation()"
+                                (click)="onRowSelectFather(dataFrom)"
                                 class="p-button-raised p-button-rounded p-button-info" style="float: center">
                             </button>
                         </td>
-
+                        <td>
+                            <button pButton pRipple type="button" icon="pi pi-pencil" (click)="onEditContract(dataFrom)"
+                                class="p-button-rounded p-button-text"></button>
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="rowexpansion" let-dataFrom>
+                    <tr>
+                        <td colspan="7">
+                            <ng-container *ngIf="dataFrom.elementAsArray?.length > 0">
+                                <span class="p-text-bold">Servicios: </span>
+                                <ul>
+                                    <ng-container *ngFor="let item of dataFrom.elementAsArray">
+                                        <li>
+                                            <span class="p-text-bold">Tipo de servicio: </span>
+                                            {{item.typeService |
+                                            selectedItemPipe:drop}} -
+                                            <span class="p-text-bold">Servicio: </span>
+                                            {{item.serviceName }}
+                                        </li>
+                                    </ng-container>
+                                </ul>
+                            </ng-container>
+                            <ng-container *ngIf="dataFrom.elementAsArray?.length <= 0">
+                                <span class="p-text-bold">Tipo de servicio: </span> <span
+                                    class="p-text-italic">{{dataFrom.typeService | selectedItemPipe:drop}}</span>
+                                <br>
+                                <span class="p-text-bold">Servicio: </span> <span
+                                    class="p-text-italic">{{dataFrom.services}}</span>
+                                <br>
+                            </ng-container>
+                            <span class="p-text-bold">Dirección principal: </span> <span
+                                class="p-text-italic">{{dataFrom.principallocation}}</span>
+                            <br>
+                            <span class="p-text-bold">Dirección del servicio: </span> <span
+                                class="p-text-italic">{{dataFrom.location}}</span>
+                            <br>
+                            <span class="p-text-bold">Teléfono: </span> <span
+                                class="p-text-italic">{{dataFrom.phone}}</span>
+                            <br>
+                            <span class="p-text-bold">Horario: </span> <span
+                                class="p-text-italic">{{dataFrom.schedule}}</span>
+                            <br>
+                            <span class="p-text-bold">Detalle del/los servicios: </span> <span
+                                class="p-text-italic">{{dataFrom.servicedetail}}</span>
+                            <br>
+                            <span class="p-text-bold">Area: </span> <span
+                                class="p-text-italic">{{dataFrom.area}}</span>
+                        </td>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="emptymessage">
@@ -91,6 +136,12 @@
                                 <label for="inputgroup">Ruc</label>
                             </span>
                         </div>
+                        <small *ngIf="formcontracts.get('ruc')?.errors && (formcontracts.get('ruc')?.dirty ||
+                        formcontracts.get('ruc')?.touched)" class="p-error block">
+                            <small *ngIf="formcontracts.get('ruc').errors?.required">
+                                Requerido
+                            </small>
+                        </small>
                     </div>
                     <div class="p-field p-col-12 p-md-6">
                         <div class="p-inputgroup">
@@ -102,6 +153,12 @@
                                 <label for="inputgroup">Nombre empresa</label>
                             </span>
                         </div>
+                        <small *ngIf="formcontracts.get('name')?.errors && (formcontracts.get('name')?.dirty ||
+                        formcontracts.get('name')?.touched)" class="p-error block">
+                            <small *ngIf="formcontracts.get('name').errors?.required">
+                                Requerido
+                            </small>
+                        </small>
                     </div>
                     <div class="p-field p-col-12 p-md-6">
                         <div class="p-inputgroup">
@@ -109,13 +166,20 @@
                                 <i class="pi pi-id-card"></i>
                             </span>
                             <span class="p-float-label">
-                                <input type="text" id="inputgroup" pInputText formControlName="legalperson">
+                                <input type="text" id="inputgroup" pInputText disabled="true"
+                                    formControlName="legalperson">
                                 <label for="inputgroup">Representante legal</label>
                             </span>
                             <button pButton pRipple type="button" icon="pi pi-plus" (click)="showLegal()"
                                 class="p-button-raised p-button-rounded p-button-success p-0 m-0">
                             </button>
                         </div>
+                        <small *ngIf="formcontracts.get('legalperson')?.errors && (formcontracts.get('legalperson')?.dirty ||
+                        formcontracts.get('legalperson')?.touched)" class="p-error block">
+                            <small *ngIf="formcontracts.get('legalperson').errors?.required">
+                                Requerido
+                            </small>
+                        </small>
                     </div>
                     <div class="p-field p-col-12 p-md-6">
                         <div class="p-inputgroup">
@@ -127,6 +191,12 @@
                                 <label for="inputgroup">Dirección principal</label>
                             </span>
                         </div>
+                        <small *ngIf="formcontracts.get('principaladdress')?.errors && (formcontracts.get('principaladdress')?.dirty ||
+                        formcontracts.get('principaladdress')?.touched)" class="p-error block">
+                            <small *ngIf="formcontracts.get('principaladdress').errors?.required">
+                                Requerido
+                            </small>
+                        </small>
                     </div>
                     <div class="p-field p-col-12 p-md-6">
                         <div class="p-inputgroup">
@@ -138,6 +208,12 @@
                                 <label for="inputgroup">Dirección del servicio</label>
                             </span>
                         </div>
+                        <small *ngIf="formcontracts.get('serviceAddress')?.errors && (formcontracts.get('serviceAddress')?.dirty ||
+                        formcontracts.get('serviceAddress')?.touched)" class="p-error block">
+                            <small *ngIf="formcontracts.get('serviceAddress').errors?.required">
+                                Requerido
+                            </small>
+                        </small>
                     </div>
                     <div class="p-field p-col-12 p-md-6">
                         <div class="p-inputgroup">
@@ -149,36 +225,97 @@
                                 <label for="inputgroup">Telefono de contacto</label>
                             </span>
                         </div>
+                        <small *ngIf="formcontracts.get('phone')?.errors && (formcontracts.get('phone')?.dirty ||
+                        formcontracts.get('phone')?.touched)" class="p-error block">
+                            <small *ngIf="formcontracts.get('phone').errors?.required">
+                                Requerido
+                            </small>
+                        </small>
                     </div>
-                    <!-- <div class="p-field p-col-12 p-md-6"></div> -->
                     <div class="p-field p-col-12 p-md-6">
+                        <span for="inputgroup">Area de trabajo</span>
                         <div class="p-inputgroup">
                             <span class="p-inputgroup-addon">
                                 <i class="pi pi-lock"></i>
                             </span>
-                            <span class="p-float-label">
-                                <input type="text" id="inputgroup" pInputText formControlName="workarea"> 
-                                <label for="inputgroup">Area de trabajo</label>
-                            </span>
+                            <input type="text" id="inputgroup" pInputText formControlName="workarea">
                         </div>
+                        <small *ngIf="formcontracts.get('workarea')?.errors && (formcontracts.get('workarea')?.dirty ||
+                        formcontracts.get('workarea')?.touched)" class="p-error block">
+                            <small *ngIf="formcontracts.get('workarea').errors?.required">
+                                Requerido
+                            </small>
+                        </small>
                     </div>
-                    <div class="p-field p-col-12 p-md-6">
-                        <span class="p-float-label">
-                            <p-dropdown [options]="drop" formControlName="type"></p-dropdown>
-                            <label >Tipo</label>
-                        </span>
+                    <div class="p-field p-col-12 p-md-12 pt-1">
+                        <button pButton pRipple type="button" icon="pi pi-plus" (click)="addService()"
+                            class="p-button-raised p-button-rounded p-button-success mb-3">
+                        </button>
+                        <ng-container formArrayName="services">
+                            <ng-container *ngFor="let serviceForm of services.controls; let i = index">
+                                <div class="p-grid p-fluid p-0 m-0" [formGroup]="serviceForm">
+                                    <div class="p-field p-col-12 p-md-6">
+                                        <label style="font-size: 12px; top: -.75;" class="m-0 p-0">Tipo servicio</label>
+                                        <p-dropdown [options]="drop" formControlName="typeService"></p-dropdown>
+                                        <small *ngIf="serviceForm.get('typeService')?.errors && (serviceForm.get('typeService')?.dirty ||
+                                                        serviceForm.get('typeService')?.touched)"
+                                            class="p-error block">
+                                            <small *ngIf="serviceForm.get('typeService').errors?.required">
+                                                Requerido
+                                            </small>
+                                        </small>
+                                    </div>
+                                    <div class="p-field p-col-12 p-md-6">
+                                        <label style="font-size: 12px; top: -.75;" class="m-0 p-0">Nombre
+                                            servicio
+                                        </label>
+                                        <div class="p-inputgroup">
+                                            <span class="p-inputgroup-addon">
+                                                <i class="pi pi-lock"></i>
+                                            </span>
+                                            <input type="text" pInputText formControlName="serviceName" />
+                                            &nbsp;
+                                            <button pButton pRipple type="button" icon="pi pi-trash"
+                                                (click)="deleteService(i)"
+                                                class="p-button-raised p-button-rounded p-button-danger p-0 m-0">
+                                            </button>
+                                        </div>
+                                        <small *ngIf="serviceForm.get('serviceName')?.errors && (serviceForm.get('serviceName')?.dirty ||
+                                                        serviceForm.get('serviceName')?.touched)"
+                                            class="p-error block">
+                                            <small *ngIf="serviceForm.get('serviceName').errors?.required">
+                                                Requerido
+                                            </small>
+                                        </small>
+                                    </div>
+                                </div>
+                            </ng-container>
+                        </ng-container>
+                        &nbsp;
                     </div>
                     <div class="p-field p-col-12 p-md-6">
                         <span class="p-float-label">
                             <p-calendar [showIcon]="true" inputId="icon" formControlName="stardate"></p-calendar>
                             <label for="inputgroup">Fecha inicio</label>
                         </span>
+                        <small *ngIf="formcontracts.get('stardate')?.errors && (formcontracts.get('stardate')?.dirty ||
+                        formcontracts.get('stardate')?.touched)" class="p-error block">
+                            <small *ngIf="formcontracts.get('stardate').errors?.required">
+                                Requerido
+                            </small>
+                        </small>
                     </div>
                     <div class="p-field p-col-12 p-md-6">
                         <span class="p-float-label">
                             <p-calendar [showIcon]="true" inputId="icon" formControlName="endate"></p-calendar>
                             <label for="inputgroup">Fecha fin</label>
                         </span>
+                        <small *ngIf="formcontracts.get('endate')?.errors && (formcontracts.get('endate')?.dirty ||
+                        formcontracts.get('endate')?.touched)" class="p-error block">
+                            <small *ngIf="formcontracts.get('endate').errors?.required">
+                                Requerido
+                            </small>
+                        </small>
                     </div>
                     <div class="p-field p-col-12 p-md-6">
                         <div class="p-inputgroup">
@@ -190,6 +327,12 @@
                                 <label for="inputgroup">Subtotal</label>
                             </span>
                         </div>
+                        <small *ngIf="formcontracts.get('subtotal')?.errors && (formcontracts.get('subtotal')?.dirty ||
+                        formcontracts.get('subtotal')?.touched)" class="p-error block">
+                            <small *ngIf="formcontracts.get('subtotal').errors?.required">
+                                Requerido
+                            </small>
+                        </small>
                     </div>
                     <div class="p-field p-col-12 p-md-6">
                         <div class="p-inputgroup">
@@ -201,6 +344,12 @@
                                 <label for="inputgroup">Horario pre establecido</label>
                             </span>
                         </div>
+                        <small *ngIf="formcontracts.get('schedule')?.errors && (formcontracts.get('schedule')?.dirty ||
+                        formcontracts.get('schedule')?.touched)" class="p-error block">
+                            <small *ngIf="formcontracts.get('schedule').errors?.required">
+                                Requerido
+                            </small>
+                        </small>
                     </div>
                     <div class="p-field p-col-12 p-md-12">
                         <div class="p-inputgroup">
@@ -208,10 +357,17 @@
                                 <i class="pi pi-globe"></i>
                             </span>
                             <span class="p-float-label">
-                                <textarea id="float-input" rows="5" cols="30" pInputTextarea formControlName="detailService"></textarea>
+                                <textarea id="float-input" rows="5" cols="30" pInputTextarea
+                                    formControlName="detailService"></textarea>
                                 <label for="inputgroup">Destalle del servicio</label>
                             </span>
                         </div>
+                        <small *ngIf="formcontracts.get('detailService')?.errors && (formcontracts.get('detailService')?.dirty ||
+                        formcontracts.get('detailService')?.touched)" class="p-error block">
+                            <small *ngIf="formcontracts.get('detailService').errors?.required">
+                                Requerido
+                            </small>
+                        </small>
                     </div>
                 </div>
                 <p-toolbar>
@@ -231,8 +387,9 @@
         <p-table [value]="employesToAssig" styleClass="p-datatable-customers p-datatable-gridlines p-datatable-striped"
             [responsive]="true" [paginator]="true" [rows]="pageSize" dataKey="seqemploy"
             [rowsPerPageOptions]="[10,30,60]" [totalRecords]="sizeRecordsToAsig" [lazy]="true" [autoLayout]="true"
-            [columns]="colsEmployees" (onRowSelect)="onRowSelect($event)" (onLazyLoad)="getEmployees($event)" selectionMode="single" >
-            <ng-template pTemplate="caption" >
+            [columns]="colsEmployees" (onRowSelect)="onRowSelect($event)" (onLazyLoad)="getEmployees($event)"
+            selectionMode="single">
+            <ng-template pTemplate="caption">
                 Listado
             </ng-template>
             <ng-template pTemplate="header" let-columns>
@@ -268,8 +425,9 @@
         </p-table>
         <p-toolbar>
             <div style="text-align: center;">
-                <button pButton pRipple type="button" label="Asignar selección" icon="pi pi-save" (click)="saveAssigment()"
-                    class="p-button-raised p-button-rounded p-button-success p-mr-2 p-mb-2 " style="float: center">
+                <button pButton pRipple type="button" label="Asignar selección" icon="pi pi-save"
+                    (click)="saveAssigment()" class="p-button-raised p-button-rounded p-button-success p-mr-2 p-mb-2 "
+                    style="float: center">
                 </button>
             </div>
 
@@ -309,7 +467,7 @@
             </ng-template>
         </p-table>
     </p-dialog>
-    <p-dialog header="Asignacion de empleado" [(visible)]="showLegalperson" [style]="{width: '50vw'}"
+    <p-dialog header="Asignacion de representante" [(visible)]="showLegalperson" [style]="{width: '50vw'}"
         [style]="{width: '50vw'}">
         <app-legalperson (legalData)="getLegal($event)"></app-legalperson>
     </p-dialog>

@@ -26,14 +26,12 @@ export class CatalogoProcutsService {
     return this.http.post(url, container).pipe(map( res => res as any));
 
   }
-  // getAuthorization(authorization: AuthorizationRequest): Observable<any>{
-  //   let url = this.url + '/needAuthorization';
-  //   return this._http.post(url, authorization).pipe(map(res => res as any));
-
-  // }
-  // saveUpdateDemographic( container :SocioDemographicMapsContainer): Observable<any>{
-  //   let url = this.urlSolicitud + '/sociodemo';
-  //   return this._http.post(url, container).pipe(map(res => res as any));
-  // }
-
+  deleteCatProduct(seqcatproducts: number): Observable<any>{
+    let url = this.url + `/deleteCatProduct/${seqcatproducts}`;
+    return this.http.delete(url).pipe(map( res => res as any));
+  }
+  updateCatProduct(container: CatProducts){
+    let url = this.url + '/updateCatProduct';
+    return this.http.post(url, container).pipe(map( res => res as any));
+  }
 }

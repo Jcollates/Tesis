@@ -4,14 +4,10 @@
 </div>
 
 <p-card>
-    
+
     <p-table [value]="dataFromdb" styleClass="p-datatable-customers p-datatable-gridlines p-datatable-striped"
         [responsive]="true" [paginator]="true" [rows]="pageSize" dataKey="date" [rowsPerPageOptions]="[10,30,60]"
-        [totalRecords]="sizeRecords"  [lazy]="true" [autoLayout]="true"
-        [columns]="cols">
-        <ng-template pTemplate="caption">
-            Listado
-        </ng-template>
+        [totalRecords]="sizeRecords" [lazy]="true" [autoLayout]="true" [columns]="cols" (onLazyLoad)="getSolProducts($event)">
         <ng-template pTemplate="header" let-columns>
             <tr>
                 <ng-container *ngFor="let col of columns">
@@ -25,19 +21,31 @@
             <tr>
                 <td>
                     <span class="p-column-title">Fecha</span>
-                    {{dataFrom.date}}
+                    {{dataFrom.dateCreate | date:'dd/mm/yyyy'}}
                 </td>
                 <td>
-                    <span class="p-column-title">Producto / Servicio</span>
-                    {{dataFrom.productservice}}
+                    <span class="p-column-title">Usuario</span>
+                    {{dataFrom.nameuser }}
                 </td>
                 <td>
-                    <span class="p-column-title">Costo</span>
-                    {{dataFrom.cost}}
+                    <span class="p-column-title">Producto</span>
+                    <ng-container *ngIf="dataFrom.elementAsArray?.length > 0">
+                        <button pButton pRipple type="button" icon="pi pi-eye" (click)="showProducts(dataFrom)"
+                            class="p-button-raised p-button-rounded p-button-warning" style="float: center">
+                        </button>
+                    </ng-container>
                 </td>
                 <td>
-                    <span class="p-column-title">Detalle</span>
-                    {{dataFrom.detail}}
+                    <span class="p-column-title">Servicio</span>
+
+                </td>
+                <td>
+                    <span class="p-column-title">Email</span>
+                    {{dataFrom.email}}
+                </td>
+                <td>
+                    <span class="p-column-title">Estado</span>
+                    {{dataFrom.status | solistatus:drop}}
                 </td>
             </tr>
         </ng-template>
@@ -45,4 +53,39 @@
             No hay registros que mostrar
         </ng-template>
     </p-table>
+    <p-dialog header="Productos" [(visible)]="showedProducts">
+        <p-table [value]="solProductShow.elementAsArray" styleClass="p-datatable-customers p-datatable-gridlines p-datatable-striped"
+            [responsive]="true" [paginator]="true" [rows]="pageSize" dataKey="seqemploy"
+            [rowsPerPageOptions]="[10,30,60]" [totalRecords]="solProductShow?.elementAsArray?.length" [lazy]="true" [autoLayout]="true"
+            [columns]="colsProducts">
+            <ng-template pTemplate="header" let-columns>
+                <tr>
+                    <ng-container *ngFor="let col of columns">
+                        <th>
+                            {{col.header}}
+                        </th>
+                    </ng-container>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-dataFrom let-index="rowIndex" let-columns="columns">
+                <tr>
+                    <td>
+                        <span class="p-column-title">Nombre</span>
+                        {{dataFrom.name}}
+                    </td>
+                    <td>
+                        <span class="p-column-title">Costo</span>
+                        {{dataFrom.saleprice}}
+                    </td>
+                    <td>
+                        <span class="p-column-title">Detalle</span>
+                        {{dataFrom.description}}
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                No hay registros que mostrar
+            </ng-template>
+        </p-table>
+    </p-dialog>
 </p-card>

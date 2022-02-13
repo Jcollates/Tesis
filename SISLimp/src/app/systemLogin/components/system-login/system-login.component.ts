@@ -49,5 +49,8 @@ export class SystemLoginComponent implements OnInit {
     }
     
   }
+  goToPage(){
+    this.router.navigate(['page'])
+  }
 
 }

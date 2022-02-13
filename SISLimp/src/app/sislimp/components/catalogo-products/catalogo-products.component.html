@@ -3,12 +3,12 @@
     <h3>Catalogo de productos</h3>
 </div>
 <p-card>
-    <p-tabView>
+    <p-tabView [(activeIndex)]="activeIndex1">
         <p-tabPanel header="Productos publicados">
             <p-table [value]="dataFromdb" styleClass="p-datatable-customers p-datatable-gridlines p-datatable-striped"
                 [responsive]="true" [paginator]="true" [rows]="pageSize" dataKey="code"
                 [rowsPerPageOptions]="[10,30,60]" [totalRecords]="sizeRecords" [lazy]="true" [autoLayout]="true"
-                [columns]="cols" (onLazyLoad)="chargeData($event)">
+                [columns]="cols" (onLazyLoad)="chargeData($event)" editMode="row">
                 <ng-template pTemplate="caption">
                     Listado
                 </ng-template>
@@ -21,28 +21,79 @@
                         </ng-container>
                     </tr>
                 </ng-template>
-                <ng-template pTemplate="body" let-dataFrom let-index="rowIndex" let-columns="columns">
-                    <tr>
+                <ng-template pTemplate="body" let-dataFrom let-index="rowIndex" let-columns="columns"
+                    let-editing="editing">
+                    <tr [pEditableRow]="dataFrom">
                         <td>
                             <span class="p-column-title">Código</span>
                             {{dataFrom.seqcatproduct}}
                         </td>
                         <td>
                             <span class="p-column-title">Nombre</span>
-                            {{dataFrom.nameproduct}}
+                            <p-cellEditor>
+                                <ng-template pTemplate="input">
+                                    <input pInputText type="text" [(ngModel)]="dataFrom.nameproduct">
+                                </ng-template>
+                                <ng-template pTemplate="output">
+                                    {{dataFrom.nameproduct}}
+                                </ng-template>
+                            </p-cellEditor>
                         </td>
                         <td>
                             <span class="p-column-title">Descripción</span>
-                            {{dataFrom.description}}
+                            <p-cellEditor>
+                                <ng-template pTemplate="input">
+                                    <textarea id="float-input" rows="3" cols="30" pInputTextarea
+                                        [(ngModel)]="dataFrom.description"></textarea>
+                                </ng-template>
+                                <ng-template pTemplate="output">
+                                    {{dataFrom.description}}
+                                </ng-template>
+                            </p-cellEditor>
                         </td>
                         <td>
                             <span class="p-column-title">Precio venta</span>
-                            {{dataFrom.saleprize}}
+                            <p-cellEditor>
+                                <ng-template pTemplate="input">
+                                    <input pInputText type="text" [(ngModel)]="dataFrom.saleprize">
+                                </ng-template>
+                                <ng-template pTemplate="output">
+                                    {{dataFrom.saleprize}}
+                                </ng-template>
+                            </p-cellEditor>
                         </td>
                         <td>
                             <span class="p-column-title">Imagen</span>
-                            <img src="{{dataFrom.img}}" alt="" width="50" height="50" />
-                            <!-- {{dataFrom.img}} -->
+                            <p-cellEditor>
+                                <ng-template pTemplate="input">
+                                    <p-fileUpload name="demo[]" [files]="myfiles" chooseLabel="Seleccionar"
+                                        uploadLabel="Subir" cancelLabel="Cancelar" accept="image/*"
+                                        maxFileSize="1000000" customUpload="true"
+                                        (uploadHandler)="uploadFileEdit($event, dataFrom)">
+                                        <ng-template pTemplate="content">
+                                            <ul *ngIf="fileUploades.length">
+                                                <li>{{fileUploades[0]?.name}}</li>
+                                            </ul>
+                                        </ng-template>
+                                    </p-fileUpload>
+                                </ng-template>
+                                <ng-template pTemplate="output">
+                                    <img src="{{dataFrom.img}}" alt="" width="50" height="50" />
+                                </ng-template>
+                            </p-cellEditor>
+                        </td>
+                        <td style="text-align:center">
+                            <button *ngIf="!editing" (click)="onRowEditInit(dataFrom)" pButton pRipple type="button"
+                                pInitEditableRow icon="pi pi-pencil" class="p-button-rounded p-button-text"></button>
+                            <button *ngIf="!editing" pButton pRipple type="button" pCancelEditableRow icon="pi pi-trash"
+                                (click)="deleteCustomerService(dataFrom.seqcatproduct)"
+                                class="p-button-rounded p-button-text p-button-danger"></button>
+                            <button *ngIf="editing" pButton pRipple type="button" pSaveEditableRow icon="pi pi-check"
+                                (click)="onRowEditSave(dataFrom)"
+                                class="p-button-rounded p-button-text p-button-success p-mr-2"></button>
+                            <button *ngIf="editing" pButton pRipple type="button" pCancelEditableRow icon="pi pi-times"
+                                (click)="onRowEditCancel(dataFrom, index)"
+                                class="p-button-rounded p-button-text p-button-danger"></button>
                         </td>
                     </tr>
                 </ng-template>
@@ -70,52 +121,70 @@
                                 </ul>
                             </ng-template>
                         </p-fileUpload>
+                        <small *ngIf="formProduct.get('img')?.errors && (formProduct.get('img')?.dirty ||
+                        formProduct.get('img')?.touched)" class="p-error block">
+                            <small *ngIf="formProduct.get('img').errors?.required">
+                                Requerido
+                            </small>
+                        </small>
                     </div>
                     <div class="p-field p-col-12 p-md-2"></div>
                     <div class="p-field p-col-12 p-md-6">
-                        <div class="p-inputgroup">
-                            <span class="p-inputgroup-addon">
-                                <i class="pi pi-user"></i>
-                            </span>
-                            <span class="p-float-label">
-                                <input type="text" id="inputgroup" pInputText formControlName="codeProd">
-                                <label for="inputgroup">Codigo de producto</label>
-                            </span>
-                        </div>
+                        <span>Código de producto</span>
+                        <p-inputMask mask="9999-aaaa" formControlName="codeProd" placeholder="9999-AAAA">
+                        </p-inputMask>
+                        <small *ngIf="formProduct.get('codeProd')?.errors && (formProduct.get('codeProd')?.dirty ||
+                        formProduct.get('codeProd')?.touched)" class="p-error block">
+                            <small *ngIf="formProduct.get('codeProd').errors?.required">
+                                Requerido
+                            </small>
+                        </small>
                     </div>
                     <div class="p-field p-col-12 p-md-6">
+                        <span for="inputgroup">Nombre</span>
                         <div class="p-inputgroup">
                             <span class="p-inputgroup-addon">
                                 <i class="pi pi-id-card"></i>
                             </span>
-                            <span class="p-float-label">
-                                <input type="text" id="inputgroup" pInputText formControlName="name">
-                                <label for="inputgroup">Nombre</label>
-                            </span>
+                            <input type="text" id="inputgroup" pInputText formControlName="name">
                         </div>
+                        <small *ngIf="formProduct.get('name')?.errors && (formProduct.get('name')?.dirty ||
+                        formProduct.get('name')?.touched)" class="p-error block">
+                            <small *ngIf="formProduct.get('name').errors?.required">
+                                Requerido
+                            </small>
+                        </small>
                     </div>
                     <div class="p-field p-col-12 p-md-6">
+                        <span for="inputgroup">Precio venta</span>
                         <div class="p-inputgroup">
                             <span class="p-inputgroup-addon">
                                 <i class="pi pi-phone"></i>
                             </span>
-                            <span class="p-float-label">
-                                <input type="text" id="inputgroup" pInputText formControlName="saleprize">
-                                <label for="inputgroup">Precio venta</label>
-                            </span>
+                            <input type="text" id="inputgroup" pInputText formControlName="saleprize">
                         </div>
+                        <small *ngIf="formProduct.get('saleprize')?.errors && (formProduct.get('saleprize')?.dirty ||
+                        formProduct.get('saleprize')?.touched)" class="p-error block">
+                            <small *ngIf="formProduct.get('saleprize').errors?.required">
+                                Requerido
+                            </small>
+                        </small>
                     </div>
                     <div class="p-field p-col-12 p-md-12">
+                        <span for="inputgroup">Descripcion</span>
                         <div class="p-inputgroup">
                             <span class="p-inputgroup-addon">
                                 <i class="pi pi-globe"></i>
                             </span>
-                            <span class="p-float-label">
-                                <textarea id="float-input" rows="5" cols="30" pInputTextarea
-                                    formControlName="description"></textarea>
-                                <label for="inputgroup">Descripcion</label>
-                            </span>
+                            <textarea id="float-input" rows="5" cols="30" pInputTextarea
+                                formControlName="description"></textarea>
                         </div>
+                        <small *ngIf="formProduct.get('description')?.errors && (formProduct.get('description')?.dirty ||
+                        formProduct.get('description')?.touched)" class="p-error block">
+                            <small *ngIf="formProduct.get('description').errors?.required">
+                                Requerido
+                            </small>
+                        </small>
                     </div>
                 </div>
             </form>

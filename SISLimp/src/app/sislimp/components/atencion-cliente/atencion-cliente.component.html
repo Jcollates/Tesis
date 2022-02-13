@@ -3,61 +3,140 @@
     <h3>Atención al cliente</h3>
 </div>
 <p-card>
-    <p-tabView>
+    <p-tabView [(activeIndex)]="activeIndex1">
         <p-tabPanel header="Registros">
             <p-table [value]="dataFromdb" styleClass="p-datatable-customers p-datatable-gridlines p-datatable-striped"
-                [responsive]="true" [paginator]="true" [rows]="pageSize" dataKey="date"
+                [responsive]="true" [paginator]="true" [rows]="pageSize" dataKey="seqcustomer"
                 [rowsPerPageOptions]="[10,30,60]" [totalRecords]="sizeRecords" [lazy]="true" [autoLayout]="true"
-                [columns]="cols" (onLazyLoad)="chargeData($event)">
+                [columns]="cols" editMode="row" (onLazyLoad)="chargeData($event)" responsiveLayout="scroll">
                 <ng-template pTemplate="caption">
                     Listado
                 </ng-template>
                 <ng-template pTemplate="header" let-columns>
                     <tr>
                         <ng-container *ngFor="let col of columns">
-                            <th>
+                            <th NOWRAP>
                                 {{col.header}}
                             </th>
                         </ng-container>
                     </tr>
                 </ng-template>
-                <ng-template pTemplate="body" let-dataFrom let-index="rowIndex" let-columns="columns">
-                    <tr>
+                <ng-template pTemplate="body" let-dataFrom let-editing="editing" let-index="rowIndex"
+                    let-columns="columns">
+                    <tr [pEditableRow]="dataFrom">
                         <td>
                             <span class="p-column-title">Codigo cliente</span>
-                            {{dataFrom.dnicliente}}
+                            <p-cellEditor>
+                                <ng-template pTemplate="input">
+                                    <input pInputText type="text" [(ngModel)]="dataFrom.dnicliente">
+                                </ng-template>
+                                <ng-template pTemplate="output">
+                                    {{dataFrom.dnicliente}}
+                                </ng-template>
+                            </p-cellEditor>
                         </td>
-                        <td>
+                        <td NOWRAP style="width: 20%;">
                             <span class="p-column-title">Fecha</span>
-                            {{dataFrom.dateobservation | date}}
+                            <p-cellEditor>
+                                <ng-template pTemplate="input">
+                                    <p-calendar [showIcon]="true" [(ngModel)]="dataFrom.dateobservation" inputId="icon"
+                                        appendTo="body"></p-calendar>
+                                </ng-template>
+                                <ng-template pTemplate="output">
+                                    {{dataFrom.dateobservation | date:'dd/mm/yyyy'}}
+                                </ng-template>
+                            </p-cellEditor>
                         </td>
                         <td>
                             <span class="p-column-title">Nombre</span>
-                            {{dataFrom.nameclient}}
+                            <p-cellEditor>
+                                <ng-template pTemplate="input">
+                                    <input pInputText type="text" [(ngModel)]="dataFrom.nameclient">
+                                </ng-template>
+                                <ng-template pTemplate="output">
+                                    {{dataFrom.nameclient}}
+                                </ng-template>
+                            </p-cellEditor>
                         </td>
                         <td>
                             <span class="p-column-title">Apellido</span>
-                            {{dataFrom.lastnameclient}}
+                            <p-cellEditor>
+                                <ng-template pTemplate="input">
+                                    <input pInputText type="text" [(ngModel)]="dataFrom.lastnameclient">
+                                </ng-template>
+                                <ng-template pTemplate="output">
+                                    {{dataFrom.lastnameclient}}
+                                </ng-template>
+                            </p-cellEditor>
                         </td>
                         <td>
                             <span class="p-column-title">Observaciones</span>
-                            {{dataFrom.observation}}
+                            <p-cellEditor>
+                                <ng-template pTemplate="input">
+                                    <input pInputText type="text" [(ngModel)]="dataFrom.observation">
+                                </ng-template>
+                                <ng-template pTemplate="output">
+                                    {{dataFrom.observation}}
+                                </ng-template>
+                            </p-cellEditor>
                         </td>
                         <td>
                             <span class="p-column-title">Num. Telefono</span>
-                            {{dataFrom.phonenumber}}
+                            <p-cellEditor>
+                                <ng-template pTemplate="input">
+                                    <input pInputText type="text" [(ngModel)]="dataFrom.phonenumber">
+                                </ng-template>
+                                <ng-template pTemplate="output">
+                                    {{dataFrom.phonenumber}}
+                                </ng-template>
+                            </p-cellEditor>
                         </td>
                         <td>
                             <span class="p-column-title">Dirección</span>
-                            {{dataFrom.address}}
+                            <p-cellEditor>
+                                <ng-template pTemplate="input">
+                                    <input pInputText type="text" [(ngModel)]="dataFrom.address">
+                                </ng-template>
+                                <ng-template pTemplate="output">
+                                    {{dataFrom.address}}
+                                </ng-template>
+                            </p-cellEditor>
                         </td>
                         <td>
                             <span class="p-column-title">Nombre empleado</span>
-                            {{dataFrom.employeename}}
+                            <p-cellEditor>
+                                <ng-template pTemplate="input">
+                                    <input pInputText type="text" [(ngModel)]="dataFrom.employeename">
+                                </ng-template>
+                                <ng-template pTemplate="output">
+                                    {{dataFrom.employeename}}
+                                </ng-template>
+                            </p-cellEditor>
                         </td>
                         <td>
                             <span class="p-column-title">Detalle del servicio</span>
-                            {{dataFrom.servicedetail}}
+                            <p-cellEditor>
+                                <ng-template pTemplate="input">
+                                    <input pInputText type="text" [(ngModel)]="dataFrom.servicedetail">
+                                </ng-template>
+                                <ng-template pTemplate="output">
+                                    {{dataFrom.servicedetail}}
+                                </ng-template>
+                            </p-cellEditor>
+
+                        </td>
+                        <td style="text-align:center">
+                            <button *ngIf="!editing" (click)="onRowEditInit(dataFrom)" pButton pRipple type="button"
+                                pInitEditableRow icon="pi pi-pencil" class="p-button-rounded p-button-text"></button>
+                            <button *ngIf="!editing" pButton pRipple type="button" pCancelEditableRow icon="pi pi-trash"
+                                (click)="deleteCustomerService(dataFrom.seqcustomer)"
+                                class="p-button-rounded p-button-text p-button-danger"></button>
+                            <button *ngIf="editing" pButton pRipple type="button" pSaveEditableRow icon="pi pi-check"
+                                (click)="onRowEditSave(dataFrom)"
+                                class="p-button-rounded p-button-text p-button-success p-mr-2"></button>
+                            <button *ngIf="editing" pButton pRipple type="button" pCancelEditableRow icon="pi pi-times"
+                                (click)="onRowEditCancel(dataFrom, index)"
+                                class="p-button-rounded p-button-text p-button-danger"></button>
                         </td>
                     </tr>
                 </ng-template>
@@ -87,10 +166,16 @@
                                 <i class="pi pi-user"></i>
                             </span>
                             <span class="p-float-label">
-                                <input type="text" id="inputgroup" pInputText formControlName="dni">
+                                <input type="text" id="inputgroup" pInputText formControlName="dni" maxlength="10"  (keypress)="sharedFuntions.enterOnlyNumbers($event)">
                                 <label for="inputgroup">Cedula/RUC</label>
                             </span>
                         </div>
+                        <small *ngIf="formCustomer.get('dni')?.errors && (formCustomer.get('dni')?.dirty ||
+                            formCustomer.get('dni')?.touched)" class="p-error block">
+                            <small *ngIf="formCustomer.get('dni').errors?.required">
+                                Requerido
+                            </small>
+                        </small>
                     </div>
                     <div class="p-field p-col-12 p-md-6">
                         <div class="p-inputgroup">
@@ -102,6 +187,15 @@
                                 <label for="inputgroup">Correo electrónico</label>
                             </span>
                         </div>
+                        <small *ngIf="formCustomer.get('email')?.errors && (formCustomer.get('email')?.dirty ||
+                            formCustomer.get('email')?.touched)" class="p-error block">
+                            <small *ngIf="formCustomer.get('email').errors?.required">
+                                Requerido
+                            </small>
+                            <small *ngIf="formCustomer.get('email').errors?.mustMatch">
+                                {{formCustomer.get('email').errors?.mustMatch}}
+                            </small>
+                        </small>
                     </div>
                     <div class="p-field p-col-12 p-md-6">
                         <div class="p-inputgroup">
@@ -113,6 +207,12 @@
                                 <label for="inputgroup">Nombre</label>
                             </span>
                         </div>
+                        <small *ngIf="formCustomer.get('cliname')?.errors && (formCustomer.get('cliname')?.dirty ||
+                            formCustomer.get('cliname')?.touched)" class="p-error block">
+                            <small *ngIf="formCustomer.get('cliname').errors?.required">
+                                Requerido
+                            </small>
+                        </small>
                     </div>
                     <div class="p-field p-col-12 p-md-6">
                         <div class="p-inputgroup">
@@ -124,6 +224,12 @@
                                 <label for="inputgroup">Apellido</label>
                             </span>
                         </div>
+                        <small *ngIf="formCustomer.get('clilastname')?.errors && (formCustomer.get('clilastname')?.dirty ||
+                            formCustomer.get('clilastname')?.touched)" class="p-error block">
+                            <small *ngIf="formCustomer.get('clilastname').errors?.required">
+                                Requerido
+                            </small>
+                        </small>
                     </div>
                     <div class="p-field p-col-12 p-md-6">
                         <div class="p-inputgroup">
@@ -131,24 +237,59 @@
                                 <i class="pi pi-envelope "></i>
                             </span>
                             <span class="p-float-label">
-                                <input type="text" id="inputgroup" pInputText formControlName="phone">
+                                <input type="text" id="inputgroup" pInputText formControlName="phone" maxlength="10"  (keypress)="sharedFuntions.enterOnlyNumbers($event)">
                                 <label for="inputgroup">Teléfono</label>
                             </span>
                         </div>
+                        <small *ngIf="formCustomer.get('phone')?.errors && (formCustomer.get('phone')?.dirty ||
+                            formCustomer.get('phone')?.touched)" class="p-error block">
+                            <small *ngIf="formCustomer.get('phone').errors?.required">
+                                Requerido
+                            </small>
+                        </small>
                     </div>
-                    <div class="p-field p-col-12 p-md-6"></div>
+                    <div class="p-field p-col-12 p-md-6">
+                        <div class="p-inputgroup">
+                            <span class="p-inputgroup-addon">
+                                <i class="pi pi-envelope "></i>
+                            </span>
+                            <span class="p-float-label">
+                                <textarea id="float-input" rows="2" cols="5" pInputTextarea
+                                    formControlName="address"></textarea>
+                                <label for="inputgroup">Dirección</label>
+                            </span>
+                        </div>
+                        <small *ngIf="formCustomer.get('address')?.errors && (formCustomer.get('address')?.dirty ||
+                            formCustomer.get('address')?.touched)" class="p-error block">
+                            <small *ngIf="formCustomer.get('address').errors?.required">
+                                Requerido
+                            </small>
+                        </small>
+                    </div>
                     <div class="p-field p-col-12 p-md-6">
                         <span class="p-float-label">
                             <p-dropdown [options]="dropProvince" (onChange)="onChangueProvince($event)"
                                 formControlName="province"></p-dropdown>
                             <label for="dropdown">Provincia</label>
                         </span>
+                        <small *ngIf="formCustomer.get('province')?.errors && (formCustomer.get('province')?.dirty ||
+                            formCustomer.get('province')?.touched)" class="p-error block">
+                            <small *ngIf="formCustomer.get('province').errors?.required">
+                                Requerido
+                            </small>
+                        </small>
                     </div>
                     <div class="p-field p-col-12 p-md-6">
                         <span class="p-float-label">
                             <p-dropdown [options]="dropCity" formControlName="city"></p-dropdown>
                             <label for="dropdown">Ciudad</label>
                         </span>
+                        <small *ngIf="formCustomer.get('city')?.errors && (formCustomer.get('city')?.dirty ||
+                            formCustomer.get('city')?.touched)" class="p-error block">
+                            <small *ngIf="formCustomer.get('city').errors?.required">
+                                Requerido
+                            </small>
+                        </small>
                     </div>
                     <div class="p-field p-col-12 p-md-12">
                         <div class="p-inputgroup">
@@ -161,6 +302,12 @@
                                 <label for="inputgroup">Observación</label>
                             </span>
                         </div>
+                        <small *ngIf="formCustomer.get('observation')?.errors && (formCustomer.get('observation')?.dirty ||
+                            formCustomer.get('observation')?.touched)" class="p-error block">
+                            <small *ngIf="formCustomer.get('observation').errors?.required">
+                                Requerido
+                            </small>
+                        </small>
                     </div>
                     <!-- <div class="p-field p-col-12 p-md-6"></div> -->
                     <div class="p-field p-col-12 p-md-6">
@@ -168,6 +315,25 @@
                             <p-dropdown [options]="dropType" formControlName="typeservice"></p-dropdown>
                             <label for="dropdown">Tipo servicio</label>
                         </span>
+                        <small *ngIf="formCustomer.get('typeservice')?.errors && (formCustomer.get('typeservice')?.dirty ||
+                            formCustomer.get('typeservice')?.touched)" class="p-error block">
+                            <small *ngIf="formCustomer.get('typeservice').errors?.required">
+                                Requerido
+                            </small>
+                        </small>
+                    </div>
+                    <div class="p-field p-col-12 p-md-6">
+                        <span class="p-float-label">
+                            <textarea id="float-input" rows="3" cols="10" pInputTextarea formControlName="serviceDetail">
+                                </textarea>
+                            <label for="dropdown">Detalle servicio</label>
+                        </span>
+                        <small *ngIf="formCustomer.get('serviceDetail')?.errors && (formCustomer.get('serviceDetail')?.dirty ||
+                            formCustomer.get('serviceDetail')?.touched)" class="p-error block">
+                            <small *ngIf="formCustomer.get('serviceDetail').errors?.required">
+                                Requerido
+                            </small>
+                        </small>
                     </div>
                     <div class="p-field p-col-12 p-md-6">
                         <div class="p-inputgroup">
@@ -175,10 +341,25 @@
                                 <i class="pi pi-lock"></i>
                             </span>
                             <span class="p-float-label">
-                                <input type="text" id="inputgroup" pInputText formControlName="employename">
+                                <p-autoComplete style="width: inherit;" formControlName="employename" [suggestions]="results" field="name"
+                                    (completeMethod)="searchEmploy($event)" (onSelect)="watchIt($event)">
+                                    <ng-template let-employee pTemplate="item">
+                                        <div>
+                                            <span>{{employee.name}}</span>
+                                            <span>{{employee.lastname}}</span>
+                                        </div>
+                                    </ng-template>
+                                </p-autoComplete>
                                 <label for="inputgroup">Nombre empleado</label>
+
                             </span>
                         </div>
+                        <small *ngIf="formCustomer.get('employename')?.errors && (formCustomer.get('employename')?.dirty ||
+                            formCustomer.get('employename')?.touched)" class="p-error block">
+                            <small *ngIf="formCustomer.get('employename').errors?.required">
+                                Requerido
+                            </small>
+                        </small>
                     </div>
                     <div class="p-field p-col-12 p-md-6">
                         <div class="p-inputgroup">
@@ -186,16 +367,29 @@
                                 <i class="pi pi-lock"></i>
                             </span>
                             <span class="p-float-label">
-                                <input type="text" id="inputgroup" pInputText formControlName="employecode">
+                                <input disabled="true" type="text" id="inputgroup" pInputText
+                                    formControlName="employecode">
                                 <label for="inputgroup">Código empleado</label>
                             </span>
                         </div>
+                        <small *ngIf="formCustomer.get('employecode')?.errors && (formCustomer.get('employecode')?.dirty ||
+                            formCustomer.get('employecode')?.touched)" class="p-error block">
+                            <small *ngIf="formCustomer.get('employecode').errors?.required">
+                                Requerido
+                            </small>
+                        </small>
                     </div>
                     <div class="p-field p-col-12 p-md-6">
                         <span class="p-float-label">
                             <p-calendar [showIcon]="true" inputId="icon" formControlName="servicedate"></p-calendar>
                             <label for="inputgroup">Fecha servicio</label>
                         </span>
+                        <small *ngIf="formCustomer.get('servicedate')?.errors && (formCustomer.get('servicedate')?.dirty ||
+                            formCustomer.get('servicedate')?.touched)" class="p-error block">
+                            <small *ngIf="formCustomer.get('servicedate').errors?.required">
+                                Requerido
+                            </small>
+                        </small>
                     </div>
                 </div>
                 <p-toolbar>
