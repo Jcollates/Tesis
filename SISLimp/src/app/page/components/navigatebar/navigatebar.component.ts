@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
+import { Component, Inject, OnInit } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 
 @Component({
@@ -8,10 +9,16 @@ import { MenuItem } from 'primeng/api';
 })
 export class NavigatebarComponent implements OnInit {
 
-  constructor() { }
+  constructor(
+    @Inject(DOCUMENT) document
+  ) { }
 
   ngOnInit(): void {
     //preguntarpor el login 
   }
 
+  styleAdd() {
+    const navbar = document.getElementById('navbar');
+    navbar.classList.toggle('navbar-mobile');
+  }
 }
