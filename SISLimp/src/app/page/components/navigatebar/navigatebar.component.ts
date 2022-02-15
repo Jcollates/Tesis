@@ -9,12 +9,19 @@ import { MenuItem } from 'primeng/api';
 })
 export class NavigatebarComponent implements OnInit {
 
+  showLogin: boolean = true;
+  showModule: boolean = false;
   constructor(
     @Inject(DOCUMENT) document
   ) { }
-
   ngOnInit(): void {
-    //preguntarpor el login 
+    this.isUser();
+  }
+  isUser() {
+    let role = localStorage.getItem('role');
+    if (role == 'USER') {
+      this.showLogin = false;
+    }
   }
 
   styleAdd() {
