@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LazyLoadEvent, MessageService, SelectItem } from 'primeng/api';
+import { map } from 'rxjs/operators';
 import { AuthService } from 'src/app/sharedAll/serviceShared/auth.service';
 import { CataloguesService } from 'src/app/sharedAll/serviceShared/catalogues.service';
 import { FuntionsSharedService } from 'src/app/sharedAll/serviceShared/funtions-shared.service';
@@ -38,9 +39,12 @@ export class AgendamientoCitasComponent implements OnInit {
   cols: any[];
   dataFromdb: Simplemeet[] = [];
   dataFromdbProcesed: Simplemeet[] = [];
-  sizeRecords: number = 50;
-  pageSize: number = 50;
-
+  sizeRecords: number = 10;
+  pageSize: number = 10;
+  pageSizeProcessed: number = 10;
+  sizeRecordsPro: number = 10;
+  from: number = 0;
+  to: number = 5;
   //employees
   colsEmployees: any[] = [];
   showEmployes: boolean = false;
@@ -104,12 +108,22 @@ export class AgendamientoCitasComponent implements OnInit {
       if (rest.length > 0) {
         rest.forEach(item => item.elementAsArray = item.addededServices ? JSON.parse(item.addededServices) : [])
         this.dataFromdb = rest.filter(item => item.status === 'process' || item.status === 'hold');
-        this.dataFromdbProcesed = rest.filter(item => item.status !== 'process' && item.status !== 'hold');
+        //this.dataFromdbProcesed = rest.filter(item => item.status !== 'process' && item.status !== 'hold');
         this.dataFromdb.forEach(item => this.completeCityDrop(item.cliProvince, 'dataFromdb'));
-        this.dataFromdbProcesed.forEach(item => this.completeCityDrop(item.cliProvince, 'dataFromdbProcesed'));
+        //this.dataFromdbProcesed.forEach(item => this.completeCityDrop(item.cliProvince, 'dataFromdbProcesed'));
         console.log('dataFromdb', this.dataFromdb);
+        
       }
 
+    });
+    console.log("event", event)
+    if(event){
+      // this.from = this.sizeRecordsPro - event.rows;
+    }
+    this.simpleMeetService.getSimpleMeetsHistory(this.from, event.rows).subscribe(rest => {
+      this.dataFromdbProcesed = rest.list;
+      this.sizeRecordsPro = rest.count;
+      console.log('dataFromdb', this.dataFromdbProcesed);
     });
   }
   completeCityDrop(codeFather: string, array: string) {

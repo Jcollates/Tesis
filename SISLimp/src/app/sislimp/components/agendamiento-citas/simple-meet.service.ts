@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { environment } from '@env/environment';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { ListAndCount } from '../../shared/models/listAndCountModel.model';
 import { Simplemeet } from '../../shared/models/simplemeet.model';
 
 @Injectable({
@@ -19,6 +20,10 @@ export class SimpleMeetService {
   getSimpleMeets(): Observable<Simplemeet[]>{
     let url = this.url + '/simpleMeets';
     return this.http.get(url).pipe(map(res => res as Simplemeet[] ));
+  }
+  getSimpleMeetsHistory(page:number, pagesize: number): Observable<ListAndCount>{
+    let url = this.url + `/simpleMeetHistory/${page}/${pagesize}`;
+    return this.http.get(url).pipe(map(res => res as ListAndCount ));
   }
   saveCustomerService(container: Simplemeet): Observable<Simplemeet>{
     let url = this.url + '/saveSimpleMeet';
