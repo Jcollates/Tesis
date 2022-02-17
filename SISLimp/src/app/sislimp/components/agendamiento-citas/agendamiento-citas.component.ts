@@ -10,6 +10,7 @@ import { Simplemeet } from '../../shared/models/simplemeet.model';
 import { AgreementService } from '../gestion-contratos/agreement.service';
 import { EmployeeService } from '../gestion-empleados/employee.service';
 import { SimpleMeetService } from './simple-meet.service';
+import { SimplemeetHistory } from '../../shared/models/siemplemeetHistory.model';
 const CITYCAT = 'CITYCAT';
 const PROVINCECAT = 'PROVINCECAT';
 const SERVICETYPE = 'SERVICETYPE';
@@ -38,18 +39,19 @@ export class AgendamientoCitasComponent implements OnInit {
   //table
   cols: any[];
   dataFromdb: Simplemeet[] = [];
-  dataFromdbProcesed: Simplemeet[] = [];
+  dataFromdbProcesed: SimplemeetHistory[] = [];
   sizeRecords: number = 10;
   pageSize: number = 10;
   pageSizeProcessed: number = 10;
   sizeRecordsPro: number = 10;
-  from: number = 0;
-  to: number = 5;
+  fromPro: number = 0;
+  toPro: number = 10;
   //employees
   colsEmployees: any[] = [];
   showEmployes: boolean = false;
   showEmployesAssignated: boolean = false;
   showEmployesAssigned: boolean = false;
+  showEmployesAssignedProccessed: boolean = false;
   sizeRecordsToAsig: number = 10;
   sizeRecordsAsigned: number = 10;
   employesToAssig: Employee[] = [];
@@ -69,6 +71,7 @@ export class AgendamientoCitasComponent implements OnInit {
 
   fromEdit: boolean = false;
   meetToUpdate: Simplemeet = new Simplemeet();
+  historyMeet: SimplemeetHistory = new SimplemeetHistory();
   constructor(
     private simpleMeetService: SimpleMeetService,
     private formBuilder: FormBuilder,
@@ -116,14 +119,17 @@ export class AgendamientoCitasComponent implements OnInit {
       }
 
     });
-    console.log("event", event)
     if(event){
-      // this.from = this.sizeRecordsPro - event.rows;
+      this.fromPro = event.first;
+      this.toPro = event.rows;
     }
-    this.simpleMeetService.getSimpleMeetsHistory(this.from, event.rows).subscribe(rest => {
-      this.dataFromdbProcesed = rest.list;
-      this.sizeRecordsPro = rest.count;
-      console.log('dataFromdb', this.dataFromdbProcesed);
+    this.simpleMeetService.getSimpleMeetsHistory(this.fromPro, this.toPro).subscribe(rest => {
+      if(rest){
+        this.dataFromdbProcesed = rest.list;
+        this.sizeRecordsPro = rest.count;
+        this.dataFromdbProcesed.forEach(item => item.employeesAssig != "[]" ? item.elementsAsArray = JSON.parse(item.employeesAssig) : [])
+        console.log('dataFromdb', this.dataFromdbProcesed);
+      }
     });
   }
   completeCityDrop(codeFather: string, array: string) {
@@ -209,7 +215,7 @@ export class AgendamientoCitasComponent implements OnInit {
     }
   }
   saveFormsimpleMeet(container: Simplemeet) {
-    this.simpleMeetService.saveCustomerService(container).subscribe(res => {
+    this.simpleMeetService.saveSimpleMeet(container).subscribe(res => {
       if (res != null) {
         this.messageService.add({ severity: 'success', detail: 'Registrado correctamente' });
         this.formCita.reset();
@@ -251,6 +257,11 @@ export class AgendamientoCitasComponent implements OnInit {
   showAssignated() {
     this.showEmployesAssigned = true;
   }
+  showAssignatedProcessed(history: SimplemeetHistory) {
+    this.historyMeet = {...history};
+    this.showEmployesAssignedProccessed = true;
+  }
+  
   getEmployees(event: LazyLoadEvent) {
     this.employeeService.getEmployesToBesAssigned().subscribe(res => {
       res.forEach(item => {
@@ -317,7 +328,7 @@ export class AgendamientoCitasComponent implements OnInit {
           }
         })
       } else {
-        this.getEmployesAndUpdate(item.seqsimplemeet);
+        this.getEmployesAndUpdate(item.seqsimplemeet, item);
         this.simpleMeetService.updateSimpleMeet(item).subscribe(rest => {
           if (rest) this.messageService.add({ severity: 'success', detail: 'Solicitud actualizada' });
           this.chargeData(null);
@@ -329,19 +340,55 @@ export class AgendamientoCitasComponent implements OnInit {
       this.messageService.add({ severity: 'error', detail: 'Seleccione un estado diferente a en espera' });
     }
   }
-  getEmployesAndUpdate(seqmeet: number){
+  getEmployesAndUpdate(seqmeet: number, meet: Simplemeet){
     this.employeeService.getEmployessAssigned(seqmeet, null).subscribe(rest => {
       if(rest){
+        this.saveHistory(rest, meet);
         rest.forEach(item => {
           item.img = this.sharedFuntions.repair(item.img);
           item.assigmentdayte = null;
           item.endassigmentdate = null;
           item.seqmeet = null;
           this.employeeService.updateEmployee(item).subscribe(() => console.log('employee removed'));
-        })
+        });
       }
     })
+  }
+  saveHistory(employees: Employee[], meet: Simplemeet){
+    console.log("employees", employees);
+    const historymeet = this.createHistoryMeet(meet);
+    historymeet.employeesAssig = JSON.stringify(employees.length > 0 ? employees : [] );
+    this.simpleMeetService.saveSimpleMeetHistory(historymeet).subscribe(rest => {
+      if(rest){
+        this.messageService.add({ severity: 'success', detail: 'Historial actualzado' });
+      } else 
+      this.messageService.add({ severity: 'error', detail: 'Error, al actualziar' });
+    });
+  }
+  createHistoryMeet(simplemeet: Simplemeet){
+    const history: SimplemeetHistory = new SimplemeetHistory();
+    history.seqsimplemeethistory = simplemeet.seqsimplemeet;
+    history.dateService = simplemeet.dateService;
+    history.dateEnd = simplemeet.dateEnd;
+    history.address = simplemeet.address;
+    history.cliName = simplemeet.cliName;
+    history.cliLastName = simplemeet.cliLastName;
+    history.cliDni = simplemeet.cliDni;
+    history.cliEmail = simplemeet.cliEmail;
+    history.cliCity = simplemeet.cliCity;
+    history.cliProvince = simplemeet.cliProvince;
+    history.typeService = simplemeet.typeService;
+    history.services = simplemeet.services;
+    history.hoursStimated = simplemeet.hoursStimated;
+    history.status = simplemeet.status;
     
+    history.codeUser = simplemeet.codeUser;
+    history.tools = simplemeet.tools;
+    history.stimatedValue = simplemeet.stimatedValue;
+    history.phone = simplemeet.phone;
+    history.addededServices = simplemeet.addededServices;
+    return history;
+
   }
   onEditMeet(dataFrom: Simplemeet) {
     console.log('On edit', dataFrom);

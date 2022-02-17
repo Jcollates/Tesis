@@ -4,6 +4,7 @@ import { environment } from '@env/environment';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ListAndCount } from '../../shared/models/listAndCountModel.model';
+import { SimplemeetHistory } from '../../shared/models/siemplemeetHistory.model';
 import { Simplemeet } from '../../shared/models/simplemeet.model';
 
 @Injectable({
@@ -25,12 +26,18 @@ export class SimpleMeetService {
     let url = this.url + `/simpleMeetHistory/${page}/${pagesize}`;
     return this.http.get(url).pipe(map(res => res as ListAndCount ));
   }
-  saveCustomerService(container: Simplemeet): Observable<Simplemeet>{
+  saveSimpleMeet(container: Simplemeet): Observable<Simplemeet>{
     let url = this.url + '/saveSimpleMeet';
     return this.http.post(url, container).pipe(map( res => res as Simplemeet));
+  }
+  saveSimpleMeetHistory(container: SimplemeetHistory): Observable<SimplemeetHistory>{
+    let url = this.url + '/saveSimpleMeetHistory';
+    return this.http.post(url, container).pipe(map( res => res as SimplemeetHistory));
   }
   updateSimpleMeet(item: Simplemeet){
     let url = this.url + '/updateDataSimpleMeet';
     return this.http.post(url, item).pipe(map( res => res as Simplemeet));
   }
+  
+  
 }
