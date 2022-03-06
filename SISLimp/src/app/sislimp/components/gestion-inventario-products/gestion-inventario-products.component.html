@@ -143,15 +143,11 @@
             <form [formGroup]="formProducts" (ngSubmit)="validateForm()">
                 <div class="p-fluid p-grid">
                     <div class="p-field p-col-12 p-md-6">
-                        <div class="p-inputgroup">
-                            <span class="p-inputgroup-addon">
-                                <i class="pi pi-user"></i>
-                            </span>
-                            <span class="p-float-label">
-                                <input type="text" id="inputgroup" pInputText formControlName="codeprod">
-                                <label for="inputgroup">Código producto</label>
-                            </span>
-                        </div>
+                        <span for="inputgroup">Código producto</span>
+                        <p-inputMask mask="9999-aaaa" formControlName="codeprod" placeholder="9999-AAAA">
+                        </p-inputMask>
+                        <!-- <input type="text" id="inputgroup" pInputText formControlName="codeprod"> -->
+
                         <small *ngIf="formProducts.get('codeprod')?.errors && (formProducts.get('codeprod')?.dirty ||
                         formProducts.get('codeprod')?.touched)" class="p-error block">
                             <small *ngIf="formProducts.get('codeprod').errors?.required">
@@ -160,15 +156,13 @@
                         </small>
                     </div>
                     <div class="p-field p-col-12 p-md-6">
+                        <span for="inputgroup">Cantidad</span>
                         <div class="p-inputgroup">
                             <span class="p-inputgroup-addon">
                                 <i class="pi pi-user"></i>
                             </span>
-                            <span class="p-float-label">
                                 <input type="text" id="inputgroup" pInputText formControlName="quantity"
                                     (keypress)="sharedFunctions.enterOnlyNumbers($event)">
-                                <label for="inputgroup">Cantidad</label>
-                            </span>
                         </div>
                         <small *ngIf="formProducts.get('quantity')?.errors && (formProducts.get('quantity')?.dirty ||
                         formProducts.get('quantity')?.touched)" class="p-error block">
@@ -222,8 +216,6 @@
                             <span class="p-inputgroup-addon">
                                 <i class="pi pi-phone"></i>
                             </span>
-                            <!-- <input type="text" id="inputgroup" pInputText formControlName="saleprice"
-                                    (keypress)="sharedFunctions.enterOnlyNumbers($event)"> -->
                             <p-inputNumber formControlName="saleprice" inputId="locale-us" mode="decimal" locale="en-US"
                                 [minFractionDigits]="2" (keypress)="sharedFunctions.enterOnlyNumbers($event)">
                             </p-inputNumber>

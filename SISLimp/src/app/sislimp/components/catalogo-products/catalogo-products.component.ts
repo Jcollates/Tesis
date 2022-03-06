@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
-import { LazyLoadEvent, MessageService } from 'primeng/api';
+import { LazyLoadEvent, MessageService, SelectItem } from 'primeng/api';
 import { FuntionsSharedService } from 'src/app/sharedAll/serviceShared/funtions-shared.service';
 import { CatProducts } from '../../shared/models/catproduct.model';
 import { CatalogoProcutsService } from './catalogo-procuts.service';
+import { ProductosService } from '../gestion-inventario-products/productos.service';
+import { ProductModel } from '../../shared/models/products.model';
 
 @Component({
   selector: 'app-catalogo-products',
@@ -28,18 +30,21 @@ export class CatalogoProductsComponent implements OnInit {
   newFile: NewFile = new NewFile();
   activeIndex1: number = 0;
   clonedProducts: { [s: string]: CatProducts; } = {};
-
+  productsToShow: SelectItem[] = [];
+  pureProducts: ProductModel[] = [];
+  initialEstate: any;
   constructor(
     private catproService: CatalogoProcutsService,
     private formBuilder: FormBuilder,
-    private domSanitizer: DomSanitizer,
     private sharedFuntions: FuntionsSharedService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private productService: ProductosService,
   ) { }
 
   ngOnInit(): void {
     this.createCols();
     this.creteForm();
+    this.getRealProducts();
   }
   createCols() {
     this.cols = [
@@ -53,7 +58,7 @@ export class CatalogoProductsComponent implements OnInit {
   }
   chargeData(event: LazyLoadEvent) {
     this.catproService.getCatProducts().subscribe(rest => {
-      rest.forEach( item => {
+      rest.forEach(item => {
         item.img = this.sharedFuntions.repair(item.img);
       })
       this.dataFromdb = rest;
@@ -81,6 +86,29 @@ export class CatalogoProductsComponent implements OnInit {
       }
     }
   }
+  getRealProducts() {
+    this.productService.getProducts().subscribe(res => {
+      this.pureProducts = res;
+      this.productsToShow = this.productService.constructModel(res);
+      console.log(res);
+    });
+  }
+  populateFromWithData(codeProduct: string) {
+    const product = this.pureProducts.find(item => item.codeproduct === codeProduct);
+    this.formProduct.patchValue({
+      //codeProd: product.codeproduct,
+      name: product.name,
+      saleprize: product.saleprice,
+      description: product.description,
+    });
+
+  }
+  onProductChange(event: any){
+    this.populateFromWithData(event.value);
+  }
+
+
+
   creteForm() {
     this.formProduct = this.formBuilder.group({
       img: ['', Validators.required],
@@ -89,11 +117,12 @@ export class CatalogoProductsComponent implements OnInit {
       saleprize: ['', Validators.required],
       description: ['', Validators.required],
     });
+    this.initialEstate = this.formProduct.value;
   }
   validateForm() {
     this.formProduct.markAllAsTouched();
     if (!this.formProduct.valid) {
-      this.messageService.add({severity:'error', detail: 'Formulario no valido'});
+      this.messageService.add({ severity: 'error', detail: 'Formulario no valido' });
       console.log('FORM', this.formProduct.value);
     } else {
       console.log('FORM', this.formProduct.value);
@@ -105,15 +134,17 @@ export class CatalogoProductsComponent implements OnInit {
       this.saveForm(this.catProducContainer);
     }
   }
- 
+
 
   saveForm(container: CatProducts) {
     this.catproService.saveCatProducts(container).subscribe(res => {
-      if(res != null) this.messageService.add({severity:'success', detail: 'Registrado correctamente'});
-      this.formProduct.reset();
-      this.fileUploades = [];
-      this.activeIndex1 = 0;
-      this.chargeData(null);
+      if (res != null) {
+        this.messageService.add({ severity: 'success', detail: 'Registrado correctamente' });
+        this.formProduct.reset(this.initialEstate);
+        this.fileUploades = [];
+        this.activeIndex1 = 0;
+        this.chargeData(null);
+      }
       // console.log("SAVED?", res);
     })
   }

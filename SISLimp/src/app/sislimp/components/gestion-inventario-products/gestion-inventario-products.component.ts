@@ -29,6 +29,7 @@ export class GestionInventarioProductsComponent implements OnInit {
   productContainer: ProductModel = new ProductModel();
   clonedProducts: { [s: string]: ProductModel; } = {};
   activeIndex1: number = 0;
+  initialValues: any;
 
   constructor(
     private productService: ProductosService,
@@ -72,6 +73,7 @@ export class GestionInventarioProductsComponent implements OnInit {
       provider: ['', Validators.required],
       description: ['', Validators.required]
     });
+    this.initialValues = this.formProducts.value;
   }
 
   chargeData(event: LazyLoadEvent) {
@@ -84,7 +86,7 @@ export class GestionInventarioProductsComponent implements OnInit {
       }
     });
   }
-  
+
 
   validateForm() {
     this.formProducts.markAllAsTouched();
@@ -108,9 +110,13 @@ export class GestionInventarioProductsComponent implements OnInit {
 
   saveForm(container: ProductModel) {
     this.productService.saveProducts(container).subscribe(res => {
-      if (res != null) this.messageService.add({ severity: 'success', detail: 'Registrado correctamente' });
-      this.formProducts.reset();
-      this.chargeData(null);
+      if (res != null) {
+        this.messageService.add({ severity: 'success', detail: 'Registrado correctamente' });
+        this.formProducts.reset(this.initialValues);
+        this.chargeData(null);
+        this.activeIndex1 = 0;
+        this.createProviderCombo();
+      }
     })
   }
   createProviderCombo() {

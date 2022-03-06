@@ -113,7 +113,7 @@
                     <div class="p-field p-col-12 p-md-8" style="text-align: center;">
                         <h5>Imagen</h5>
                         <p-fileUpload name="demo[]" [files]="myfiles" chooseLabel="Seleccionar" uploadLabel="Subir"
-                            cancelLabel="Cancelar" accept="image/*" maxFileSize="1000000" customUpload="true"
+                            cancelLabel="Cancelar" accept="image/*" maxFileSize="100000000000" customUpload="true"
                             (uploadHandler)="uploadFileNew($event)">
                             <ng-template pTemplate="content">
                                 <ul *ngIf="fileUploades.length">
@@ -130,9 +130,10 @@
                     </div>
                     <div class="p-field p-col-12 p-md-2"></div>
                     <div class="p-field p-col-12 p-md-6">
-                        <span>Código de producto</span>
-                        <p-inputMask mask="9999-aaaa" formControlName="codeProd" placeholder="9999-AAAA">
-                        </p-inputMask>
+                        <span>Producto</span>
+                        <p-dropdown [options]="productsToShow" formControlName="codeProd" (onChange)="onProductChange($event)"></p-dropdown>
+                        <!-- <p-inputMask mask="9999-aaaa" formControlName="codeProd" placeholder="9999-AAAA">
+                        </p-inputMask>-->
                         <small *ngIf="formProduct.get('codeProd')?.errors && (formProduct.get('codeProd')?.dirty ||
                         formProduct.get('codeProd')?.touched)" class="p-error block">
                             <small *ngIf="formProduct.get('codeProd').errors?.required">
