@@ -170,7 +170,8 @@
                                 <i class="pi pi-user"></i>
                             </span>
                             <span class="p-float-label">
-                                <input type="text" id="inputgroup" pInputText formControlName="dni" maxlength="13">
+                                <input type="text" id="inputgroup" pInputText formControlName="dni" maxlength="13"
+                                    (keypress)="sharedFunctions.enterOnlyNumbers($event)">
                                 <label for="inputgroup">RUC</label>
                             </span>
                         </div>
@@ -195,6 +196,9 @@
                         formProvider.get('email')?.touched)" class="p-error block">
                             <small *ngIf="formProvider.get('email').errors?.required">
                                 Requerido
+                            </small>
+                            <small *ngIf="formProvider.get('email').errors?.mustMatch">
+                                {{formProvider.get('email').errors?.mustMatch}}
                             </small>
                         </small>
                     </div>
@@ -232,7 +236,7 @@
                                 <i class="pi pi-envelope "></i>
                             </span>
                             <span class="p-float-label">
-                                <input type="text" id="inputgroup" pInputText formControlName="phone">
+                                <input type="text" id="inputgroup" pInputText formControlName="phone" maxlength="10" (keypress)="sharedFunctions.enterOnlyNumbers($event)">
                                 <label for="inputgroup">Teléfono</label>
                             </span>
                         </div>
@@ -285,7 +289,7 @@
                     </div>
                     <div class="p-field p-col-12 p-md-6">
                         <span for="dropdown">Tipo pago</span>
-                        <p-dropdown [options]="dropPay" formControlName="paytype"></p-dropdown>
+                        <p-dropdown [options]="dropPay" formControlName="paytype" appendTo="body"></p-dropdown>
                         <small *ngIf="formProvider.get('paytype')?.errors && (formProvider.get('paytype')?.dirty ||
                         formProvider.get('paytype')?.touched)" class="p-error block">
                             <small *ngIf="formProvider.get('paytype').errors?.required">

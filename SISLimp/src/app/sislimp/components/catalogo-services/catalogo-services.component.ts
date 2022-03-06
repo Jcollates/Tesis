@@ -146,6 +146,7 @@ export class CatalogoServicesComponent implements OnInit {
         this.formService.reset();
         this.fileUploades = [];
         this.activeIndex1 = 0;
+        this.chargeData(null);
       };
 
     })

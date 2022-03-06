@@ -252,7 +252,7 @@
                                 <i class="pi pi-user"></i>
                             </span>
                             <span class="p-float-label">
-                                <input type="text" id="inputgroup" pInputText formControlName="ruc">
+                                <input type="text" id="inputgroup" pInputText formControlName="ruc" (keypress)="sharedFuntions.enterOnlyNumbers($event)" maxlength="13">
                                 <label for="inputgroup">Ruc</label>
                             </span>
                         </div>
@@ -341,7 +341,7 @@
                                 <i class="pi pi-envelope "></i>
                             </span>
                             <span class="p-float-label">
-                                <input type="text" id="inputgroup" pInputText formControlName="phone">
+                                <input type="text" id="inputgroup" pInputText formControlName="phone" (keypress)="sharedFuntions.enterOnlyNumbers($event)" maxlength="10">
                                 <label for="inputgroup">Telefono de contacto</label>
                             </span>
                         </div>
@@ -353,7 +353,7 @@
                         </small>
                     </div>
                     <div class="p-field p-col-12 p-md-6">
-                        <span for="inputgroup">Area de trabajo</span>
+                        <span for="inputgroup">Area de trabajo (metros)</span>
                         <div class="p-inputgroup">
                             <span class="p-inputgroup-addon">
                                 <i class="pi pi-lock"></i>
@@ -443,7 +443,7 @@
                                 <i class="pi pi-lock"></i>
                             </span>
                             <span class="p-float-label">
-                                <input type="text" id="inputgroup" pInputText formControlName="subtotal">
+                                <input type="text" id="inputgroup" pInputText formControlName="subtotal" (keypress)="sharedFuntions.enterOnlyNumbers($event)">
                                 <label for="inputgroup">Subtotal</label>
                             </span>
                         </div>

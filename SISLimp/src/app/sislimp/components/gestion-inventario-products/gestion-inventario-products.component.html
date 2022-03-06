@@ -165,7 +165,8 @@
                                 <i class="pi pi-user"></i>
                             </span>
                             <span class="p-float-label">
-                                <input type="text" id="inputgroup" pInputText formControlName="quantity">
+                                <input type="text" id="inputgroup" pInputText formControlName="quantity"
+                                    (keypress)="sharedFunctions.enterOnlyNumbers($event)">
                                 <label for="inputgroup">Cantidad</label>
                             </span>
                         </div>
@@ -193,15 +194,20 @@
                             </small>
                         </small>
                     </div>
+                    <div class="p-field p-col-12 p-md-6"></div>
                     <div class="p-field p-col-12 p-md-6">
+                        <span for="inputgroup">Precio compra</span>
                         <div class="p-inputgroup">
                             <span class="p-inputgroup-addon">
                                 <i class="pi pi-user"></i>
                             </span>
-                            <span class="p-float-label">
-                                <input type="text" id="inputgroup" pInputText formControlName="pricebougth">
-                                <label for="inputgroup">Precio compra</label>
-                            </span>
+                            <!-- <input type="text" id="inputgroup" pInputText formControlName="pricebougth"
+                                    [value]="formProducts.get('pricebougth').value | currency:'USD'"
+                                    (keypress)="sharedFunctions.enterOnlyNumbers($event)"> -->
+                            <p-inputNumber formControlName="pricebougth" inputId="locale-us" mode="decimal"
+                                locale="en-US" [minFractionDigits]="2"
+                                (keypress)="sharedFunctions.enterOnlyNumbers($event)">
+                            </p-inputNumber>
                         </div>
                         <small *ngIf="formProducts.get('pricebougth')?.errors && (formProducts.get('pricebougth')?.dirty ||
                         formProducts.get('pricebougth')?.touched)" class="p-error block">
@@ -211,14 +217,16 @@
                         </small>
                     </div>
                     <div class="p-field p-col-12 p-md-6">
+                        <span for="inputgroup">Precio venta</span>
                         <div class="p-inputgroup">
                             <span class="p-inputgroup-addon">
                                 <i class="pi pi-phone"></i>
                             </span>
-                            <span class="p-float-label">
-                                <input type="text" id="inputgroup" pInputText formControlName="saleprice">
-                                <label for="inputgroup">Precio venta</label>
-                            </span>
+                            <!-- <input type="text" id="inputgroup" pInputText formControlName="saleprice"
+                                    (keypress)="sharedFunctions.enterOnlyNumbers($event)"> -->
+                            <p-inputNumber formControlName="saleprice" inputId="locale-us" mode="decimal" locale="en-US"
+                                [minFractionDigits]="2" (keypress)="sharedFunctions.enterOnlyNumbers($event)">
+                            </p-inputNumber>
                         </div>
                         <small *ngIf="formProducts.get('saleprice')?.errors && (formProducts.get('saleprice')?.dirty ||
                         formProducts.get('saleprice')?.touched)" class="p-error block">
@@ -228,10 +236,8 @@
                         </small>
                     </div>
                     <div class="p-field p-col-12 p-md-6">
-                        <span class="p-float-label">
-                            <p-calendar [showIcon]="true" inputId="icon" formControlName="datebought"></p-calendar>
-                            <label for="inputgroup">Fecha compra</label>
-                        </span>
+                        <span for="inputgroup">Fecha compra</span>
+                        <p-calendar [showIcon]="true" inputId="icon" formControlName="datebought"></p-calendar>
                         <small *ngIf="formProducts.get('datebought')?.errors && (formProducts.get('datebought')?.dirty ||
                         formProducts.get('datebought')?.touched)" class="p-error block">
                             <small *ngIf="formProducts.get('datebought').errors?.required">

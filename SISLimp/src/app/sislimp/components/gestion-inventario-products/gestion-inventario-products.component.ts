@@ -5,6 +5,7 @@ import { ProductModel } from '../../shared/models/products.model';
 import { Provider } from '../../shared/models/provider.model';
 import { ProviderService } from '../gestion-provedores/provider.service';
 import { ProductosService } from './productos.service';
+import { FuntionsSharedService } from '../../../sharedAll/serviceShared/funtions-shared.service';
 
 @Component({
   selector: 'app-gestion-inventario-products',
@@ -33,7 +34,8 @@ export class GestionInventarioProductsComponent implements OnInit {
     private productService: ProductosService,
     private formBuilder: FormBuilder,
     private messageService: MessageService,
-    private providerService: ProviderService
+    private providerService: ProviderService,
+    public sharedFunctions: FuntionsSharedService,
   ) {
 
   }
@@ -82,11 +84,13 @@ export class GestionInventarioProductsComponent implements OnInit {
       }
     });
   }
+  
 
   validateForm() {
     this.formProducts.markAllAsTouched();
     if (!this.formProducts.valid) {
       this.messageService.add({ severity: 'error', detail: 'Formulario no valido' });
+      console.log(this.formProducts.value)
     } else {
       console.log('FORM', this.formProducts.value);
       this.productContainer.codeproduct = this.formProducts.controls.codeprod.value;
@@ -117,7 +121,7 @@ export class GestionInventarioProductsComponent implements OnInit {
   }
   crateCombo(list: Provider[]): SelectItem[] {
     const comboItems: SelectItem[] = [];
-    comboItems.push({ label: 'Seleccione', value: null });
+    comboItems.push({ label: 'Seleccione', value: '' });
     return comboItems.concat(list.map(value => ({
       label: value.namenterprice + ' - ' + value.seqprovider,
       value: value.seqprovider.toString()

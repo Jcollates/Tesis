@@ -2,8 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LazyLoadEvent, MessageService, SelectItem } from 'primeng/api';
 import { CataloguesService } from 'src/app/sharedAll/serviceShared/catalogues.service';
+import { FuntionsSharedService } from 'src/app/sharedAll/serviceShared/funtions-shared.service';
 import { Provider } from '../../shared/models/provider.model';
 import { ProviderService } from './provider.service';
+import { CatalgogueItem } from '../../../sharedAll/models/catalogue';
 const CITYCAT = 'CITYCAT';
 const PROVINCECAT = 'PROVINCECAT';
 const PAYCAT = 'TYPEPAYPROVIDERCAT';
@@ -30,7 +32,7 @@ export class GestionProvedoresComponent implements OnInit {
   providerContainer: Provider = new Provider();
   formProvider: FormGroup = new FormGroup({});
   activeIndex: number;
-  dropCityTwo: SelectItem[] = [];
+  dropCityTwo: CatalgogueItem;
   dropCityTwoProcesed: SelectItem[] = [];
   clonedProducts: { [s: string]: Provider; } = {};
   constructor(
@@ -38,6 +40,7 @@ export class GestionProvedoresComponent implements OnInit {
     private catalogueService: CataloguesService,
     private formBuilder: FormBuilder,
     private messageService: MessageService,
+    public sharedFunctions: FuntionsSharedService,
   ) { }
 
   ngOnInit(): void {
@@ -73,7 +76,7 @@ export class GestionProvedoresComponent implements OnInit {
       details: ['', Validators.required],
       paytype: ['', Validators.required],
       salername: ['', Validators.required]
-    });
+    }, {validator: this.sharedFunctions.emailValidator('email')});
   }
 
   validateForm() {
@@ -110,7 +113,6 @@ export class GestionProvedoresComponent implements OnInit {
       if (rest.length > 0) {
         console.log("rest", rest);
         this.dataFromdb = rest;
-        this.dataFromdb.forEach(async item => await this.completeCityDrop(item.province, 'dataFromdb'));
       }
     })
     
@@ -118,6 +120,9 @@ export class GestionProvedoresComponent implements OnInit {
   async getCatalogues() {
     await this.catalogueService.getCataloguebyCodeCat(PROVINCECAT).then(rest => {
       this.dropProvince = this.catalogueService.constructModel(rest);
+    });
+    await this.catalogueService.getCataloguebyCodeCat(CITYCAT).then(rest => {
+      this.dropCityTwo = rest
     });
 
     await this.catalogueService.getCataloguebyCodeCat(PAYCAT).then(rest => {
@@ -130,13 +135,7 @@ export class GestionProvedoresComponent implements OnInit {
       this.dropCity = this.catalogueService.constructModel(rest);
     })
   }
-  async completeCityDrop(codeFather: string, array: string) {
-     await this.catalogueService.getCataloguebyCodeCatAndCodeFather(CITYCAT, PROVINCECAT, codeFather).then(rest => {
-      if (rest) {
-        this.dropCityTwo.push(rest[0]);
-      }
-    });
-  }
+  
 
   onRowEditInit(customer: Provider) {
     this.clonedProducts[customer.seqprovider] = { ...customer };

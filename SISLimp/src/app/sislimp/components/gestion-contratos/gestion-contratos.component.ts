@@ -69,7 +69,7 @@ export class GestionContratosComponent implements OnInit {
     private messageService: MessageService,
     private agreeService: AgreementService,
     private emplyeeservice: EmployeeService,
-    private sharedFuntions: FuntionsSharedService,
+    public sharedFuntions: FuntionsSharedService,
     private legalPersonService: LegalpersonService,
   ) { }
   ngOnInit(): void {
@@ -240,6 +240,7 @@ export class GestionContratosComponent implements OnInit {
           item.assigmentdayte = null;
           item.endassigmentdate = null;
           item.seqmeet = null;
+          item.seqcontractassig = null;
           this.emplyeeservice.updateEmployee(item).subscribe(() => console.log('employee removed'));
         });
       }
@@ -350,6 +351,7 @@ export class GestionContratosComponent implements OnInit {
           if (update) this.messageService.add({ severity: 'success', detail: 'Empleado asignado' })
           else this.messageService.add({ severity: 'error', detail: 'No se logro asignar' });
           this.getEmployeesAssigned();
+          this.getEmployees(null)
           this.showEmployes = false;
         })
       })

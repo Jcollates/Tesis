@@ -100,7 +100,7 @@ export class LoginComponent implements OnInit {
     } else {
       this.loginService.login(this.formLogin.value).subscribe(async rest => {
         if (rest) {
-          await this.prevalidatePassword(this.codeUser);
+          await this.prevalidatePassword(Number(localStorage.getItem('code')));
           if (this.mustChange) {
             this.showChangePass = true;
           } else {
@@ -113,7 +113,8 @@ export class LoginComponent implements OnInit {
   async prevalidatePassword(code: number) {
     let response: boolean;
     await this.userGeneralService.getUniqueLoginUser(code).then(rest => {
-      if (rest?.changepassnextenter === "YES") {
+      console.log("Esta entrando");
+      if (rest.changepassnextenter === "YES") {
         this.loginUserUpdate = rest;
         response = true;
       } else {

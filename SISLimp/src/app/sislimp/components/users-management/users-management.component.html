@@ -93,12 +93,14 @@
                                 </ng-template>
                                 <ng-template pTemplate="output">
                                     {{dataFrom.city | forCityPipe:dataFrom.province:dropCityTwo}}
-                                    {{dataFrom.city}}
                                 </ng-template>
                             </p-cellEditor>
                         </td>
                         <td>
                             {{dataFrom.loginuser_codeuser | loginUserPipe:loginUsers}}
+                        </td>
+                        <td>
+                            {{dataFrom.loginuser_codeuser | userRolePipe:loginUsers}}
                         </td>
                         <td style="text-align: center;">
                             <button *ngIf="!editing" pButton pRipple type="button" icon="pi pi-refresh" (click)="resetPassword(dataFrom)"

@@ -113,6 +113,7 @@ export class CatalogoProductsComponent implements OnInit {
       this.formProduct.reset();
       this.fileUploades = [];
       this.activeIndex1 = 0;
+      this.chargeData(null);
       // console.log("SAVED?", res);
     })
   }

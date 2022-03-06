@@ -20,6 +20,7 @@
                                 {{col.header}}
                             </th>
                         </ng-container>
+                        <th NOWRAP>Ver/Asignar empleado</th>
                         <th>Procesar</th>
                     </tr>
                 </ng-template>
@@ -161,7 +162,7 @@
                                 {{col.header}}
                             </th>
                         </ng-container>
-
+                        <th NOWRAP>Ver empleado(s)</th>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-dataFrom let-index="rowIndex" let-expanded="expanded"
@@ -245,7 +246,7 @@
                                 class="p-text-italic">{{dataFrom.cliProvince | selectedItemPipe:dropProvince}}</span>
                             <br>
                             <span class="p-text-bold">Ciudad: </span> <span class="p-text-italic">{{ dataFrom.cliCity |
-                                forCityPipe:dataFrom.cliProvince:dropCityTwoProcesed }}</span>
+                                forCityPipe:dataFrom.cliProvince:dropCityTwo }}</span>
                             <br>
                             <span class="p-text-bold">Dirección: </span> <span
                                 class="p-text-italic">{{dataFrom.address}}</span>
