@@ -11,6 +11,7 @@ import { AgreementService } from '../gestion-contratos/agreement.service';
 import { EmployeeService } from '../gestion-empleados/employee.service';
 import { SimpleMeetService } from './simple-meet.service';
 import { SimplemeetHistory } from '../../shared/models/siemplemeetHistory.model';
+import { CatalgogueItem } from '../../../sharedAll/models/catalogue';
 const CITYCAT = 'CITYCAT';
 const PROVINCECAT = 'PROVINCECAT';
 const SERVICETYPE = 'SERVICETYPE';
@@ -29,7 +30,7 @@ export class AgendamientoCitasComponent implements OnInit {
   dropCity: SelectItem[] = [];
   dropProvince: SelectItem[] = [];
   dropType: SelectItem[] = [];
-  dropCityTwo: SelectItem[] = [];
+  dropCityTwo: CatalgogueItem;
   dropCityTwoProcesed: SelectItem[] = [];
   dropTools: SelectItem[] = [
     { value: '', label: 'Seleccione' },
@@ -99,7 +100,6 @@ export class AgendamientoCitasComponent implements OnInit {
       { field: 'daysassigned', header: 'Dias asignados' },
       { field: 'basecost', header: 'Valor estimado' },
       { field: 'toolsneed', header: 'Utencilios incluidos' },
-      { field: '', header: 'Ver/Asignar empleado' },
     ]
     this.colsEmployees = [
       { field: 'nameEmploye', header: 'Nombre' },
@@ -111,7 +111,6 @@ export class AgendamientoCitasComponent implements OnInit {
       if (rest.length > 0) {
         rest.forEach(item => item.elementAsArray = item.addededServices ? JSON.parse(item.addededServices) : [])
         this.dataFromdb = rest.filter(item => item.status === 'process' || item.status === 'hold');
-        this.dataFromdb.forEach(item => this.completeCityDrop(item.cliProvince, 'dataFromdb'));
         console.log('dataFromdb', this.dataFromdb);
       }
     });
@@ -128,14 +127,7 @@ export class AgendamientoCitasComponent implements OnInit {
       }
     });
   }
-  completeCityDrop(codeFather: string, array: string) {
-    this.catalogueService.getCataloguebyCodeCatAndCodeFather(CITYCAT, PROVINCECAT, codeFather).then(rest => {
-      if (rest) {
-        if (array == 'dataFromdb') this.dropCityTwo.push(rest[0]);
-        else this.dropCityTwoProcesed.push(rest[0]);
-      }
-    });
-  }
+  
 
 
 
@@ -232,6 +224,9 @@ export class AgendamientoCitasComponent implements OnInit {
     await this.catalogueService.getCataloguebyCodeCat(PROVINCECAT).then(rest => {
       this.dropProvince = this.catalogueService.constructModel(rest);
     });
+    await this.catalogueService.getCataloguebyCodeCat(CITYCAT).then(rest => {
+      this.dropCityTwo = rest;
+    });
     await this.catalogueService.getCataloguebyCodeCat(SERVICETYPE).then(rest => {
       this.dropType = this.catalogueService.constructModel(rest);
     });
@@ -268,7 +263,10 @@ export class AgendamientoCitasComponent implements OnInit {
     })
   }
   getEmployeesAssigned() {
+    console.log(this.selectedFather.seqsimplemeet);
     this.employeeService.getEmployessAssigned(this.selectedFather.seqsimplemeet, null).subscribe(res => {
+      console.log('NO SE LLAMA O QUE ?', res)
+      
       res.forEach(item => {
         item.img = this.sharedFuntions.repair(item.img);
       })
@@ -345,6 +343,7 @@ export class AgendamientoCitasComponent implements OnInit {
           item.assigmentdayte = null;
           item.endassigmentdate = null;
           item.seqmeet = null;
+          item.seqcontractassig = null;
           this.employeeService.updateEmployee(item).subscribe(() => console.log('employee removed'));
         });
       }

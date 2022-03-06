@@ -4,6 +4,7 @@ import { environment } from '@env/environment';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ProductModel } from '../../shared/models/products.model';
+import { SelectItem } from 'primeng/api';
 
 @Injectable({
   providedIn: 'root'
@@ -37,5 +38,13 @@ export class ProductosService {
   updateProducts(container: ProductModel){
     let url = this.url + '/updateProducts';
     return this.http.post(url, container).pipe(map( res => res as any));
+  }
+  constructModel(list: ProductModel[]) {
+    const comboItems: SelectItem[] = [];
+    comboItems.push({ label: 'Seleccione', value: '' });
+    return comboItems.concat(list.map(value => ({
+      label: `${value.codeproduct} -  ${value.name}`,
+      value: value.codeproduct
+    })));
   }
 }

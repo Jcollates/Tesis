@@ -5,6 +5,7 @@ import { ProductModel } from '../../shared/models/products.model';
 import { Provider } from '../../shared/models/provider.model';
 import { ProviderService } from '../gestion-provedores/provider.service';
 import { ProductosService } from './productos.service';
+import { FuntionsSharedService } from '../../../sharedAll/serviceShared/funtions-shared.service';
 
 @Component({
   selector: 'app-gestion-inventario-products',
@@ -28,12 +29,14 @@ export class GestionInventarioProductsComponent implements OnInit {
   productContainer: ProductModel = new ProductModel();
   clonedProducts: { [s: string]: ProductModel; } = {};
   activeIndex1: number = 0;
+  initialValues: any;
 
   constructor(
     private productService: ProductosService,
     private formBuilder: FormBuilder,
     private messageService: MessageService,
-    private providerService: ProviderService
+    private providerService: ProviderService,
+    public sharedFunctions: FuntionsSharedService,
   ) {
 
   }
@@ -70,6 +73,7 @@ export class GestionInventarioProductsComponent implements OnInit {
       provider: ['', Validators.required],
       description: ['', Validators.required]
     });
+    this.initialValues = this.formProducts.value;
   }
 
   chargeData(event: LazyLoadEvent) {
@@ -83,10 +87,12 @@ export class GestionInventarioProductsComponent implements OnInit {
     });
   }
 
+
   validateForm() {
     this.formProducts.markAllAsTouched();
     if (!this.formProducts.valid) {
       this.messageService.add({ severity: 'error', detail: 'Formulario no valido' });
+      console.log(this.formProducts.value)
     } else {
       console.log('FORM', this.formProducts.value);
       this.productContainer.codeproduct = this.formProducts.controls.codeprod.value;
@@ -104,9 +110,13 @@ export class GestionInventarioProductsComponent implements OnInit {
 
   saveForm(container: ProductModel) {
     this.productService.saveProducts(container).subscribe(res => {
-      if (res != null) this.messageService.add({ severity: 'success', detail: 'Registrado correctamente' });
-      this.formProducts.reset();
-      this.chargeData(null);
+      if (res != null) {
+        this.messageService.add({ severity: 'success', detail: 'Registrado correctamente' });
+        this.formProducts.reset(this.initialValues);
+        this.chargeData(null);
+        this.activeIndex1 = 0;
+        this.createProviderCombo();
+      }
     })
   }
   createProviderCombo() {
@@ -117,7 +127,7 @@ export class GestionInventarioProductsComponent implements OnInit {
   }
   crateCombo(list: Provider[]): SelectItem[] {
     const comboItems: SelectItem[] = [];
-    comboItems.push({ label: 'Seleccione', value: null });
+    comboItems.push({ label: 'Seleccione', value: '' });
     return comboItems.concat(list.map(value => ({
       label: value.namenterprice + ' - ' + value.seqprovider,
       value: value.seqprovider.toString()
