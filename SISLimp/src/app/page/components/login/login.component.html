@@ -35,9 +35,21 @@
                                     </small>
                                 </small>
                             </div>
+                            <!-- <div class="form-check mt-4">
+                                <div class="custom-control custom-checkbox">
+                                    <input id="customCheck3" type="checkbox" class="form-check-input">
+                                    <label for="customCheck3" class="form-check-label">
+                                        <p>
+                                            <b>
+                                                Olvide mi contraseña
+                                            </b>
+                                        </p>
+                                    </label>
+                                </div>
+                            </div> -->
                             <div class="form-group col-12 mb-3" style="text-align: center;">
-                                <button type="button" class="btn btn-primary btn-block py-2"
-                                    style="width: 100%; background-color: #1E65AE;" (click)="onLogin()">Acceder
+                                <button type="submit" class="btn btn-primary btn-block py-2"
+                                    style="width: 100%; background-color: #1E65AE;">Acceder
                                 </button>
                             </div>
                         </div>
@@ -231,9 +243,7 @@
                         </div>
                     </form>
                 </div>
-
             </div>
-
         </div>
     </div>
 </section>
@@ -275,7 +285,13 @@
                         deben coincidir</small>
                 </small>
             </div>
-            <div class="col-12 mt-5">
+            <div class="col-6 mt-5">
+                <button type="button" class="btn btn-primary btn-block py-2"
+                    style="width: 100%; background-color: yellow;" (click)="onPasschanged()">
+                    <span class="font-weight-bold">Cancelar</span>
+                </button>
+            </div>
+            <div class="col-6 mt-5">
                 <button type="button" class="btn btn-primary btn-block py-2"
                     style="width: 100%; background-color: #1E65AE;" (click)="onPasschanged()">
                     <span class="font-weight-bold">Guardar contraseña</span>

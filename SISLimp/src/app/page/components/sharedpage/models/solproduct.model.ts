@@ -9,6 +9,8 @@ export class SolProduct{
     dateCreate: Date;
     status:string
     elementAsArray: any;
+    //selectedproducts no persist
+    selectedProducts: any[]
     constructor(){
         this.dateCreate = new Date();
     }
