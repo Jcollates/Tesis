@@ -16,7 +16,6 @@ export class SystemLoginComponent implements OnInit {
   formLogin: FormGroup = new FormGroup({});
   constructor(
     private loginService: AuthService,
-    private userGeneralService: UsersGeneralService,
     private formBuilder: FormBuilder,
     private router: Router,
     private messageService: MessageService,
@@ -39,11 +38,11 @@ export class SystemLoginComponent implements OnInit {
     } else {
       this.loginService.login(this.formLogin.value).subscribe(rest => {
         console.log("REST", rest);
-      if (rest) {
+      if (rest.hasOwnProperty('codeuser')) {
         this.messageService.add({ severity: 'success', detail: 'Acceso exitoso' });
         this.router.navigate(['system'])
       } else {
-        this.messageService.add({ severity: 'error', detail: 'Usuario no valido' });
+        this.messageService.add({ severity: 'error', detail: rest.message });
       }
     });
     }

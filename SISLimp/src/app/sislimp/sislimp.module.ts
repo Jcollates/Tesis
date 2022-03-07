@@ -67,6 +67,7 @@ import { PersonaLegalPipe } from './shared/pipes/persona-legal.pipe';
 import { UsersManagementComponent } from './components/users-management/users-management.component';
 import { LoginUserPipe } from './shared/pipes/login-user.pipe';
 import { UserPipePipe } from './shared/pipes/user-pipe.pipe';
+import {CheckboxModule} from 'primeng/checkbox';
 registerLocaleData(en);
 
 
@@ -144,6 +145,7 @@ FullCalendarModule.registerPlugins([ // register FullCalendar plugins
     HttpClientModule,
     NzCalendarModule,
     NzDatePickerModule,
+    CheckboxModule,
   ],
   providers:[ 
     { provide: NZ_I18N, useValue: en_US }

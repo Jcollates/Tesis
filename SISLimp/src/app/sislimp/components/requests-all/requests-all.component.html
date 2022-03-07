@@ -9,7 +9,7 @@
                 [responsive]="true" [paginator]="true" [rows]="pageSize" dataKey="seqsolproduct"
                 [rowsPerPageOptions]="[10,30,60]" [totalRecords]="sizeRecords" [lazy]="true" [autoLayout]="true"
                 selectionMode="single" [columns]="cols" [(selection)]="selectedSoli"
-                (onLazyLoad)="getSolProducts($event)" (onRowExpand)="onRowSelectFather($event)" >
+                (onLazyLoad)="getSolProducts($event)" (onRowExpand)="onRowSelectFather($event)">
                 <ng-template pTemplate="caption">
                     Listado
                 </ng-template>
@@ -23,11 +23,13 @@
                         </ng-container>
                     </tr>
                 </ng-template>
-                <ng-template pTemplate="body" let-dataFrom let-index="rowIndex" let-expanded="expanded" let-columns="columns">
+                <ng-template pTemplate="body" let-dataFrom let-index="rowIndex" let-expanded="expanded"
+                    let-columns="columns">
                     <tr>
                         <td>
-                            <button type="button" pButton pRipple [pRowToggler]="dataFrom" class="p-button-text p-button-rounded p-button-plain"
-                            [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'">
+                            <button type="button" pButton pRipple [pRowToggler]="dataFrom"
+                                class="p-button-text p-button-rounded p-button-plain"
+                                [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'">
                             </button>
                         </td>
                         <td>
@@ -56,8 +58,10 @@
                         </td>
                         <td style="text-align: center;">
                             <span class="p-column-title">Guardar</span>
-                            <button pButton pRipple type="button" icon="pi pi-check" (click)="fillDataToUpdate(dataFrom)"
-                                class="p-button-raised p-button-text p-button-rounded p-button-success" style="float: center">
+                            <button pButton pRipple type="button" icon="pi pi-check"
+                                (click)="fillDataToUpdate(dataFrom)"
+                                class="p-button-raised p-button-text p-button-rounded p-button-success"
+                                style="float: center">
                             </button>
                         </td>
                     </tr>
@@ -65,61 +69,47 @@
                 <ng-template pTemplate="rowexpansion" let-dataFrom>
                     <tr>
                         <td colspan="6">
-                            <p-table [value]="dataFrom.elementAsArray"
-                                styleClass="p-datatable-customers p-datatable-gridlines p-datatable-striped"
-                                [responsive]="true" [paginator]="true" [rows]="pageSize" dataKey="codeproduct"
-                                [rowsPerPageOptions]="[10,30,60]" [totalRecords]="dataFrom.elementAsArray.length"
-                                [autoLayout]="true" [columns]="colsProducts" [(selection)]="selectedProduct"
-                                (onRowSelect)="onRowSelect($event)" (onRowUnselect)="onRowUnselectChild($event)"
-                                 selectionMode="single"> 
-                                <ng-template pTemplate="header" let-columns>
-                                    <tr>
-                                        <th style="width: 3rem">
-                                            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
-                                        </th>
-                                        <ng-container *ngFor="let col of columns">
-                                            <th>
-                                                {{col.header}}
-                                            </th>
-                                        </ng-container>
-                                    </tr>
-                                </ng-template>
-                                <ng-template pTemplate="body" let-dataPro let-index="rowIndex" let-columns="columns">
-                                    <tr>
-                                        <td>
-                                            <p-tableCheckbox [value]="dataPro"></p-tableCheckbox>
-                                        </td>
-                                        <td>
-                                            <span class="p-column-title">Código producto</span>
-                                            {{dataPro?.codeproduct}}
-                                        </td>
-                                        <td>
-                                            <span class="p-column-title">Nombre</span>
-                                            {{dataPro?.name}}
-                                        </td>
-                                        <td>
-                                            <span class="p-column-title">Cantidad</span>
-                                            {{dataPro?.quantity}}
-                                        </td>
-                                        <td>
-                                            <span class="p-column-title">PVP</span>
-                                            {{dataPro?.saleprice}}
-                                        </td>
-                                    </tr>
-                                </ng-template>
-                                <ng-template pTemplate="emptymessage">
-                                    No hay registros que mostrar
-                                </ng-template>
-                            </p-table>
-                            <p-toolbar>
-                                <div class="p-toolbar-group-left"></div>
-                                <div class="p-toolbar-group-right">
+                            <div>
+                                <span class="p-text-bold">Productos solicitados</span>
+                                <br>
+                                <span class="p-text-italic"><b>Importante:</b> Deseleccionar productos que no se
+                                    confirmen</span>
+                            </div>
+                            <br>
+                            <div *ngFor="let products of dataFrom.elementAsArray" class="p-field-checkbox">
+                                <div class="p-field-checkbox">
+                                    <p-checkbox name="group2" value="products" [value]="products"
+                                        [(ngModel)]="dataFrom.selectedProducts" [inputId]="products?.codeproduct"
+                                        ngDefaultControl>
+                                    </p-checkbox>
+                                    <label [for]="products?.codeproduct">
+                                        <b> Código:</b>{{products?.codeproduct}}
+                                        <br>
+                                        <b> Nombre:</b> {{products?.name}}
+                                        <br>
+                                        <b> Cantidad:</b> {{products?.quantity}}
+                                        <br>
+                                        <b> P/U:</b> {{products?.saleprice}}
+                                    </label>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="p-grid p-fluid">
+                                <div class="p-field p-col-12 p-md-4 p-sm-12">
                                     <button pButton pRipple type="button" label="Confirmar" icon="pi pi-save"
-                                        (click)="saveConfirmation(dataFrom,selectedProduct)"
-                                        class="p-button-raised p-button-rounded p-button-success p-mr-2 p-mb-2 " style="float: center">
+                                        (click)="saveConfirmation(dataFrom)"
+                                        class="p-button-raised p-button-rounded p-button-success p-mr-2 p-mb-2 "
+                                        style="float: center">
                                     </button>
                                 </div>
-                            </p-toolbar>
+                                <div class="p-field p-col-12 p-md-4 p-sm-12">
+                                    <button pButton pRipple type="button" label="Deseccionar todos" icon="pi pi-times"
+                                        (click)="dataFrom.selectedProducts = []"
+                                        class="p-button-raised p-button-rounded p-button-danger p-mr-2 p-mb-2 "
+                                        style="float: center">
+                                    </button>
+                                </div>
+                            </div>
                         </td>
                     </tr>
                 </ng-template>
@@ -179,48 +169,28 @@
                 <ng-template pTemplate="rowexpansion" let-dataFrom>
                     <tr>
                         <td colspan="6">
-                            <p-table [value]="dataFrom.elementAsArray"
-                                styleClass="p-datatable-customers p-datatable-gridlines p-datatable-striped"
-                                [responsive]="true" [paginator]="true" [rows]="pageSize" dataKey="codeproduct"
-                                [rowsPerPageOptions]="[10,30,60]" [totalRecords]="dataFrom.elementAsArray.length"
-                                [autoLayout]="true" [columns]="colsProducts">
-                                <ng-template pTemplate="header" let-columns>
-                                    <tr>
-                                        <th style="width: 3rem">
-                                            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
-                                        </th>
-                                        <ng-container *ngFor="let col of columns">
-                                            <th>
-                                                {{col.header}}
-                                            </th>
-                                        </ng-container>
-                                    </tr>
-                                </ng-template>
-                                <ng-template pTemplate="body" let-dataPro let-index="rowIndex" let-columns="columns">
-                                    <tr>
-                                        <td></td>
-                                        <td>
-                                            <span class="p-column-title">Código producto</span>
-                                            {{dataPro.codeproduct}}
-                                        </td>
-                                        <td>
-                                            <span class="p-column-title">Nombre</span>
-                                            {{dataPro.name}}
-                                        </td>
-                                        <td>
-                                            <span class="p-column-title">Cantidad</span>
-                                            {{dataPro.quantity}}
-                                        </td>
-                                        <td>
-                                            <span class="p-column-title">PVP</span>
-                                            {{dataPro.saleprice}}
-                                        </td>
-                                    </tr>
-                                </ng-template>
-                                <ng-template pTemplate="emptymessage">
-                                    No hay registros que mostrar
-                                </ng-template>
-                            </p-table>
+                            <div>
+                                <span class="p-text-bold">Productos</span>
+                            </div>
+                            <br>
+                            <div *ngFor="let products of dataFrom.elementAsArray" class="p-field-checkbox">
+                                <div class="p-field-checkbox">
+                                    <p-checkbox name="group2" value="products" [value]="products"
+                                        [(ngModel)]="dataFrom.selectedProducts" [inputId]="products?.codeproduct"
+                                        disabled="true"
+                                        ngDefaultControl>
+                                    </p-checkbox>
+                                    <label [for]="products?.codeproduct">
+                                        <b> Código:</b>{{products?.codeproduct}}
+                                        <br>
+                                        <b> Nombre:</b> {{products?.name}}
+                                        <br>
+                                        <b> Cantidad:</b> {{products?.quantity}}
+                                        <br>
+                                        <b> P/U:</b> {{products?.saleprice}}
+                                    </label>
+                                </div>
+                            </div>
                         </td>
                     </tr>
                 </ng-template>

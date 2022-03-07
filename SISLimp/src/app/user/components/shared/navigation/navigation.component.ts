@@ -47,7 +47,7 @@ export class NavigationComponent implements OnInit {
           routerLink: ['/user/orders']
         },
         {
-          label: 'Destalle de la cuenta',
+          label: 'Detalle de la cuenta',
           icon: 'pi pi-user',
           routerLink: ['/user/accountdetail']
         },

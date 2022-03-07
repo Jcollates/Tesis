@@ -56,6 +56,7 @@ export class RequestsAllComponent implements OnInit {
   formcontracts: FormGroup = new FormGroup({});
   agreementContainer: Agreement = new Agreement();
   seqLegalperson: number = 0;
+  selectedProducts: any[] = [];
   constructor(
     private formBuilder: FormBuilder,
     private catalogueService: CataloguesService,
@@ -109,9 +110,10 @@ export class RequestsAllComponent implements OnInit {
   onRowUnselectChild(event: any) {
     this.selectdProducts = this.selectdProducts.filter(item => item.seqprod != event.data.seqprod);
   }
-  saveConfirmation(father: SolProduct, items: ProductModel[]) {
-    if (items.length > 0) {
-      father.products = JSON.stringify(this.constructJSON(items));
+  saveConfirmation(father: SolProduct) {
+    if (father.selectedProducts.length > 0) {
+      console.log("Ta mare",father.selectedProducts);
+      father.products = JSON.stringify(this.constructJSON(father.selectedProducts));
       this.messageService.add({ severity: 'success', detail: 'Confirmado' });
     } else {
       this.messageService.add({ severity: 'error', detail: 'Seleccione al menos uno.' });
@@ -177,22 +179,34 @@ export class RequestsAllComponent implements OnInit {
     });
     for (let item of filtered) {
       await this.productsService.getEspecifict(item.codeProd).then(rest => {
-        prods.push(rest);
+        if(rest){
+          rest.quantity = item.quantity;
+          prods.push(rest);
+        }
       });
     }
     return prods;
   }
   async getSolProducts(event: LazyLoadEvent) {
     this.requetsService.getAllSolProducts().subscribe(rest => {
-      rest.forEach(async item => {
-        let productsQuantity: PoductsQuantity[] = [];
-        productsQuantity = [...productsQuantity, ...this.transformFromJSON(item.products)];
-        item.elementAsArray = await this.getProductsRelated(productsQuantity);
-      });
-      this.dataFromdb = rest.filter(item => item.status == 'process' || item.status == 'hold');
-      this.dataFromdbWatch = rest.filter(item => item.status != 'process' && item.status != 'hold');
+      if (rest.length > 0) {
+        rest.forEach(async item => {
+          let productsQuantity: PoductsQuantity[] = [];
+          productsQuantity = [...productsQuantity, ...this.transformFromJSON(item.products)];
+          item.elementAsArray = await this.getProductsRelated(productsQuantity);
+          item.selectedProducts = item.elementAsArray
+        });
+        this.dataFromdb = rest.filter(item => item.status == 'process' || item.status == 'hold');
+        console.log("Comming products", this.dataFromdb);
+        this.dataFromdbWatch = rest.filter(item => item.status != 'process' && item.status != 'hold');
+      }
     });
   }
 
+
+  onChangeSelect(event: any, father: any){
+    console.log("Select", event);
+    console.log("Father", father);
+  }
 
 }

@@ -23,13 +23,14 @@ export class AuthService {
     return this.userLogged.asObservable();
   }
 
-   login(authData: User): Observable<UserGeneralModel> {
+   login(authData: User): Observable<UserGeneralModel | any> {
     return this.http.post<any>(`${environment.API_URL}/auth/login`, authData).pipe(map(res => {
       if (res.hasOwnProperty('codeuser')) {
         this.saveToken(res.token, res.loginusercol, res.codeuser, res.username);
         this.userLogged.next(true);
         return res;
       }
+      return res;
     }),
       catchError(error => this.handleError(error))
     );

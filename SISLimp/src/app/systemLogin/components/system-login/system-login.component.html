@@ -7,8 +7,8 @@
             </div>
         </div>
         <div class="topbar-right p-mr-3 p-d-flex">
-            <button pButton pRipple type="button" label="DASHBOARD"
-                class="p-button-text p-button-plain topbar-button" (click)="goToPage()"></button>
+            <button pButton pRipple type="button" label="DASHBOARD" class="p-button-text p-button-plain topbar-button"
+                (click)="goToPage()"></button>
         </div>
     </div>
     <br>
@@ -22,7 +22,7 @@
             </div>
             <h4>Bienvenido</h4>
             <div class="pages-detail p-mb-6 p-px-6">Usa el formulario para iniciar sesion.</div>
-            <form [formGroup]="formLogin">
+            <form [formGroup]="formLogin" (ngSubmit)="onLogin()">
                 <div class="input-panel p-d-flex p-flex-column p-px-3">
                     <div class="p-inputgroup pb-2">
                         <span class="p-inputgroup-addon">
@@ -56,10 +56,13 @@
                         </small>
                     </small>
                 </div>
+                <div>
+                    <button pButton pRipple type="submit" label="LOGIN" style="background-color: #1565C0;width: 100%;"
+                        class="p-button-raised p-button-secondary p-mt-6 p-mb-6 p-px-3 ">
+                    </button>
+                </div>
             </form>
-            <button pButton pRipple type="button" label="LOGIN" style="background-color: #1565C0;"
-                class="p-button-raised p-button-secondary p-mt-6 p-mb-6 p-px-3 " (click)="onLogin()">
-            </button>
+
         </div>
     </div>
 </div>

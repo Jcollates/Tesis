@@ -96,17 +96,20 @@ export class LoginComponent implements OnInit {
     this.formLogin.markAllAsTouched();
     if (!this.formLogin.valid) {
       this.messageService.add({ severity: 'error', detail: 'Ingrese usuario y contraseña' });
-      console.log('FORM', this.formLogin.value);
     } else {
       this.loginService.login(this.formLogin.value).subscribe(async rest => {
-        if (rest) {
+        if (rest.hasOwnProperty('codeuser')) {
+          this.messageService.add({ severity: 'success', detail: 'Acceso exitoso' });
           await this.prevalidatePassword(Number(localStorage.getItem('code')));
           if (this.mustChange) {
             this.showChangePass = true;
           } else {
             this.router.navigate(['user']);
           }
+        } else {
+          this.messageService.add({ severity: 'error', detail: rest.message });
         }
+
       })
     }
   }
@@ -122,6 +125,9 @@ export class LoginComponent implements OnInit {
       }
     });
     return this.mustChange = response;
+  }
+  onPasschangedCancel(){
+    this.showChangePass = false;
   }
   onPasschanged() {
     this.formPassword.markAllAsTouched()
