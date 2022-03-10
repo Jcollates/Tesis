@@ -19,6 +19,7 @@ import {MessagesModule} from 'primeng/messages';
 import {MessageModule} from 'primeng/message';
 import {DynamicDialogModule} from 'primeng/dynamicdialog';
 import {DialogModule} from 'primeng/dialog';
+import {ButtonModule} from 'primeng/button';
 
 
 @NgModule({
@@ -43,7 +44,8 @@ import {DialogModule} from 'primeng/dialog';
     MessageModule,
     MessagesModule,
     DialogModule,
-    DynamicDialogModule
+    DynamicDialogModule,
+    ButtonModule,
   ]
 })
 export class PageModule { }

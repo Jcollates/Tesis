@@ -72,6 +72,7 @@ export class ProductsComponent implements OnInit {
       productEsqueleton.productDesq = item.description;
       productEsqueleton.productName = item.nameproduct;
       productEsqueleton.img = item.img;
+      productEsqueleton.price = item.saleprize;
       all.push(productEsqueleton);
     });
     return all;
@@ -83,7 +84,7 @@ export class ProductsComponent implements OnInit {
       });
       this.pureProducts = rest;
       this.product = this.mapperFromCatPRo(rest);
-      console.log(rest);
+      console.log("PRODUCTS", rest);
     });
   }
   sentProducts() {
@@ -134,6 +135,7 @@ export class ProductEquleton {
   productDesq: string;
   cantidad: number;
   img: string
+  price: number
 }
 
 export class PoductsQuantity {

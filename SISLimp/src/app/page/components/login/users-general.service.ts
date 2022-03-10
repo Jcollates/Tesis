@@ -32,7 +32,7 @@ export class UsersGeneralService {
     let urlsend = this.url + '/updateDataUser';
     return this._http.post<UserGeneralModel>(urlsend, container).pipe(map(rest => rest as UserGeneralModel)).toPromise();
   }
-  
+
   deleteUSer(sequser: number): Observable<any> {
     let url = this.url + `/users/${sequser}`;
     return this._http.delete(url).pipe(map(res => res as any));
@@ -47,9 +47,9 @@ export class UsersGeneralService {
     let url = this.url + `/auth/${seqLoginUser}`;
     return this._http.delete(url).pipe(map(res => res as any));
   }
-  validateUsername(username: string): Promise<{ code: string, message: string }> {
+  validateUsername(username: string): Promise<{ code: string, message: string, codeUser: number }> {
     let urlsend = this.url + `/auth/validateuser/${username}`;
-    return this._http.get<{ code: string, message: string }>(urlsend).pipe(map(rest => rest as { code: string, message: string })).toPromise();
+    return this._http.get<{ code: string, message: string, codeUser: number }>(urlsend).pipe(map(rest => rest as { code: string, message: string, codeUser: number })).toPromise();
   }
   updateLoginUSer(container: LoginUser): Promise<LoginUser> {
     let urlsend = this.url + '/updateLoginUSer';

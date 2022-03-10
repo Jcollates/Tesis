@@ -7,6 +7,8 @@ import { AuthService } from 'src/app/sharedAll/serviceShared/auth.service';
 import { UsersGeneralService } from './users-general.service';
 import { FuntionsSharedService } from '../../../sharedAll/serviceShared/funtions-shared.service';
 import { CataloguesService } from '../../../sharedAll/serviceShared/catalogues.service';
+import { EmailService } from '../../../sislimp/shared/services/email.service';
+import { BasicEmailModel } from '../../../sislimp/shared/models/emails.model';
 const CITYCAT = 'CITYCAT';
 const PROVINCECAT = 'PROVINCECAT';
 @Component({
@@ -31,6 +33,11 @@ export class LoginComponent implements OnInit {
   mustChange: boolean;
   loginUserUpdate: LoginUser = new LoginUser();
   showChangePass: boolean = false;
+
+  //forget password
+  showForgotPass: boolean = false;
+  formForgotPassword: FormGroup = new FormGroup({});
+  confirmDialog: boolean = false;
   constructor(
     private loginService: AuthService,
     private userGeneralService: UsersGeneralService,
@@ -39,6 +46,7 @@ export class LoginComponent implements OnInit {
     private messageService: MessageService,
     public sharedFuntions: FuntionsSharedService,
     private catalogueService: CataloguesService,
+    private emailService: EmailService,
 
   ) {
     this.codeUser = this.loginService.codeUser;
@@ -77,6 +85,7 @@ export class LoginComponent implements OnInit {
       newpassword: ['', Validators.required],
       repassword: ['', Validators.required]
     }, { validator: this.MustMatch("newpassword", "repassword") });
+
     this.formNewUser = this.formBuilder.group({
       name: ['', Validators.required],
       lastname: ['', Validators.required],
@@ -90,10 +99,16 @@ export class LoginComponent implements OnInit {
     }, {
       validators: [this.MustMatch("password", "passwordConfirmation"),
       this.sharedFuntions.validateUsername('email')]
-    })
+    });
+    this.formForgotPassword = this.formBuilder.group({
+      username: ['', Validators.required]
+    });
+
   }
+  //prevalidate antes de hacer login pro seguridad
   async onLogin() {
     this.formLogin.markAllAsTouched();
+    //prevalidar
     if (!this.formLogin.valid) {
       this.messageService.add({ severity: 'error', detail: 'Ingrese usuario y contraseña' });
     } else {
@@ -126,19 +141,20 @@ export class LoginComponent implements OnInit {
     });
     return this.mustChange = response;
   }
-  onPasschangedCancel(){
+  
+  onPasschangedCancel() {
     this.showChangePass = false;
+    this.formPassword.reset({newpassword: '', repassword: ''});
+    this.logOut();
+    this.formLogin.reset({username: '', password: ''});
   }
   onPasschanged() {
     this.formPassword.markAllAsTouched()
     if (!this.formPassword.valid) {
       this.messageService.add({ severity: 'error', detail: 'Formulario incompleto' });
     } else {
-      console.log("Antes", this.loginUserUpdate);
       this.loginUserUpdate.password = this.formPassword.controls.newpassword.value;
       this.loginUserUpdate.changepassnextenter = 'NO';
-      console.log('On change');
-      console.log(this.loginUserUpdate);
       this.userGeneralService.updateLoginUSer(this.loginUserUpdate).then(rest => {
         if (rest) {
           this.messageService.add({ severity: 'success', detail: 'Contraseña actualizada' });
@@ -149,9 +165,6 @@ export class LoginComponent implements OnInit {
         }
       })
     }
-
-
-
   }
 
   MustMatch(controlName: string, matchingControlName: string) {
@@ -205,5 +218,84 @@ export class LoginComponent implements OnInit {
       if (rest.codeuser != null && rest.codeuser != 0) this.loginuser_codeuser = rest.codeuser;
     });
     this.fillContainer(this.formNewUser);
+  }
+
+  forgotPassWord(event: any) {
+    event.preventDefault();
+    this.showForgotPass = true;
+  }
+  onPassForgot() {
+    this.formForgotPassword.markAllAsTouched();
+    if (this.formForgotPassword.valid) {
+      this.userGeneralService.validateUsername(this.formForgotPassword.controls.username.value).then(rest => {
+        console.log(rest);
+        if (rest.code === '01') {
+          this.messageService.add({ severity: 'success', detail: 'Usuario encontrado' });
+          this.getDataUserAndUpdate(rest.codeUser);
+          this.confirmDialog = true;
+        } else {
+          this.messageService.add({ severity: 'error', detail: 'EL usuario no existe' });
+        }
+      })
+    }
+    console.log("AL mostrar", this.formForgotPassword.value);
+
+  }
+  onPassForgotCancel() {
+    this.formForgotPassword.reset({ username: '' });
+    this.showForgotPass = false;
+    this.formLogin.reset({username: '', password: ''});
+  }
+  hideLastDialog() {
+    this.confirmDialog = false;
+    this.onPassForgotCancel();
+  }
+  logOut(){
+    this.loginService.logOut();
+    this.router.navigate(['page/login']);
+  }
+  async getDataUserAndUpdate(codeUser:number){
+    await this.userGeneralService.getUserExtraData(codeUser).then(rest => {
+      this.resetPassword(rest, codeUser);
+    })
+  }
+  async resetPassword(data: UserGeneralModel, codeUser: number) {
+    const genericPassword: string = Math.random().toString(36).slice(-8);
+    let loginUserToUpdate: LoginUser;
+    await this.userGeneralService.getUniqueLoginUser(codeUser).then(rest => {
+      loginUserToUpdate = rest;
+    });
+    const resetBodyEmail: BasicEmailModel = new BasicEmailModel();
+    resetBodyEmail.emailTo = data.email;
+    resetBodyEmail.emailFrom = 'qtandres@hotmail.com';
+    resetBodyEmail.password = genericPassword;
+    resetBodyEmail.preheader = 'Resetear Contraseña - Sislimp';
+    resetBodyEmail.subject = 'Resetear Contraseña';
+    resetBodyEmail.username = data.name + "" + data.lastname;
+
+    loginUserToUpdate.password = genericPassword;
+    loginUserToUpdate.changepassnextenter = 'YES';
+
+    await this.userGeneralService.updateLoginUSer(loginUserToUpdate).then(rest => {
+      if (rest) {
+        this.messageService.add({ severity: 'success', detail: 'Contraseña reestablecida' });
+      } else {
+        this.messageService.add({ severity: 'error', detail: 'Error al reestrablecer' });
+      }
+    });
+
+    this.emailService.sendRestorePasswordEmail(resetBodyEmail).then(rest => {
+      if (!rest.hasOwnProperty('message')) {
+        console.log("EMAIL EMIAL", rest);
+      } else {
+        this.messageService.add({ severity: 'error', detail: 'Error al enviar correo' });
+      }
+    });
+  }
+  onHide(event: any){
+    this.onPasschangedCancel();
+  }
+  onHideFogot(event: any){
+    this.onPassForgotCancel();
   }
 }

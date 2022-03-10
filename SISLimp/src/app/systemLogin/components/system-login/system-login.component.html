@@ -7,10 +7,15 @@
             </div>
         </div>
         <div class="topbar-right p-mr-3 p-d-flex">
-            <button pButton pRipple type="button" label="DASHBOARD" class="p-button-text p-button-plain topbar-button"
-                (click)="goToPage()"></button>
+            <h2 class="title">Asorsalet</h2>
+            <!-- <button pButton pRipple type="button" label="DASHBOARD" class="p-button-text p-button-plain topbar-button"
+                (click)="goToPage()"></button> -->
         </div>
     </div>
+    <br>
+    <br>
+    <br>
+    <br>
     <br>
     <br>
     <br>
@@ -56,13 +61,164 @@
                         </small>
                     </small>
                 </div>
+                <div class="mt-2">
+                    <a href (click)="forgotPassWord($event)">
+                        <b>
+                            ¿Olvidaste la contraseña?
+                        </b>
+                    </a>
+                </div>
                 <div>
                     <button pButton pRipple type="submit" label="LOGIN" style="background-color: #1565C0;width: 100%;"
                         class="p-button-raised p-button-secondary p-mt-6 p-mb-6 p-px-3 ">
                     </button>
                 </div>
             </form>
-
         </div>
     </div>
+    <p-dialog header="Cambiar contraseña" [(visible)]="showChangePass" [style]="{width: '40vw'}" modal="true"
+        (onHide)="onHide($event)">
+        <form [formGroup]="formPassword" (ngSubmit)="onPasschanged()">
+            <div class="p-grid p-fluid">
+                <div class="p-col-12">
+                    <div class="p-inputgroup mt-4">
+                        <span class="p-inputgroup-addon">
+                            <i class="pi pi-lock"></i>
+                        </span>
+                        <span class="p-float-label">
+                            <input id="inputPassword" type="password" formControlName="newpassword" pInputText>
+                            <label for="inputgroup">Contraseña</label>
+                        </span>
+                    </div>
+
+                    <!-- <div class="input-group mt-4">
+                        <span class="input-group-text ">
+                            <i class="fa fa-lock text-muted"></i>
+                        </span>
+                        <input id="password" type="password" name="password" placeholder="Contraseña"
+                            formControlName="newpassword" class="form-control bg-white border-left-0 border-md">
+                    </div> -->
+                    <small *ngIf="formPassword.get('newpassword')?.errors && (formPassword.get('newpassword')?.dirty ||
+                    formPassword.get('newpassword')?.touched)" class="p-error block">
+                        <small *ngIf="formPassword.get('newpassword').errors?.required">
+                            Requerido
+                        </small>
+                    </small>
+                </div>
+                <div class="p-col-12">
+                    <div class="p-inputgroup mt-4">
+                        <span class="p-inputgroup-addon">
+                            <i class="pi pi-lock"></i>
+                        </span>
+                        <span class="p-float-label">
+                            <input id="inputPassword" type="password" formControlName="repassword" pInputText>
+                            <label for="inputgroup">Repita contraseña</label>
+                        </span>
+                    </div>
+
+                    <!-- <div class="input-group mt-4">
+                        <span class="input-group-text ">
+                            <i class="fa fa-lock text-muted"></i>
+                        </span>
+                        <input id="passwordConfirmation" type="password" name="passwordConfirmation"
+                            formControlName="repassword" placeholder="Repita contraseña"
+                            class="form-control bg-white border-left-0 border-md">
+                    </div> -->
+                    <small *ngIf="formPassword.controls.repassword.errors && formPassword.controls.repassword.touched"
+                        style='color:#ff7355'>
+                        <small *ngIf="formPassword.controls.repassword.errors?.required">
+                            Requerido
+                        </small>
+                        <small *ngIf="formPassword.controls.repassword.errors?.mustMatch">Las
+                            contraseñas
+                            deben coincidir</small>
+                    </small>
+                </div>
+                <div class="p-col-6">
+                    <button pButton pRipple type="button" label="Cancelar" style="width: 100%;"
+                        class="p-button-raised p-button-warning p-mt-6 p-mb-6 p-px-3 " (click)="onPasschangedCancel()">
+                    </button>
+                    <!-- <button type="button" class="btn btn-warning btn-block py-2" style="width: 100%; color: whitesmoke;"
+                        (click)="onPasschangedCancel()">
+                        <span class="font-weight-bold">Cancelar</span>
+                    </button> -->
+                </div>
+                <div class="p-col-6">
+                    <button pButton pRipple type="submit" label="Guardar contraseña"
+                        style="background-color: #1565C0;width: 100%;"
+                        class="p-button-raised p-button-secondary p-mt-6 p-mb-6 p-px-3">
+                    </button>
+
+                    <!-- <button type="submit" class="btn btn-primary btn-block py-2"
+                        style="width: 100%; background-color: #1E65AE;">
+                        <span class="font-weight-bold">Guardar contraseña</span>
+                    </button> -->
+                </div>
+            </div>
+        </form>
+
+    </p-dialog>
+    <p-dialog header="Recuperar contraseña" [(visible)]="showForgotPass" modal="true" (onHide)="onHideFogot($event)">
+        <form [formGroup]="formForgotPassword" (ngSubmit)="onPassForgot()">
+            <div class="p-grid p-fluid">
+                <div class="p-col-12">
+
+                    <div class="p-inputgroup mt-4">
+                        <span class="p-inputgroup-addon">
+                            <i class="pi pi-lock"></i>
+                        </span>
+                        <span class="p-float-label">
+                            <input id="inputPassword" type="text" formControlName="username" pInputText>
+                            <label for="inputgroup">Usuario</label>
+                        </span>
+                    </div>
+
+                    <!-- <div class="input-group mt-4">
+                        <span class="input-group-text ">
+                            <i class="fa fa-lock text-muted"></i>
+                        </span>
+                        <input id="usernameforgot" type="text" name="usernameforgot" placeholder="Usuario"
+                            formControlName="username" class="form-control bg-white border-left-0 border-md">
+                    </div> -->
+                    <small *ngIf="formForgotPassword.get('username')?.errors && (formForgotPassword.get('username')?.dirty ||
+                    formForgotPassword.get('username')?.touched)" class="p-error block">
+                        <small *ngIf="formForgotPassword.get('username').errors?.required">
+                            Requerido
+                        </small>
+                    </small>
+                </div>
+                <div class="p-col-6">
+                    <button pButton pRipple type="button" label="Cancelar" style="width: 100%;"
+                        class="p-button-raised p-button-warning p-mt-6 p-mb-6 p-px-3" (click)="onPassForgotCancel()">
+                    </button>
+                    <!-- <button type="button" class="btn btn-warning btn-block py-2" style="width: 100%; color: white;"
+                        (click)="onPassForgotCancel()">
+                        <span class="font-weight-bold">Cancelar</span>
+                    </button> -->
+                </div>
+                <div class="p-col-6">
+                    <button pButton pRipple type="submit" label="Solicitar contraseña"
+                        style="background-color: #1565C0;width: 100%;"
+                        class="p-button-raised p-button-secondary p-mt-6 p-mb-6 p-px-3">
+                    </button>
+                    <!-- <button type="submit" class="btn btn-primary btn-block py-2"
+                        style="width: 100%; background-color: #1E65AE;">
+                        <span class="font-weight-bold">Solicitar contraseña</span>
+                    </button> -->
+                </div>
+            </div>
+        </form>
+    </p-dialog>
+    <p-dialog header="Contraseña temporal generada" [(visible)]="confirmDialog" [modal]="true" [style]="{width: '50vw'}"
+        [draggable]="false" [resizable]="false">
+        <p class="p-m-0">
+            Tu contraseña ha sido reestablecida, te llegará un correo con la nueva contraseña temporal para que
+            puedas accerder al sistema y crear una nueva.
+            <br>
+            Saludos.
+        </p>
+        <ng-template pTemplate="footer">
+            <p-button icon="pi pi-check" (click)="hideLastDialog()" label="Ok" styleClass="p-button-text"></p-button>
+        </ng-template>
+    </p-dialog>
 </div>
