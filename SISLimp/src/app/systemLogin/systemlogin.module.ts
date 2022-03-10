@@ -14,7 +14,8 @@ import { CardModule } from 'primeng/card';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { InputMaskModule } from 'primeng/inputmask';
 import { InputTextareaModule } from 'primeng/inputtextarea';
-
+import {DynamicDialogModule} from 'primeng/dynamicdialog';
+import {DialogModule} from 'primeng/dialog';
 
 @NgModule({
   declarations: [
@@ -34,6 +35,9 @@ import { InputTextareaModule } from 'primeng/inputtextarea';
     InputNumberModule,
     InputMaskModule,
     InputTextareaModule,
+    DialogModule,
+    DynamicDialogModule
+
 
   ]
 })

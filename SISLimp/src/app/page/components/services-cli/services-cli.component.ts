@@ -72,6 +72,7 @@ export class ServicesCliComponent implements OnInit {
       serviceEsqueleton.serviceDesq = item.description;
       serviceEsqueleton.serviceName = item.nameservice;
       serviceEsqueleton.img = item.img;
+      serviceEsqueleton.price = item.hourprize;
       all.push(serviceEsqueleton);
     });
     return all;
@@ -138,7 +139,8 @@ export class ServiceEquleton {
   serviceName: string;
   serviceDesq: string;
   cantidad: number;
-  img: string
+  img: string;
+  price: number;
 }
 export class ServicesQuantity {
   codeService: string;

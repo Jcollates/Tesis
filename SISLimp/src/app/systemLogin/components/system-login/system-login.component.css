@@ -89,3 +89,9 @@
     color: #616161;
   }
 
+  .title{
+    font-weight: bolder;
+    font-style: italic;
+    color: #ffffff;
+    text-decoration: underline;
+  }

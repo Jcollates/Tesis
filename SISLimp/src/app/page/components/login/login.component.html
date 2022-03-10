@@ -35,19 +35,17 @@
                                     </small>
                                 </small>
                             </div>
-                            <!-- <div class="form-check mt-4">
+                            <div class="form-check mt-2">
                                 <div class="custom-control custom-checkbox">
-                                    <input id="customCheck3" type="checkbox" class="form-check-input">
-                                    <label for="customCheck3" class="form-check-label">
-                                        <p>
-                                            <b>
-                                                Olvide mi contraseña
-                                            </b>
-                                        </p>
-                                    </label>
+
+                                    <a href (click)="forgotPassWord($event)">
+                                        <b>
+                                            ¿Olvidaste la contraseña?
+                                        </b>
+                                    </a>
                                 </div>
-                            </div> -->
-                            <div class="form-group col-12 mb-3" style="text-align: center;">
+                            </div>
+                            <div class="form-group col-12 mb-3 mt-3" style="text-align: center;">
                                 <button type="submit" class="btn btn-primary btn-block py-2"
                                     style="width: 100%; background-color: #1E65AE;">Acceder
                                 </button>
@@ -233,8 +231,8 @@
                             <div class="input-group col-lg-12 mx-auto mb-0 text-center">
                                 <div class="col-3"></div>
                                 <div class="col-6">
-                                    <button type="button" class="btn btn-primary btn-block py-2"
-                                        style="width: 100%; background-color: #1E65AE;" (click)="onSaveUser()">
+                                    <button type="submit" class="btn btn-primary btn-block py-2"
+                                        style="width: 100%; background-color: #1E65AE;">
                                         <span class="font-weight-bold">Crear cuenta</span>
                                     </button>
                                 </div>
@@ -247,9 +245,9 @@
         </div>
     </div>
 </section>
-<p-dialog header="Cambiar contraseña" [(visible)]="showChangePass" modal="true">
-    <div class="row">
-        <form [formGroup]="formPassword" (ngSubmit)="onPasschanged()">
+<p-dialog header="Cambiar contraseña" [(visible)]="showChangePass" [style]="{width: '40vw'}" modal="true" (onHide)="onHide($event)">
+    <form [formGroup]="formPassword" (ngSubmit)="onPasschanged()">
+        <div class="row">
             <div class="col-12">
                 <div class="input-group mt-4">
                     <span class="input-group-text ">
@@ -274,8 +272,7 @@
                         formControlName="repassword" placeholder="Repita contraseña"
                         class="form-control bg-white border-left-0 border-md">
                 </div>
-                <small
-                    *ngIf="formPassword.controls.repassword.errors && formPassword.controls.repassword.touched"
+                <small *ngIf="formPassword.controls.repassword.errors && formPassword.controls.repassword.touched"
                     style='color:#ff7355'>
                     <small *ngIf="formPassword.controls.repassword.errors?.required">
                         Requerido
@@ -286,17 +283,64 @@
                 </small>
             </div>
             <div class="col-6 mt-5">
-                <button type="button" class="btn btn-primary btn-block py-2"
-                    style="width: 100%; background-color: yellow;" (click)="onPasschanged()">
+                <button type="button" class="btn btn-warning btn-block py-2" style="width: 100%; color: whitesmoke;"
+                    (click)="onPasschangedCancel()">
                     <span class="font-weight-bold">Cancelar</span>
                 </button>
             </div>
             <div class="col-6 mt-5">
-                <button type="button" class="btn btn-primary btn-block py-2"
-                    style="width: 100%; background-color: #1E65AE;" (click)="onPasschanged()">
+                <button type="submit" class="btn btn-primary btn-block py-2"
+                    style="width: 100%; background-color: #1E65AE;">
                     <span class="font-weight-bold">Guardar contraseña</span>
                 </button>
             </div>
-        </form>
-    </div>
+        </div>
+    </form>
+
+</p-dialog>
+<p-dialog header="Recuperar contraseña" [(visible)]="showForgotPass" modal="true" (onHide)="onHideFogot($event)">
+    <form [formGroup]="formForgotPassword" (ngSubmit)="onPassForgot()">
+
+        <div class="row">
+            <div class="col-12">
+                <div class="input-group mt-4">
+                    <span class="input-group-text ">
+                        <i class="fa fa-lock text-muted"></i>
+                    </span>
+                    <input id="usernameforgot" type="text" name="usernameforgot" placeholder="Usuario"
+                        formControlName="username" class="form-control bg-white border-left-0 border-md">
+                </div>
+                <small *ngIf="formForgotPassword.get('username')?.errors && (formForgotPassword.get('username')?.dirty ||
+                formForgotPassword.get('username')?.touched)" class="p-error block">
+                    <small *ngIf="formForgotPassword.get('username').errors?.required">
+                        Requerido
+                    </small>
+                </small>
+            </div>
+            <div class="col-6 mt-4">
+                <button type="button" class="btn btn-warning btn-block py-2" style="width: 100%; color: white;"
+                    (click)="onPassForgotCancel()">
+                    <span class="font-weight-bold">Cancelar</span>
+                </button>
+            </div>
+            <div class="col-6 mt-4">
+                <button type="submit" class="btn btn-primary btn-block py-2"
+                    style="width: 100%; background-color: #1E65AE;">
+                    <span class="font-weight-bold">Solicitar contraseña</span>
+                </button>
+            </div>
+        </div>
+    </form>
+</p-dialog>
+<p-dialog header="Contraseña temporal generada" [(visible)]="confirmDialog" [modal]="true" [style]="{width: '50vw'}" [draggable]="false"
+    [resizable]="false">
+    <p class="p-m-0">
+        Tu contraseña ha sido reestablecida, te llegará un correo con la nueva contraseña temporal para que
+        puedas accerder al sistema y crear una nueva.
+        <br>
+        Saludos.
+    </p>
+    <ng-template pTemplate="footer">
+        <p-button icon="pi pi-check" (click)="hideLastDialog()" label="Ok" styleClass="p-button-text"></p-button>
+    </ng-template>
 </p-dialog>

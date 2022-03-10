@@ -12,14 +12,15 @@
             <div class="col-lg-8 col-md-8 d-flex align-items-stretch">
                 <div class="row" data-aos="zoom-in" data-aos-delay="100">
                     <ng-container *ngFor="let item of product">
-                        <div class="col-lg-6 col-md-6 d-flex align-items-stretch">
+                        <div class="col-lg-6 col-md-6 d-flex align-items-stretch pt-2">
                             <div class="course-item">
-                                <img src="{{item.img}}" width="100%" class="img-fluid" alt="...">
+                                <img src="{{item.img}}" class="img-thumbnail imgpro" alt="...">
                                 <div class="course-content">
                                     <div class="d-flex justify-content-between align-items-center mb-3">
-                                        <h4 (click)="addProduct(item.idProd)">{{item.productName}} <i class="fa fa-plus-circle"></i> </h4>
-                                        <p class="price">$9</p>
+                                        <h4 (click)="addProduct(item.idProd)">Añadir <i class="fa fa-plus-circle"></i> </h4>
+                                        <p class="price">${{item.price}}</p>
                                     </div>
+                                    <br>
                                     <h3><a href="course-details.html">{{item.productName}}</a></h3>
                                     <p>{{item.productDesq}}</p>
                                 </div>
