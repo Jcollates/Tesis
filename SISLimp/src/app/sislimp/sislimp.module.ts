@@ -148,10 +148,11 @@ FullCalendarModule.registerPlugins([ // register FullCalendar plugins
     CheckboxModule,
   ],
   providers:[ 
-    { provide: NZ_I18N, useValue: en_US }
+    { provide: NZ_I18N, useValue: en_US },
   ],
   exports: [
-    SolistatusPipe
+    SolistatusPipe,
+    CityPipePipe,
   ]
 })
 export class SislimpModule { }

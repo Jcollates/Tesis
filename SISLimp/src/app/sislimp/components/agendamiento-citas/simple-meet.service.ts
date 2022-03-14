@@ -38,6 +38,12 @@ export class SimpleMeetService {
     let url = this.url + '/updateDataSimpleMeet';
     return this.http.post(url, item).pipe(map( res => res as Simplemeet));
   }
-  
-  
+  getSimpleMeetsHistoryByname(name:string, lastname: string, email: string): Promise<SimplemeetHistory[]>{
+    let url = this.url + `/getSimpleMeetsHistorybyname/${name}/${lastname}/${email}`;
+    return this.http.get(url).pipe(map(res => res as SimplemeetHistory[] )).toPromise();
+  }
+  getSimpleMeetsByname(name:string, lastname: string, email: string): Promise<Simplemeet[]>{
+    let url = this.url + `/getSimpleMeetsByname/${name}/${lastname}/${email}`;
+    return this.http.get(url).pipe(map(res => res as Simplemeet[] )).toPromise();
+  }
 }

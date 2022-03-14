@@ -11,8 +11,11 @@ import { LegalpersonService } from '../legalperson/legalperson.service';
 import { AgreementService } from './agreement.service';
 import { LegalPerson } from '../../shared/models/legalperson.model';
 import { AgreementHistory } from '../../shared/models/agreementhistory.model';
+import { CatalgogueItem } from '../../../sharedAll/models/catalogue';
 const CODECAT = 'SERVICETYPE';
 const CONTRACTSTATUS = 'CONTRACTSTATUS';
+const TIMESCHEDULE = 'TIMESCHEDULE';
+
 @Component({
   selector: 'app-gestion-contratos',
   templateUrl: './gestion-contratos.component.html',
@@ -23,6 +26,7 @@ export class GestionContratosComponent implements OnInit {
 
   drop: SelectItem[] = [];
   dropStatus: SelectItem[] = [];
+  dropTime: SelectItem[] = [];
   dropLegalperson: LegalPerson[] = [];
   fordropt: any
 
@@ -63,6 +67,7 @@ export class GestionContratosComponent implements OnInit {
   colsProcessed: any[];
   showEmployesAssignedProccessed: boolean = false;
   historyAgreement: AgreementHistory = new AgreementHistory();
+  initialState: any;
   constructor(
     private formBuilder: FormBuilder,
     private catalogueService: CataloguesService,
@@ -149,10 +154,16 @@ export class GestionContratosComponent implements OnInit {
       this.showLegalperson = false;
     }
   }
+  getOutLegal(event: any){
+    if(event){
+      this.showLegalperson = false;
+    }
+  }
   validateForm() {
     this.formcontracts.markAllAsTouched();
     if (!this.formcontracts.valid) {
       this.messageService.add({ severity: 'error', detail: 'Formulario no valido' });
+      console.log(this.formcontracts.value);
     } else {
       if (this.services.length > 0) {
         if (this.fromEdit && !this.fromChangeEdit) {
@@ -296,6 +307,7 @@ export class GestionContratosComponent implements OnInit {
       detailService: ['', Validators.required],
       services: this.formBuilder.array([]),
     });
+    this.initialState = this.formcontracts.value;
   }
 
   getCatalogues() {
@@ -307,7 +319,18 @@ export class GestionContratosComponent implements OnInit {
     });
     this.legalPersonService.getLegalperson().subscribe(rest => {
       this.dropLegalperson = rest;
-    })
+    });
+    this.catalogueService.getCataloguebyCodeCat(TIMESCHEDULE).then(rest => {
+      this.dropTime = this.constructModelSchedule(rest);
+    });
+  }
+  constructModelSchedule(list: any) {
+    const comboItems: SelectItem[] = [];
+    comboItems.push({ label: 'Seleccione', value: '' });
+    return comboItems.concat(list.map(value => ({
+      label: `${value.nameItem} (${value.decription})`,
+      value: value.decription
+    })));
   }
 
   saveForm(container: Agreement) {
@@ -315,10 +338,11 @@ export class GestionContratosComponent implements OnInit {
       this.agreeService.saveAgreement(container).subscribe(res => {
         if (res != null) {
           this.messageService.add({ severity: 'success', detail: 'Registrado correctamente' });
-          this.formcontracts.reset();
-          while (this.services.controls.length > 1) {
+          this.formcontracts.reset(this.initialState);
+          while (this.services.controls.length >= 1) {
             this.deleteService(0);
           }
+          this.addService();
           this.seqLegalperson = 0;
           this.chargeData(null);
           this.activeIndex1 = 0;
@@ -388,7 +412,7 @@ export class GestionContratosComponent implements OnInit {
     this.chargeData(null);
     this.activeIndex1 = 0;
     this.fromEdit = false;
-    this.formcontracts.reset();
+    this.formcontracts.reset(this.initialState);
     while (this.services.controls.length > 1) {
       this.deleteService(0);
     }
@@ -418,5 +442,14 @@ export class GestionContratosComponent implements OnInit {
   }
   deleteService(serviceIndex: number) {
     this.services.removeAt(serviceIndex);
+  }
+  cancelForm(){
+    this.formcontracts.reset(this.initialState);
+    while (this.services.controls.length >= 1) {
+      this.deleteService(0);
+    }
+    this.addService();
+    this.chargeData(null);
+    this.activeIndex1 = 0;
   }
 }

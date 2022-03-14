@@ -155,7 +155,7 @@
                     <div class="p-field p-col-12 p-md-6">
                         <div class="p-inputgroup">
                             <span class="p-inputgroup-addon">
-                                <i class="pi pi-user"></i>
+                                <i class="pi pi-id-card"></i>
                             </span>
                             <span class="p-float-label">
                                 <input type="text" id="inputgroup" pInputText formControlName="dni" maxlength="10"
@@ -173,7 +173,7 @@
                     <div class="p-field p-col-12 p-md-6">
                         <div class="p-inputgroup">
                             <span class="p-inputgroup-addon">
-                                <i class="pi pi-user"></i>
+                                <i class="pi pi-envelope"></i>
                             </span>
                             <span class="p-float-label">
                                 <input type="text" id="inputgroup" pInputText formControlName="email">
@@ -193,7 +193,7 @@
                     <div class="p-field p-col-12 p-md-6">
                         <div class="p-inputgroup">
                             <span class="p-inputgroup-addon">
-                                <i class="pi pi-id-card"></i>
+                                <i class="pi pi-user"></i>
                             </span>
                             <span class="p-float-label">
                                 <input type="text" id="inputgroup" pInputText formControlName="cliname">
@@ -210,7 +210,7 @@
                     <div class="p-field p-col-12 p-md-6">
                         <div class="p-inputgroup">
                             <span class="p-inputgroup-addon">
-                                <i class="pi pi-phone"></i>
+                                <i class="pi pi-user"></i>
                             </span>
                             <span class="p-float-label">
                                 <input type="text" id="inputgroup" pInputText formControlName="clilastname">
@@ -227,7 +227,7 @@
                     <div class="p-field p-col-12 p-md-6">
                         <div class="p-inputgroup">
                             <span class="p-inputgroup-addon">
-                                <i class="pi pi-envelope "></i>
+                                <i class="pi pi-phone "></i>
                             </span>
                             <span class="p-float-label">
                                 <input type="text" id="inputgroup" pInputText formControlName="phone" maxlength="10"
@@ -245,7 +245,7 @@
                     <div class="p-field p-col-12 p-md-6">
                         <div class="p-inputgroup">
                             <span class="p-inputgroup-addon">
-                                <i class="pi pi-envelope "></i>
+                                <i class="fa fa-map-marker"></i>
                             </span>
                             <span class="p-float-label">
                                 <textarea id="float-input" rows="2" cols="5" pInputTextarea
@@ -284,7 +284,7 @@
                     <div class="p-field p-col-12 p-md-12">
                         <div class="p-inputgroup">
                             <span class="p-inputgroup-addon">
-                                <i class="pi pi-globe"></i>
+                                <i class="fa fa-info-circle"></i>
                             </span>
                             <span class="p-float-label">
                                 <textarea id="float-input" rows="5" cols="30" pInputTextarea
@@ -322,24 +322,11 @@
                         </small>
                     </div>
                     <div class="p-field p-col-12 p-md-6">
-                        <div class="p-inputgroup">
-                            <span class="p-inputgroup-addon">
-                                <i class="pi pi-lock"></i>
-                            </span>
-                            <span class="p-float-label">
-                                <p-autoComplete formControlName="employename" [suggestions]="results" field="name"
-                                    (completeMethod)="searchEmploy($event)" (onSelect)="watchIt($event)">
-                                    <ng-template let-employee pTemplate="item">
-                                        <div>
-                                            <span>{{employee.name}}</span>
-                                            <span>{{employee.lastname}}</span>
-                                        </div>
-                                    </ng-template>
-                                </p-autoComplete>
-                                <label for="inputgroup">Nombre empleado</label>
+                        <span for="inputgroup">Nombre empleado</span>
 
-                            </span>
-                        </div>
+                        <p-dropdown [options]="results" formControlName="employename" (onChange)="watchIt($event)">
+                        </p-dropdown>
+
                         <small *ngIf="formCustomer.get('employename')?.errors && (formCustomer.get('employename')?.dirty ||
                             formCustomer.get('employename')?.touched)" class="p-error block">
                             <small *ngIf="formCustomer.get('employename').errors?.required">
@@ -348,15 +335,13 @@
                         </small>
                     </div>
                     <div class="p-field p-col-12 p-md-6">
+                        <span for="inputgroup">Código empleado</span>
+
                         <div class="p-inputgroup">
                             <span class="p-inputgroup-addon">
-                                <i class="pi pi-lock"></i>
+                                <i class="fa fa-id-badge"></i>
                             </span>
-                            <span class="p-float-label">
-                                <input disabled="true" type="text" id="inputgroup" pInputText
-                                    formControlName="employecode">
-                                <label for="inputgroup">Código empleado</label>
-                            </span>
+                            <input disabled="true" type="text" id="inputgroup" pInputText formControlName="employecode">
                         </div>
                         <small *ngIf="formCustomer.get('employecode')?.errors && (formCustomer.get('employecode')?.dirty ||
                             formCustomer.get('employecode')?.touched)" class="p-error block">
@@ -380,6 +365,11 @@
                 </div>
                 <p-toolbar>
                     <div class="p-toolbar-group-left">
+                        <button pButton pRipple type="button" label="Cancelar" icon="pi pi-arrow-left"
+                            (click)="cancelForm()"
+                            class="p-button-raised p-button-rounded p-button-danger p-mr-2 p-mb-2 "
+                            style="float: right">
+                        </button>
                     </div>
                     <div class="p-toolbar-group-right">
                         <button pButton pRipple type="button" label="Registrar" icon="pi pi-save"

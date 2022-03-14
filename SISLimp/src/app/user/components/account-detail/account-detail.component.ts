@@ -5,6 +5,7 @@ import { UsersGeneralService } from 'src/app/page/components/login/users-general
 import { LoginUser, UserGeneralModel } from 'src/app/sharedAll/models/usergeneral.model';
 import { AuthService } from 'src/app/sharedAll/serviceShared/auth.service';
 import { CataloguesService } from 'src/app/sharedAll/serviceShared/catalogues.service';
+import { FuntionsSharedService } from '../../../sharedAll/serviceShared/funtions-shared.service';
 
 const PROVINCECAT = 'PROVINCECAT';
 const CITYCAT = 'CITYCAT'
@@ -27,6 +28,7 @@ export class AccountDetailComponent implements OnInit {
     private formBuilder: FormBuilder,
     private catalogueService: CataloguesService,
     private messageService: MessageService,
+    public sharedFuntions: FuntionsSharedService
   ) {
     this.dataUser = new UserGeneralModel();
     this.createForm();
@@ -66,7 +68,7 @@ export class AccountDetailComponent implements OnInit {
       confirmpassword: ['', Validators.required],
       province: [this.dataUser.province, Validators.required],
       city: ['', Validators.required],
-    }, { validator: this.MustMatch("password", "confirmpassword") });
+    }, { validators: [this.MustMatch("password", "confirmpassword"), this.sharedFuntions.emailValidator('email')] });
   }
   MustMatch(controlName: string, matchingControlName: string) {
     return (formGroup: FormGroup) => {
@@ -102,6 +104,7 @@ export class AccountDetailComponent implements OnInit {
   }
   onUpdate() {
     this.fillConatainer();
+    this.onEdit();
   }
   onEdit() {
     this.editable = !this.editable;
@@ -110,6 +113,12 @@ export class AccountDetailComponent implements OnInit {
     } else {
       this.formUser.enable();
     }
+  }
+  onCancelEdit(){
+    this.createForm();
+    setTimeout(() => {
+      this.onEdit();
+    }, 1000);
   }
 
 }

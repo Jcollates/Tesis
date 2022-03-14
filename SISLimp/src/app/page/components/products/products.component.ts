@@ -6,6 +6,9 @@ import { CatProducts } from 'src/app/sislimp/shared/models/catproduct.model';
 import { UsersGeneralService } from '../login/users-general.service';
 import { SolProduct } from '../sharedpage/models/solproduct.model';
 import { ProoductShowService } from './prooduct-show.service';
+import { Simplemeet } from '../../../sislimp/shared/models/simplemeet.model';
+import { BasicEmailModel } from '../../../sislimp/shared/models/emails.model';
+import { EmailService } from '../../../sislimp/shared/services/email.service';
 
 @Component({
   selector: 'app-products',
@@ -31,7 +34,9 @@ export class ProductsComponent implements OnInit {
     private sharedFuntions: FuntionsSharedService,
     private authService: AuthService,
     private userService: UsersGeneralService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private emailService: EmailService,
+
   ) { }
 
   ngOnInit(): void {
@@ -57,8 +62,6 @@ export class ProductsComponent implements OnInit {
     } else {
       this.cart = this.cart.filter(item => item.idProd !== this.productSelected.idProd);
     }
-    // console.log(this.productSelected);
-    // console.log(this.cart);
   }
   confirmProducts() {
 
@@ -109,23 +112,59 @@ export class ProductsComponent implements OnInit {
     return productsSend;
   }
   fillData(cart: ProductEquleton[]) {
-    if(cart.length > 0){
+    if (cart.length > 0) {
       const itemToSend: SolProduct = new SolProduct();
-    itemToSend.codeuser = this.authService.codeUser;
-    itemToSend.products = JSON.stringify(this.constructJSON(cart));
-    itemToSend.nameuser = this.authService.username;
-    itemToSend.contacnumber = this.phoneNumberUser || '';
-    itemToSend.email = this.emailUser || '';
-    itemToSend.status = 'hold'
+      itemToSend.codeuser = this.authService.codeUser;
+      itemToSend.products = JSON.stringify(this.constructJSON(cart));
+      itemToSend.nameuser = this.authService.username;
+      itemToSend.contacnumber = this.phoneNumberUser || '';
+      itemToSend.email = this.emailUser || '';
+      itemToSend.status = 'hold'
 
-    this.productShowService.savesolProduct(itemToSend).subscribe(rest => {
-      if (rest != null) this.messageService.add({ severity: 'success', detail: 'Solicitud registrada, un asesor se contactara con usted.' });
-      this.cart = [];
-    });
+      this.productShowService.savesolProduct(itemToSend).subscribe(rest => {
+        if (rest != null) {
+          this.messageService.add({ severity: 'success', detail: 'Solicitud registrada, un asesor se contactara con usted.' });
+          this.cart = [];
+          this.sendEmailFromProductsToUser(rest);
+          this.sendEmailFromProductsToAdmin(rest);
+        }
+      });
     } else {
       this.messageService.add({ severity: 'error', detail: 'Debe seleccionar al menos un producto.' });
     }
-    
+  }
+  sendEmailFromProductsToUser(data: SolProduct) {
+    const resetBodyEmail: BasicEmailModel = new BasicEmailModel();
+    resetBodyEmail.emailTo = data.email;
+    resetBodyEmail.emailFrom = 'qtandres@hotmail.com';
+    resetBodyEmail.preheader = 'Estado solicitud';
+    resetBodyEmail.subject = 'Estado de la solicitud';
+    resetBodyEmail.username = data.nameuser;
+    resetBodyEmail.request = data.seqsolproduct + "";
+    this.emailService.sendNewRequestToUSER(resetBodyEmail).then(rest => {
+      if (!rest.hasOwnProperty('message')) {
+        console.log("EMAIL EMIAL", rest);
+      } else {
+        this.messageService.add({ severity: 'error', detail: 'Error al enviar correo' });
+      }
+    });
+
+  }
+  sendEmailFromProductsToAdmin(data: SolProduct) {
+    const resetBodyEmail: BasicEmailModel = new BasicEmailModel();
+    resetBodyEmail.emailTo = 'qtandres17@gmail.com';
+    resetBodyEmail.emailFrom = 'qtandres@hotmail.com';
+    resetBodyEmail.preheader = 'Estado solicitud';
+    resetBodyEmail.subject = 'Estado de la solicitud';
+    resetBodyEmail.username = 'Administrador'
+    resetBodyEmail.request = data.seqsolproduct + "";
+    this.emailService.sendNewRequestToAdmin(resetBodyEmail).then(rest => {
+      if (!rest.hasOwnProperty('message')) {
+        console.log("EMAIL EMIAL", rest);
+      } else {
+        this.messageService.add({ severity: 'error', detail: 'Error al enviar correo' });
+      }
+    });
   }
 }
 

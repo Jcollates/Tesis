@@ -39,6 +39,9 @@ import {MessageModule} from 'primeng/message';
 import { SislimpModule } from '../sislimp/sislimp.module';
 import {DynamicDialogModule} from 'primeng/dynamicdialog';
 import {DialogModule} from 'primeng/dialog';
+import {TabViewModule} from 'primeng/tabview';
+
+
 
 
 
@@ -89,7 +92,9 @@ import {DialogModule} from 'primeng/dialog';
     MessagesModule,
     SislimpModule,
     DynamicDialogModule,
-    DialogModule
+    DialogModule,
+    TabViewModule,
+    
   ], 
   providers:[
   ]

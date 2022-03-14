@@ -30,10 +30,12 @@ export class AtencionClienteComponent implements OnInit {
   sizeRecords: number = 50;
   pageSize: number = 50;
   formCustomer: FormGroup = new FormGroup({});
-  results: Employee[] = [];
+  results: SelectItem[] = [];
 
   customerContainer: CustomerServiceModel = new CustomerServiceModel();
   clonedProducts: { [s: string]: CustomerServiceModel; } = {};
+
+  initialState: any; 
   constructor(
     private customerService: CustomerService,
     private catalogueService: CataloguesService,
@@ -47,6 +49,7 @@ export class AtencionClienteComponent implements OnInit {
     this.createCols();
     this.getCatalogues();
     this.createForm();
+    this.searchEmploy();
   }
 
   createCols() {
@@ -69,7 +72,6 @@ export class AtencionClienteComponent implements OnInit {
         rest.forEach(item => item.dateobservation = new Date(item.dateobservation));
         this.dataFromdb = rest;
         this.sizeRecords = rest.length;
-        console.log(rest);
       }
 
     });
@@ -92,6 +94,7 @@ export class AtencionClienteComponent implements OnInit {
       address: ['', Validators.required],
 
     }, {validator: this.sharedFuntions.emailValidator('email')});
+    this.initialState = this.formCustomer.value;
     
   }
   async getCatalogues() {
@@ -134,7 +137,7 @@ export class AtencionClienteComponent implements OnInit {
     this.customerService.saveCustomerService(container).subscribe(res => {
       if (res != null) {
         this.messageService.add({ severity: 'success', detail: 'Registrado correctamente' });
-        this.formCustomer.reset();
+        this.formCustomer.reset(this.initialState);
         this.chargeData(null);
         this.activeIndex1 = 0;
       }
@@ -146,14 +149,23 @@ export class AtencionClienteComponent implements OnInit {
       this.dropCity = this.catalogueService.constructModel(rest);
     })
   }
-  searchEmploy(event: any) {
-    this.employeService.getEmployesByName(event.query).subscribe(items => {
+  searchEmploy() {
+    this.employeService.getEmployess().subscribe(items => {
       items.forEach(item => item.img = this.sharedFuntions.repair(item.img))
-      this.results = items
+      this.results =this.constructModelEmploy(items) ;
     })
   }
-  watchIt(event: Employee) {
-    this.formCustomer.patchValue({ employecode: event.seqemploy });
+  constructModelEmploy(list: Employee[]) {
+    const comboItems: SelectItem[] = [];
+    comboItems.push({ label: 'Seleccione', value: '' });
+    return comboItems.concat(list.map(value => ({
+      label: value.name,
+      value: value
+    })));
+  }
+  watchIt(event: any) {
+    const employ = event.value as Employee;
+    this.formCustomer.patchValue({ employecode: employ.seqemploy });
   }
   onRowEditInit(customer: CustomerServiceModel) {
     this.clonedProducts[customer.seqcustomer] = { ...customer };
@@ -183,6 +195,11 @@ export class AtencionClienteComponent implements OnInit {
         this.chargeData(null);
       }
     })
+  }
+  cancelForm(){
+    this.formCustomer.reset(this.initialState);
+    this.chargeData(null);
+    this.activeIndex1 = 0;
   }
 
 }

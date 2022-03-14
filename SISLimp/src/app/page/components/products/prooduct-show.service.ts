@@ -28,8 +28,8 @@ export class ProoductShowService {
     return this.http.get(url).pipe(map(res => res as CatProducts[] )).toPromise();
   }
 
-  savesolProduct(solProducts: SolProduct): Observable<any>{
+  savesolProduct(solProducts: SolProduct): Observable<SolProduct>{
     let url = this.url + `/addSolProducts/`;
-    return this.http.post(url, solProducts).pipe(map(res => res as any ));
+    return this.http.post(url, solProducts).pipe(map(res => res as SolProduct ));
   }
 }

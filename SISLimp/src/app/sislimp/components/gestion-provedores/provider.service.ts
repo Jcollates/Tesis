@@ -21,6 +21,10 @@ export class ProviderService {
     let url = this.url + '/providers';
     return this.http.get(url).pipe(map(res => res as Provider[] )).toPromise();
   }
+  getProviderByRuc(ruc: string): Promise<Provider>{
+    let url = this.url + `/providersByRuc/${ruc}`;
+    return this.http.get(url).pipe(map(res => res as Provider )).toPromise();
+  }
   saveProvider(container: Provider): Observable<any>{
     let url = this.url + '/createProvider';
     return this.http.post(url, container).pipe(map( res => res as any));

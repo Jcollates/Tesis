@@ -38,6 +38,7 @@ export class LoginComponent implements OnInit {
   showForgotPass: boolean = false;
   formForgotPassword: FormGroup = new FormGroup({});
   confirmDialog: boolean = false;
+  initialState: any;
   constructor(
     private loginService: AuthService,
     private userGeneralService: UsersGeneralService,
@@ -103,7 +104,7 @@ export class LoginComponent implements OnInit {
     this.formForgotPassword = this.formBuilder.group({
       username: ['', Validators.required]
     });
-
+    this.initialState = this.formNewUser.value;
   }
   //prevalidate antes de hacer login pro seguridad
   async onLogin() {
@@ -141,12 +142,12 @@ export class LoginComponent implements OnInit {
     });
     return this.mustChange = response;
   }
-  
+
   onPasschangedCancel() {
     this.showChangePass = false;
-    this.formPassword.reset({newpassword: '', repassword: ''});
+    this.formPassword.reset({ newpassword: '', repassword: '' });
     this.logOut();
-    this.formLogin.reset({username: '', password: ''});
+    this.formLogin.reset({ username: '', password: '' });
   }
   onPasschanged() {
     this.formPassword.markAllAsTouched()
@@ -202,8 +203,14 @@ export class LoginComponent implements OnInit {
     this.newUSer.city = form.controls.city.value;
     this.newUSer.loginuser_codeuser = this.loginuser_codeuser;
     this.userGeneralService.saveUser(this.newUSer).then(rest => {
-      console.log("SAVED newUSer ?", rest);
-      this.messageService.add({ severity: 'success', detail: 'Registrado correctamente' });
+      if (rest) {
+        console.log("SAVED newUSer ?", rest);
+        this.messageService.add({ severity: 'success', detail: 'Registrado correctamente' });
+        this.formNewUser.reset(this.initialState);
+      } else {
+        this.messageService.add({ severity: 'error', detail: 'Error al guardar' });
+      }
+
 
     })
   }
@@ -244,17 +251,17 @@ export class LoginComponent implements OnInit {
   onPassForgotCancel() {
     this.formForgotPassword.reset({ username: '' });
     this.showForgotPass = false;
-    this.formLogin.reset({username: '', password: ''});
+    this.formLogin.reset({ username: '', password: '' });
   }
   hideLastDialog() {
     this.confirmDialog = false;
     this.onPassForgotCancel();
   }
-  logOut(){
+  logOut() {
     this.loginService.logOut();
     this.router.navigate(['page/login']);
   }
-  async getDataUserAndUpdate(codeUser:number){
+  async getDataUserAndUpdate(codeUser: number) {
     await this.userGeneralService.getUserExtraData(codeUser).then(rest => {
       this.resetPassword(rest, codeUser);
     })
@@ -292,10 +299,10 @@ export class LoginComponent implements OnInit {
       }
     });
   }
-  onHide(event: any){
+  onHide(event: any) {
     this.onPasschangedCancel();
   }
-  onHideFogot(event: any){
+  onHideFogot(event: any) {
     this.onPassForgotCancel();
   }
 }

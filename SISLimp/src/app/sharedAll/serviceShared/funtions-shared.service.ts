@@ -1,6 +1,12 @@
 import { Injectable } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { UsersGeneralService } from '../../page/components/login/users-general.service';
+import { CataloguesService } from './catalogues.service';
+import { CatServiceService } from '../../sislimp/components/catalogo-services/cat-service.service';
+import { EmployeeService } from '../../sislimp/components/gestion-empleados/employee.service';
+import { LegalpersonService } from '../../sislimp/components/legalperson/legalperson.service';
+import { ProviderService } from '../../sislimp/components/gestion-provedores/provider.service';
+import { ProductosService } from '../../sislimp/components/gestion-inventario-products/productos.service';
 
 @Injectable({
   providedIn: 'root'
@@ -8,7 +14,12 @@ import { UsersGeneralService } from '../../page/components/login/users-general.s
 export class FuntionsSharedService {
 
   constructor(
-    private loginUserService: UsersGeneralService
+    private loginUserService: UsersGeneralService,
+    private catService: CatServiceService,
+    private employeeService: EmployeeService,
+    private legalpersonService: LegalpersonService,
+    private providerService: ProviderService,
+    private productosService: ProductosService
   ) { }
   repair(imgs: any) {
     let TYPED_ARRAY: Uint8Array;
@@ -61,5 +72,79 @@ export class FuntionsSharedService {
       })
     }
   }
-  
+  validateCatService(codeService: string){
+    return (form: FormGroup) => {
+      const control = form.controls[codeService];
+      if (control.errors && !control.errors.codeService) {
+        return;
+      }
+      this.catService.getCatServicesByCodeExist(control?.value).then( rest => {
+        if(!rest){
+          control.setErrors(null);
+        } else {
+          control.setErrors({codeService: 'El servico existe'})
+        }
+      })
+    }
+  }
+  validateEmployeeDNI(dni: string){
+    return (form: FormGroup) => {
+      const control = form.controls[dni];
+      if (control.errors && !control.errors.dni) {
+        return;
+      }
+      this.employeeService.getEmployByDni(control?.value).then( rest => {
+        if(!rest){
+          control.setErrors(null);
+        } else {
+          control.setErrors({dni: 'El empleado existe'})
+        }
+      })
+    }
+  }
+  validateLegalPersonDNI(dni: string){
+    return (form: FormGroup) => {
+      const control = form.controls[dni];
+      if (control.errors && !control.errors.dni) {
+        return;
+      }
+      this.legalpersonService.getLegalperonByDni(control?.value).then( rest => {
+        if(!rest){
+          control.setErrors(null);
+        } else {
+          control.setErrors({dni: `Representante existente ${rest.seqlegalperson}-${rest.name} ${rest.lastname}`})
+        }
+      })
+    }
+  }
+  validateProviderByRuc(ruc: string){
+    return (form: FormGroup) => {
+      const control = form.controls[ruc];
+      if (control.errors && !control.errors.ruc) {
+        return;
+      }
+      this.providerService.getProviderByRuc(control?.value).then( rest => {
+        if(!rest){
+          control.setErrors(null);
+        } else {
+          control.setErrors({ruc: `Proveedor existente ${rest.seqprovider}-${rest.namenterprice}`})
+        }
+      })
+    }
+  }
+  validateProductByCode(codeProduct: string){
+    return (form: FormGroup) => {
+      const control = form.controls[codeProduct];
+      if (control.errors && !control.errors.codeProduct) {
+        return;
+      }
+      this.productosService.getEspecifict(control?.value).then( rest => {
+        if(!rest){
+          control.setErrors(null);
+        } else {
+          control.setErrors({codeProduct: `Producto existente ${rest.name}`})
+        }
+      })
+    }
+  }
 }

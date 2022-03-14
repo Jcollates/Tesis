@@ -148,14 +148,6 @@
                     No hay registros que mostrar
                 </ng-template>
             </p-table>
-            <!-- <p-toolbar>
-                <div class="p-toolbar-group-left"></div>
-                <div class="p-toolbar-group-right">
-                    <button pButton pRipple type="button" label="Registrar nueva" (click)="activeIndex = 1"
-                        icon="pi pi-plus" class="p-button-raised p-button-rounded p-button-success p-mr-2 p-mb-2 ">
-                    </button>
-                </div>
-            </p-toolbar> -->
         </p-tabPanel>
         <p-tabPanel header="Formulario de Proveedores">
             <div class="card-header">
@@ -167,7 +159,7 @@
                     <div class="p-field p-col-12 p-md-6">
                         <div class="p-inputgroup">
                             <span class="p-inputgroup-addon">
-                                <i class="pi pi-user"></i>
+                                <i class="pi pi-id-card"></i>
                             </span>
                             <span class="p-float-label">
                                 <input type="text" id="inputgroup" pInputText formControlName="dni" maxlength="13"
@@ -180,12 +172,15 @@
                             <small *ngIf="formProvider.get('dni').errors?.required">
                                 Requerido
                             </small>
+                            <small *ngIf="formProvider.get('dni').errors?.ruc">
+                                {{formProvider.get('dni').errors?.ruc}}
+                            </small>
                         </small>
                     </div>
                     <div class="p-field p-col-12 p-md-6">
                         <div class="p-inputgroup">
                             <span class="p-inputgroup-addon">
-                                <i class="pi pi-user"></i>
+                                <i class="pi pi-envelope"></i>
                             </span>
                             <span class="p-float-label">
                                 <input type="text" id="inputgroup" pInputText formControlName="email">
@@ -205,7 +200,7 @@
                     <div class="p-field p-col-12 p-md-6">
                         <div class="p-inputgroup">
                             <span class="p-inputgroup-addon">
-                                <i class="pi pi-id-card"></i>
+                                <i class="fa fa-building"></i>
                             </span>
                             <span class="p-float-label">
                                 <input type="text" id="inputgroup" pInputText formControlName="enterpricename">
@@ -216,7 +211,7 @@
                     <div class="p-field p-col-12 p-md-6">
                         <div class="p-inputgroup">
                             <span class="p-inputgroup-addon">
-                                <i class="pi pi-phone"></i>
+                                <i class="pi pi-map-marker"></i>
                             </span>
                             <span class="p-float-label">
                                 <input type="text" id="inputgroup" pInputText formControlName="address">
@@ -233,7 +228,7 @@
                     <div class="p-field p-col-12 p-md-6">
                         <div class="p-inputgroup">
                             <span class="p-inputgroup-addon">
-                                <i class="pi pi-envelope "></i>
+                                <i class="pi pi-phone"></i>
                             </span>
                             <span class="p-float-label">
                                 <input type="text" id="inputgroup" pInputText formControlName="phone" maxlength="10" (keypress)="sharedFunctions.enterOnlyNumbers($event)">
@@ -272,7 +267,7 @@
                     <div class="p-field p-col-12 p-md-12">
                         <div class="p-inputgroup">
                             <span class="p-inputgroup-addon">
-                                <i class="pi pi-globe"></i>
+                                <i class="pi pi-info-circle"></i>
                             </span>
                             <span class="p-float-label">
                                 <textarea id="float-input" rows="5" cols="30" pInputTextarea
@@ -301,7 +296,7 @@
                         <span for="inputgroup">Nombre vendedor</span>
                         <div class="p-inputgroup">
                             <span class="p-inputgroup-addon">
-                                <i class="pi pi-lock"></i>
+                                <i class="pi pi-user"></i>
                             </span>
                             <input type="text" id="inputgroup" pInputText formControlName="salername">
                         </div>
@@ -315,6 +310,11 @@
                 </div>
                 <p-toolbar>
                     <div class="p-toolbar-group-left">
+                        <button pButton pRipple type="button" label="Cancelar" icon="pi pi-arrow-left"
+                            (click)="cancelForm()"
+                            class="p-button-raised p-button-rounded p-button-danger p-mr-2 p-mb-2 "
+                            style="float: right">
+                        </button>
                     </div>
                     <div class="p-toolbar-group-right">
                         <button pButton pRipple type="button" label="Registrar" icon="pi pi-save"

@@ -12,6 +12,8 @@ import { EmployeeService } from '../gestion-empleados/employee.service';
 import { SimpleMeetService } from './simple-meet.service';
 import { SimplemeetHistory } from '../../shared/models/siemplemeetHistory.model';
 import { CatalgogueItem } from '../../../sharedAll/models/catalogue';
+import { EmailService } from '../../shared/services/email.service';
+import { BasicEmailModel } from '../../shared/models/emails.model';
 const CITYCAT = 'CITYCAT';
 const PROVINCECAT = 'PROVINCECAT';
 const SERVICETYPE = 'SERVICETYPE';
@@ -73,6 +75,8 @@ export class AgendamientoCitasComponent implements OnInit {
   fromEdit: boolean = false;
   meetToUpdate: Simplemeet = new Simplemeet();
   historyMeet: SimplemeetHistory = new SimplemeetHistory();
+  initialState: any;
+  initialStateServi: any;
   constructor(
     private simpleMeetService: SimpleMeetService,
     private formBuilder: FormBuilder,
@@ -82,6 +86,8 @@ export class AgendamientoCitasComponent implements OnInit {
     private employeeService: EmployeeService,
     private sharedFuntions: FuntionsSharedService,
     private authService: AuthService,
+    private emailService: EmailService,
+
   ) { }
   ngOnInit(): void {
     this.createCols();
@@ -127,7 +133,7 @@ export class AgendamientoCitasComponent implements OnInit {
       }
     });
   }
-  
+
 
 
 
@@ -147,6 +153,7 @@ export class AgendamientoCitasComponent implements OnInit {
       dateEnd: ['', Validators.required],
       tools: ['', Validators.required],
     }, { validator: this.emailValidator("email") });
+    this.initialState = this.formCita.value;
   }
   get services() {
     return this.formCita.controls["services"] as FormArray;
@@ -206,7 +213,7 @@ export class AgendamientoCitasComponent implements OnInit {
     this.simpleMeetService.saveSimpleMeet(container).subscribe(res => {
       if (res != null) {
         this.messageService.add({ severity: 'success', detail: 'Registrado correctamente' });
-        this.formCita.reset();
+        this.formCita.reset(this.initialState);
         while (this.services.controls.length > 1) {
           this.deleteService(0);
         }
@@ -266,7 +273,7 @@ export class AgendamientoCitasComponent implements OnInit {
     console.log(this.selectedFather.seqsimplemeet);
     this.employeeService.getEmployessAssigned(this.selectedFather.seqsimplemeet, null).subscribe(res => {
       console.log('NO SE LLAMA O QUE ?', res)
-      
+
       res.forEach(item => {
         item.img = this.sharedFuntions.repair(item.img);
       })
@@ -316,16 +323,22 @@ export class AgendamientoCitasComponent implements OnInit {
             this.messageService.add({ severity: 'error', detail: 'Debe haber al menos un empleado asignado' });
           } else {
             this.simpleMeetService.updateSimpleMeet(item).subscribe(rest => {
-              if (rest) this.messageService.add({ severity: 'success', detail: 'Solicitud actualizada' });
-              this.chargeData(null);
+              if (rest) {
+                this.messageService.add({ severity: 'success', detail: 'Solicitud actualizada' });
+                this.sendEmailFromMeetsToUser(rest);
+                this.chargeData(null);
+              }
             });
           }
         })
       } else {
         this.getEmployesAndUpdate(item.seqsimplemeet, item);
         this.simpleMeetService.updateSimpleMeet(item).subscribe(rest => {
-          if (rest) this.messageService.add({ severity: 'success', detail: 'Solicitud actualizada' });
-          this.chargeData(null);
+          if (rest) {
+            this.messageService.add({ severity: 'success', detail: 'Solicitud actualizada' });
+            this.chargeData(null);
+            this.sendEmailFromMeetsToUser(rest);
+          }
         });
       }
 
@@ -394,7 +407,7 @@ export class AgendamientoCitasComponent implements OnInit {
     this.meetToUpdate = dataFrom;
   }
   cancelEdit() {
-    this.formCita.reset();
+    this.formCita.reset(this.initialState);
     while (this.services.controls.length > 1) {
       this.deleteService(0);
     }
@@ -455,6 +468,32 @@ export class AgendamientoCitasComponent implements OnInit {
         control.setErrors({ mustMatch: 'Correo incorrecto' });
       }
     }
+  }
+  cancelForm() {
+    this.formCita.reset(this.initialState);
+    while (this.services.controls.length >= 1) {
+      this.deleteService(0);
+    }
+    this.addService();
+    this.chargeData(null);
+    this.activeIndex1 = 0;
+  }
+  sendEmailFromMeetsToUser(data: Simplemeet) {
+    const resetBodyEmail: BasicEmailModel = new BasicEmailModel();
+    resetBodyEmail.emailTo = data.cliEmail;
+    resetBodyEmail.emailFrom = 'qtandres@hotmail.com';
+    resetBodyEmail.preheader = 'Estado solicitud';
+    resetBodyEmail.subject = 'Estado de la solicitud';
+    resetBodyEmail.username = data.cliName + "" + data.cliLastName;
+    resetBodyEmail.status = data.status;
+    resetBodyEmail.request = data.seqsimplemeet +"";
+    this.emailService.sendChangedRequestToUser(resetBodyEmail).then(rest => {
+      if (!rest.hasOwnProperty('message')) {
+        console.log("EMAIL EMIAL", rest);
+      } else {
+        this.messageService.add({ severity: 'error', detail: 'Error al enviar correo' });
+      }
+    });
   }
 }
 

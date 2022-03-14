@@ -195,7 +195,7 @@
                     <div class="p-field p-col-12 p-md-6">
                         <div class="p-inputgroup">
                             <span class="p-inputgroup-addon">
-                                <i class="pi pi-user"></i>
+                                <i class="pi pi-envelope"></i>
                             </span>
                             <span class="p-float-label">
                                 <input type="text" id="inputgroup" pInputText formControlName="email">
@@ -215,7 +215,7 @@
                     <div class="p-field p-col-12 p-md-6">
                         <div class="p-inputgroup">
                             <span class="p-inputgroup-addon">
-                                <i class="pi pi-user"></i>
+                                <i class="pi pi-phone"></i>
                             </span>
                             <span class="p-float-label">
                                 <input type="text" id="inputgroup" pInputText formControlName="phoneNumber"
@@ -255,6 +255,11 @@
             </form>
             <p-toolbar>
                 <div class="p-toolbar-group-left">
+                    <button pButton pRipple type="button" label="Cancelar" icon="pi pi-arrow-left"
+                            (click)="cancelForm()"
+                            class="p-button-raised p-button-rounded p-button-danger p-mr-2 p-mb-2 "
+                            style="float: right">
+                        </button>
                 </div>
                 <div class="p-toolbar-group-right">
                     <button pButton pRipple type="button" label="Crear" icon="pi pi-save"

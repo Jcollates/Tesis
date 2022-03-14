@@ -26,8 +26,8 @@ export class ServiceShowService {
     return this.http.get(url).pipe(map(res => res as CatServices )).toPromise();
   }
 
-  saveSolService(solProducts: SolService): Observable<any>{
+  saveSolService(solProducts: SolService): Observable<SolService>{
     let url = this.url + `/addSolServices`;
-    return this.http.post(url, solProducts).pipe(map(res => res as any ));
+    return this.http.post(url, solProducts).pipe(map(res => res as SolService ));
   }
 }

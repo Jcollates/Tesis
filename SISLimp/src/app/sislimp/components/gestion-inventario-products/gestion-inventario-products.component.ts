@@ -30,7 +30,6 @@ export class GestionInventarioProductsComponent implements OnInit {
   clonedProducts: { [s: string]: ProductModel; } = {};
   activeIndex1: number = 0;
   initialValues: any;
-
   constructor(
     private productService: ProductosService,
     private formBuilder: FormBuilder,
@@ -72,7 +71,7 @@ export class GestionInventarioProductsComponent implements OnInit {
       datebought: ['', Validators.required],
       provider: ['', Validators.required],
       description: ['', Validators.required]
-    });
+    }, {validator: this.sharedFunctions.validateProductByCode('codeprod')});
     this.initialValues = this.formProducts.value;
   }
 
@@ -161,5 +160,10 @@ export class GestionInventarioProductsComponent implements OnInit {
         this.chargeData(null);
       }
     })
+  }
+  cancelForm(){
+    this.formProducts.reset(this.initialValues);
+    this.chargeData(null);
+    this.activeIndex1 = 0;
   }
 }
