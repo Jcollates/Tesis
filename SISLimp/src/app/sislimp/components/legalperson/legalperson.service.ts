@@ -26,11 +26,15 @@ export class LegalpersonService {
     let url = this.url + '/legalperson';
     return this.http.get(url).pipe(map( res => res as LegalPerson[]));
   }
+  getLegalperonByDni(dni: string): Promise<LegalPerson>{
+    let url = this.url + `/legalpersonByDni/${dni}`;
+    return this.http.get(url).pipe(map( res => res as LegalPerson)).toPromise();
+  }
   createSelectItem(legalPersons: LegalPerson[]): SelectItem[] {
     const comboItems: SelectItem[] = [];
     comboItems.push({ label: 'Seleccione', value: 'null' });
     return comboItems.concat(legalPersons.map(value => ({
-      label: value.name + ' - ' + value.lastname,
+      label: value.seqlegalperson +'-'+ value.name + ' ' + value.lastname,
       value: value
     })));
   }

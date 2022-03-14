@@ -33,12 +33,13 @@ export class CatalogoServicesComponent implements OnInit {
   //edit table 
   activeIndex1: number = 0;
   clonedProducts: { [s: string]: CatServices; } = {};
+  initialState: any;
   constructor(
     private catalogueService: CataloguesService,
     private formBuilder: FormBuilder,
     private messageService: MessageService,
     private catService: CatServiceService,
-    private sharedFuntions: FuntionsSharedService,
+    public sharedFuntions: FuntionsSharedService,
   ) { }
 
   ngOnInit(): void {
@@ -83,7 +84,8 @@ export class CatalogoServicesComponent implements OnInit {
       hourprice: ['', Validators.required],
       meterprice: ['', Validators.required],
       description: ['', Validators.required]
-    });
+    }, {validator: this.sharedFuntions.validateCatService('codeService')});
+    this.initialState = this.formService.value;
   }
 
   validateForm() {
@@ -143,7 +145,7 @@ export class CatalogoServicesComponent implements OnInit {
     this.catService.saveServicesCat(container).subscribe(res => {
       if (res != null) {
         this.messageService.add({ severity: 'success', detail: 'Registrado correctamente' });
-        this.formService.reset();
+        this.formService.reset(this.initialState);
         this.fileUploades = [];
         this.activeIndex1 = 0;
         this.chargeData(null);
@@ -179,6 +181,12 @@ export class CatalogoServicesComponent implements OnInit {
         this.messageService.add({ severity: 'error', detail: 'Error al eliminar' });
       }
     })
+  }
+  cancelForm(){
+    this.formService.reset(this.initialState);
+    this.fileUploades = [];
+    this.chargeData(null);
+    this.activeIndex1 = 0;
   }
 
 

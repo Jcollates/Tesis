@@ -7,7 +7,12 @@ import { CataloguesService } from 'src/app/sharedAll/serviceShared/catalogues.se
 import { ProductosService } from 'src/app/sislimp/components/gestion-inventario-products/productos.service';
 import { ProductModel } from 'src/app/sislimp/shared/models/products.model';
 import { OdersService } from './oders.service';
+import { UserGeneralModel } from '../../../sharedAll/models/usergeneral.model';
+import { SimpleMeetService } from '../../../sislimp/components/agendamiento-citas/simple-meet.service';
+import { UsersGeneralService } from '../../../page/components/login/users-general.service';
+import { Simplemeet } from '../../../sislimp/shared/models/simplemeet.model';
 const REQUESTSTATUSCAT = 'REQUESTSTATUSCAT';
+const SERVICETYPE = 'SERVICETYPE';
 @Component({
   selector: 'app-orders',
   templateUrl: './orders.component.html',
@@ -19,25 +24,33 @@ export class OrdersComponent implements OnInit {
   comingProducts: PoductsQuantity[] = [];
   realPRoducts: ProductModel[] = [];
   solProduct: SolProduct[] = [];
+  meets: Simplemeet[] = [];
   drop: SelectItem[] = [];
+  serviceTypes: SelectItem[] = [];
   codeUser: number;
   constructor(
     private orderService: OdersService,
     private authService: AuthService,
     private productsService: ProductosService,
     private catalogueService: CataloguesService,
-  ) { 
-    this.codeUser =  this.authService.codeUser;
+    private simpleMeetService: SimpleMeetService,
+    private userService: UsersGeneralService,
+  ) {
+    this.codeUser = this.authService.codeUser;
   }
 
   ngOnInit(): void {
     this.getSolProducts();
     this.getCatalogues();
+    this.getUserExtraData();
   }
   getCatalogues() {
     this.catalogueService.getCataloguebyCodeCat(REQUESTSTATUSCAT).then(rest => {
       this.drop = this.catalogueService.constructModel(rest);
-    })
+    });
+    this.catalogueService.getCataloguebyCodeCat(SERVICETYPE).then(rest => {
+      this.serviceTypes = this.catalogueService.constructModel(rest);
+    });
   }
 
   transformFromJSON(value: string) {
@@ -53,24 +66,41 @@ export class OrdersComponent implements OnInit {
       return !duplicate;
     });
     for (let item of filtered) {
-      console.log("Code prod", item.codeProd);
       await this.productsService.getEspecifict(item.codeProd).then(rest => {
-         prods.push(rest);
+        prods.push(rest);
       });
     }
     return prods;
   }
   async getSolProducts() {
-    if(this.codeUser && this.codeUser !=0 ){
+    if (this.codeUser && this.codeUser != 0) {
       this.orderService.getSolProducts(this.codeUser).subscribe(rest => {
-        rest.forEach(async item => {
-          let productsQuantity: PoductsQuantity[] = [];
-          productsQuantity = [...productsQuantity, ...this.transformFromJSON(item.products)];
-          item.elementAsArray =  await this.getProductsRelated(productsQuantity);
-        });
-        this.solProduct = rest;
-        console.log(this.solProduct);
+        if (rest.length > 0) {
+          rest.forEach(async item => {
+            let productsQuantity: PoductsQuantity[] = [];
+            productsQuantity = [...productsQuantity, ...this.transformFromJSON(item.products)];
+            item.elementAsArray = await this.getProductsRelated(productsQuantity);
+          });
+          this.solProduct = rest.filter(item => item.status !== 'success' && item.status !== 'cancel');
+        }
+
       })
-    } 
+    }
+  }
+  async getUserExtraData() {
+    let userData: UserGeneralModel;
+    await this.userService.getUserExtraData(Number(localStorage.getItem('code'))).then(rest => {
+      if (rest) {
+        userData = rest;
+      }
+    });
+    this.simpleMeetService.getSimpleMeetsByname(userData.name, userData.lastname, userData.email).then(rest => {
+      console.log("CITAS", rest);
+      if(rest.length > 0) {
+        rest.forEach(item => item.elementAsArray = JSON.parse(item.addededServices));
+        this.meets = rest;
+      }
+      
+    })
   }
 }

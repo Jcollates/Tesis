@@ -166,7 +166,7 @@
                     <div class="p-field p-col-12 p-md-6">
                         <div class="p-inputgroup">
                             <span class="p-inputgroup-addon">
-                                <i class="pi pi-user"></i>
+                                <i class="pi pi-id-card"></i>
                             </span>
                             <span class="p-float-label">
                                 <input type="text" id="inputgroup" pInputText formControlName="dni" maxlength="10"
@@ -179,12 +179,15 @@
                             <small *ngIf="formEmployee.get('dni').errors?.required">
                                 Requerido
                             </small>
+                            <small *ngIf="formEmployee.get('dni').errors?.dni">
+                                {{formEmployee.get('dni').errors?.dni}}
+                            </small>
                         </small>
                     </div>
                     <div class="p-field p-col-12 p-md-6">
                         <div class="p-inputgroup">
                             <span class="p-inputgroup-addon">
-                                <i class="pi pi-id-card"></i>
+                                <i class="pi pi-user"></i>
                             </span>
                             <span class="p-float-label">
                                 <input type="text" id="inputgroup" pInputText formControlName="name">
@@ -201,7 +204,7 @@
                     <div class="p-field p-col-12 p-md-6">
                         <div class="p-inputgroup">
                             <span class="p-inputgroup-addon">
-                                <i class="pi pi-phone"></i>
+                                <i class="pi pi-user"></i>
                             </span>
                             <span class="p-float-label">
                                 <input type="text" id="inputgroup" pInputText formControlName="lastname">
@@ -252,6 +255,11 @@
                 </div>
                 <p-toolbar>
                     <div class="p-toolbar-group-left">
+                        <button pButton pRipple type="button" label="Cancelar" icon="pi pi-arrow-left"
+                            (click)="cancelForm()"
+                            class="p-button-raised p-button-rounded p-button-danger p-mr-2 p-mb-2 "
+                            style="float: right">
+                        </button>
                     </div>
                     <div class="p-toolbar-group-right">
                         <button pButton pRipple type="button" label="Agregar" icon="pi pi-save"

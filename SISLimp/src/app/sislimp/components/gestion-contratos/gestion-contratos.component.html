@@ -72,9 +72,10 @@
                         </td>
                         <td style="text-align: center;" NOWRAP>
                             <span class="p-column-title">Procesar</span>
-                            <p-dropdown [options]="dropStatus" [(ngModel)]="dataFrom.status" appendTo="body"></p-dropdown>
+                            <p-dropdown [options]="dropStatus" [(ngModel)]="dataFrom.status" appendTo="body">
+                            </p-dropdown>
                             &nbsp;
-                            <button pButton pRipple type="button" icon="pi pi-save"  (click)="fillDataToUpdate(dataFrom)"
+                            <button pButton pRipple type="button" icon="pi pi-save" (click)="fillDataToUpdate(dataFrom)"
                                 class="p-button-rounded p-button-raised p-button-success"></button>
                         </td>
                     </tr>
@@ -119,8 +120,7 @@
                             <span class="p-text-bold">Detalle del/los servicios: </span> <span
                                 class="p-text-italic">{{dataFrom.servicedetail}}</span>
                             <br>
-                            <span class="p-text-bold">Area: </span> <span
-                                class="p-text-italic">{{dataFrom.area}}</span>
+                            <span class="p-text-bold">Area: </span> <span class="p-text-italic">{{dataFrom.area}}</span>
                         </td>
                     </tr>
                 </ng-template>
@@ -130,10 +130,11 @@
             </p-table>
         </p-tabPanel>
         <p-tabPanel header="Contratos procesados">
-            <p-table [value]="dataFromdbProcesed" styleClass="p-datatable-customers p-datatable-gridlines p-datatable-striped"
-                [responsive]="true" [paginator]="true" [rows]="pageSize" dataKey="seqagree"
-                [rowsPerPageOptions]="[10,30,60]" [totalRecords]="sizeRecordsPro" [lazy]="true" [autoLayout]="true"
-                selectionMode="single" [columns]="colsProcessed" (onLazyLoad)="chargeData($event)">
+            <p-table [value]="dataFromdbProcesed"
+                styleClass="p-datatable-customers p-datatable-gridlines p-datatable-striped" [responsive]="true"
+                [paginator]="true" [rows]="pageSize" dataKey="seqagree" [rowsPerPageOptions]="[10,30,60]"
+                [totalRecords]="sizeRecordsPro" [lazy]="true" [autoLayout]="true" selectionMode="single"
+                [columns]="colsProcessed" (onLazyLoad)="chargeData($event)">
                 <ng-template pTemplate="caption">
                     Listado
                 </ng-template>
@@ -228,8 +229,7 @@
                             <span class="p-text-bold">Detalle del/los servicios: </span> <span
                                 class="p-text-italic">{{dataFrom.servicedetail}}</span>
                             <br>
-                            <span class="p-text-bold">Area: </span> <span
-                                class="p-text-italic">{{dataFrom.area}}</span>
+                            <span class="p-text-bold">Area: </span> <span class="p-text-italic">{{dataFrom.area}}</span>
                         </td>
                     </tr>
                 </ng-template>
@@ -249,10 +249,11 @@
                     <div class="p-field p-col-12 p-md-6">
                         <div class="p-inputgroup">
                             <span class="p-inputgroup-addon">
-                                <i class="pi pi-user"></i>
+                                <i class="pi pi-id-card"></i>
                             </span>
                             <span class="p-float-label">
-                                <input type="text" id="inputgroup" pInputText formControlName="ruc" (keypress)="sharedFuntions.enterOnlyNumbers($event)" maxlength="13">
+                                <input type="text" id="inputgroup" pInputText formControlName="ruc"
+                                    (keypress)="sharedFuntions.enterOnlyNumbers($event)" maxlength="13">
                                 <label for="inputgroup">Ruc</label>
                             </span>
                         </div>
@@ -266,7 +267,7 @@
                     <div class="p-field p-col-12 p-md-6">
                         <div class="p-inputgroup">
                             <span class="p-inputgroup-addon">
-                                <i class="pi pi-user"></i>
+                                <i class="fa fa-building"></i>
                             </span>
                             <span class="p-float-label">
                                 <input type="text" id="inputgroup" pInputText formControlName="name">
@@ -283,7 +284,7 @@
                     <div class="p-field p-col-12 p-md-6">
                         <div class="p-inputgroup">
                             <span class="p-inputgroup-addon">
-                                <i class="pi pi-id-card"></i>
+                                <i class="fa fa-male"></i>
                             </span>
                             <span class="p-float-label">
                                 <input type="text" id="inputgroup" pInputText disabled="true"
@@ -304,7 +305,7 @@
                     <div class="p-field p-col-12 p-md-6">
                         <div class="p-inputgroup">
                             <span class="p-inputgroup-addon">
-                                <i class="pi pi-phone"></i>
+                                <i class="pi pi-map-marker"></i>
                             </span>
                             <span class="p-float-label">
                                 <input type="text" id="inputgroup" pInputText formControlName="principaladdress">
@@ -321,7 +322,7 @@
                     <div class="p-field p-col-12 p-md-6">
                         <div class="p-inputgroup">
                             <span class="p-inputgroup-addon">
-                                <i class="pi pi-envelope "></i>
+                                <i class="pi pi-map-marker"></i>
                             </span>
                             <span class="p-float-label">
                                 <input type="text" id="inputgroup" pInputText formControlName="serviceAddress">
@@ -338,10 +339,11 @@
                     <div class="p-field p-col-12 p-md-6">
                         <div class="p-inputgroup">
                             <span class="p-inputgroup-addon">
-                                <i class="pi pi-envelope "></i>
+                                <i class="pi pi-phone "></i>
                             </span>
                             <span class="p-float-label">
-                                <input type="text" id="inputgroup" pInputText formControlName="phone" (keypress)="sharedFuntions.enterOnlyNumbers($event)" maxlength="10">
+                                <input type="text" id="inputgroup" pInputText formControlName="phone"
+                                    (keypress)="sharedFuntions.enterOnlyNumbers($event)" maxlength="10">
                                 <label for="inputgroup">Telefono de contacto</label>
                             </span>
                         </div>
@@ -356,7 +358,7 @@
                         <span for="inputgroup">Area de trabajo (metros)</span>
                         <div class="p-inputgroup">
                             <span class="p-inputgroup-addon">
-                                <i class="pi pi-lock"></i>
+                                <i class="fa fa-area-chart"></i>
                             </span>
                             <input type="text" id="inputgroup" pInputText formControlName="workarea">
                         </div>
@@ -391,7 +393,7 @@
                                         </label>
                                         <div class="p-inputgroup">
                                             <span class="p-inputgroup-addon">
-                                                <i class="pi pi-lock"></i>
+                                                <i class="pi pi-align-justify"></i>
                                             </span>
                                             <input type="text" pInputText formControlName="serviceName" />
                                             &nbsp;
@@ -438,14 +440,16 @@
                         </small>
                     </div>
                     <div class="p-field p-col-12 p-md-6">
+                        <span for="inputgroup">Subtotal</span>
                         <div class="p-inputgroup">
                             <span class="p-inputgroup-addon">
-                                <i class="pi pi-lock"></i>
+                                <i class="fa fa-usd"></i>
                             </span>
-                            <span class="p-float-label">
-                                <input type="text" id="inputgroup" pInputText formControlName="subtotal" (keypress)="sharedFuntions.enterOnlyNumbers($event)">
-                                <label for="inputgroup">Subtotal</label>
-                            </span>
+                            <!-- <input type="text" id="inputgroup" pInputText formControlName="subtotal"
+                                (keypress)="sharedFuntions.enterOnlyNumbers($event)"> -->
+                            <p-inputNumber formControlName="subtotal" inputId="locale-us" mode="decimal" locale="en-US"
+                                [minFractionDigits]="2" (keypress)="sharedFuntions.enterOnlyNumbers($event)">
+                            </p-inputNumber>
                         </div>
                         <small *ngIf="formcontracts.get('subtotal')?.errors && (formcontracts.get('subtotal')?.dirty ||
                         formcontracts.get('subtotal')?.touched)" class="p-error block">
@@ -455,15 +459,9 @@
                         </small>
                     </div>
                     <div class="p-field p-col-12 p-md-6">
-                        <div class="p-inputgroup">
-                            <span class="p-inputgroup-addon">
-                                <i class="pi pi-lock"></i>
-                            </span>
-                            <span class="p-float-label">
-                                <input type="text" id="inputgroup" pInputText formControlName="schedule">
-                                <label for="inputgroup">Horario pre establecido</label>
-                            </span>
-                        </div>
+                        <span for="inputgroup">Horario pre establecido</span>
+                        <p-dropdown [options]="dropTime" formControlName="schedule" appendTo="body">
+                        </p-dropdown>
                         <small *ngIf="formcontracts.get('schedule')?.errors && (formcontracts.get('schedule')?.dirty ||
                         formcontracts.get('schedule')?.touched)" class="p-error block">
                             <small *ngIf="formcontracts.get('schedule').errors?.required">
@@ -474,7 +472,7 @@
                     <div class="p-field p-col-12 p-md-12">
                         <div class="p-inputgroup">
                             <span class="p-inputgroup-addon">
-                                <i class="pi pi-globe"></i>
+                                <i class="pi pi-info-circle"></i>
                             </span>
                             <span class="p-float-label">
                                 <textarea id="float-input" rows="5" cols="30" pInputTextarea
@@ -496,10 +494,15 @@
                             class="p-button-raised p-button-rounded p-button-warning p-mr-2 p-mb-2 "
                             (click)="cancelEdit()" style="float: right">
                         </button>
+                        <button *ngIf="!fromEdit" pButton pRipple type="button" label="Cancelar" icon="pi pi-arrow-left"
+                            (click)="cancelForm()"
+                            class="p-button-raised p-button-rounded p-button-danger p-mr-2 p-mb-2 "
+                            style="float: right">
+                        </button>
                     </div>
                     <div class="p-toolbar-group-right">
-                        <button pButton pRipple type="button" [label]=" !fromEdit ? 'Agregar' : 'Guardar edición'" icon="pi pi-save"
-                            class="p-button-raised p-button-rounded p-button-success p-mr-2 p-mb-2 "
+                        <button pButton pRipple type="button" [label]=" !fromEdit ? 'Agregar' : 'Guardar edición'"
+                            icon="pi pi-save" class="p-button-raised p-button-rounded p-button-success p-mr-2 p-mb-2 "
                             (click)="validateForm()" style="float: right">
                         </button>
                     </div>
@@ -593,13 +596,14 @@
     </p-dialog>
     <p-dialog header="Asignacion de representante" [(visible)]="showLegalperson" [style]="{width: '50vw'}"
         [style]="{width: '50vw'}">
-        <app-legalperson (legalData)="getLegal($event)"></app-legalperson>
+        <app-legalperson (legalData)="getLegal($event)" (outLegal)="getOutLegal($event)">
+        </app-legalperson>
     </p-dialog>
     <p-dialog header="Empleados que laborarón" [(visible)]="showEmployesAssignedProccessed">
-        <p-table [value]="historyAgreement.elementsAsArray" styleClass="p-datatable-customers p-datatable-gridlines p-datatable-striped"
-            [responsive]="true" [paginator]="true" [rows]="pageSize" dataKey="seqemploy"
-            [rowsPerPageOptions]="[10,30,60]" [totalRecords]="sizeRecordsAsigned" [lazy]="true" [autoLayout]="true"
-            [columns]="colsEmployees">
+        <p-table [value]="historyAgreement.elementsAsArray"
+            styleClass="p-datatable-customers p-datatable-gridlines p-datatable-striped" [responsive]="true"
+            [paginator]="true" [rows]="pageSize" dataKey="seqemploy" [rowsPerPageOptions]="[10,30,60]"
+            [totalRecords]="sizeRecordsAsigned" [lazy]="true" [autoLayout]="true" [columns]="colsEmployees">
             <ng-template pTemplate="header" let-columns>
                 <tr>
                     <ng-container *ngFor="let col of columns">

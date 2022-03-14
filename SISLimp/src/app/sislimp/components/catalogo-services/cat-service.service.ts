@@ -19,6 +19,10 @@ export class CatServiceService {
     let url = this.url + '/catservices';
     return this.http.get(url).pipe(map(res => res as CatServices[] ));
   }
+  getCatServicesByCodeExist(code: string): Promise<CatServices>{
+    let url = this.url + `/getUniqueService/${code}`;
+    return this.http.get(url).pipe(map(res => res as CatServices )).toPromise();
+  }
   saveServicesCat(container: CatServices): Observable<any>{
     let url = this.url + '/createCatServices';
     return this.http.post(url, container).pipe(map( res => res as any));

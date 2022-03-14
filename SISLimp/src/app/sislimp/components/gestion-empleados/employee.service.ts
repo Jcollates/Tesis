@@ -41,6 +41,10 @@ export class EmployeeService {
     let url = this.url + `/getEmploy/${name}`;
     return this.http.get(url).pipe(map(res => res as Employee[] ));
   }
+  getEmployByDni(dni: string): Promise<Employee>{
+    let url = this.url + `/getEmployByDNI/${dni}`;
+    return this.http.get(url).pipe(map(res => res as Employee )).toPromise();
+  }
   deleteEmployee(id: number): Observable<any>{
     let url = this.url + `/employ/${id}`;
     return this.http.delete(url).pipe(map( res => res as any));

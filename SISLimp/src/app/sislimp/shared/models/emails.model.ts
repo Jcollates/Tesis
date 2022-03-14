@@ -8,6 +8,8 @@ export class BasicEmailModel {
     companyname: string;
     requestdate: string;
     supportemail: string;
+    status: string;
+    request: string
     constructor(){
         this.requestdate = new Date().toString();
         this.companyname = 'SisLimp Inc.';

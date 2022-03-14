@@ -36,7 +36,7 @@ export class CatalogoProductsComponent implements OnInit {
   constructor(
     private catproService: CatalogoProcutsService,
     private formBuilder: FormBuilder,
-    private sharedFuntions: FuntionsSharedService,
+    public sharedFuntions: FuntionsSharedService,
     private messageService: MessageService,
     private productService: ProductosService,
   ) { }
@@ -48,7 +48,7 @@ export class CatalogoProductsComponent implements OnInit {
   }
   createCols() {
     this.cols = [
-      { field: 'code', header: 'Código' },
+      { field: 'name', header: 'Código' },
       { field: 'name', header: 'Nombre' },
       { field: 'description', header: 'Descripción' },
       { field: 'precioventa', header: 'Precio venta' },
@@ -58,20 +58,35 @@ export class CatalogoProductsComponent implements OnInit {
   }
   chargeData(event: LazyLoadEvent) {
     this.catproService.getCatProducts().subscribe(rest => {
-      rest.forEach(item => {
-        item.img = this.sharedFuntions.repair(item.img);
-      })
-      this.dataFromdb = rest;
-      this.sizeRecords = rest.length;
+      if (rest.length > 0) {
+        rest.forEach(item => {
+          item.img = this.sharedFuntions.repair(item.img);
+        })
+        this.dataFromdb = rest;
+        this.sizeRecords = rest.length;
+        this.callDiferences(rest, this.pureProducts);
+      }
+
     });
 
+  }
+  callDiferences(arraOne: CatProducts[], arrayTwo: ProductModel[]) {
+    const items = this.getDifference(arraOne, arrayTwo);
+    this.productsToShow = this.productService.constructModel(items);
+
+  }
+  getDifference(array1: CatProducts[], array2: ProductModel[]) {
+    return array2.filter(object1 => {
+      return !array1.some(object2 => {
+        return object1.codeproduct === object2.codeproduct;
+      });
+    });
   }
 
   async uploadFileNew(event) {
     if (event) {
       this.myfiles = []
       this.fileUploades = event.files;
-      // console.log("fileUploades", this.fileUploades);
       const reader = new FileReader();
       this.newFile.type = event.files[0].type;
       this.newFile.name = event.files[0].name;
@@ -88,22 +103,25 @@ export class CatalogoProductsComponent implements OnInit {
   }
   getRealProducts() {
     this.productService.getProducts().subscribe(res => {
-      this.pureProducts = res;
-      this.productsToShow = this.productService.constructModel(res);
-      console.log(res);
+      if (res.length > 0) {
+        this.pureProducts = res;
+        //const items: ProductModel[] = [...res];
+        //this.productsToShow = this.productService.constructModel(items);
+      }
     });
   }
   populateFromWithData(codeProduct: string) {
-    const product = this.pureProducts.find(item => item.codeproduct === codeProduct);
-    this.formProduct.patchValue({
-      //codeProd: product.codeproduct,
-      name: product.name,
-      saleprize: product.saleprice,
-      description: product.description,
-    });
-
+    if (codeProduct !== '') {
+      const product = this.pureProducts.find(item => item.codeproduct === codeProduct);
+      this.formProduct.patchValue({
+        //codeProd: product.codeproduct,
+        name: product.name,
+        saleprize: product.saleprice,
+        description: product.description,
+      });
+    }
   }
-  onProductChange(event: any){
+  onProductChange(event: any) {
     this.populateFromWithData(event.value);
   }
 
@@ -192,6 +210,12 @@ export class CatalogoProductsComponent implements OnInit {
         this.messageService.add({ severity: 'error', detail: 'Error al eliminar' });
       }
     })
+  }
+  cancelForm() {
+    this.formProduct.reset(this.initialEstate);
+    this.fileUploades = [];
+    this.chargeData(null);
+    this.activeIndex1 = 0;
   }
 
 

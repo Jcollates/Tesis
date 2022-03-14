@@ -24,6 +24,7 @@ export class GestionEmpleadosComponent implements OnInit {
   //Form
   formEmployee: FormGroup = new FormGroup({});
   employeContainer: Employee = new Employee();
+  initialState: any;
   //img
   myfiles: any[] = [];
   fileUploades: any[] = [];
@@ -74,7 +75,7 @@ export class GestionEmpleadosComponent implements OnInit {
   getCatalogues() {
     this.catalogueService.getCataloguebyCodeCat(CODECAT).then(rest => {
       this.drop = this.catalogueService.constructModel(rest);
-    })
+    });
   }
   createForm() {
     this.formEmployee = this.formBuilder.group({
@@ -85,7 +86,8 @@ export class GestionEmpleadosComponent implements OnInit {
       birthday: ['', Validators.required],
       charge: ['', Validators.required],
       contractday: ['', Validators.required],
-    });
+    }, {validator: this.sharedFuntions.validateEmployeeDNI('dni')});
+    this.initialState = this.formEmployee.value;
   }
 
   validateForm() {
@@ -143,7 +145,7 @@ export class GestionEmpleadosComponent implements OnInit {
   saveForm(container: Employee) {
     this.employeService.saveEmployee(container).subscribe(res => {
       if (res != null) this.messageService.add({ severity: 'success', detail: 'Registrado correctamente' });
-      this.formEmployee.reset();
+      this.formEmployee.reset(this.initialState);
       this.fileUploades = [];
       this.chargeData(null);
       this.activeIndex1 = 0;
@@ -179,6 +181,12 @@ export class GestionEmpleadosComponent implements OnInit {
         this.messageService.add({ severity: 'error', detail: 'Error al eliminar' });
       }
     })
+  }
+  cancelForm(){
+    this.formEmployee.reset(this.initialState);
+    this.fileUploades = [];
+    this.chargeData(null);
+    this.activeIndex1 = 0;
   }
 
 }

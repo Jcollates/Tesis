@@ -35,8 +35,9 @@ export class GestionProvedoresComponent implements OnInit {
   dropCityTwo: CatalgogueItem;
   dropCityTwoProcesed: SelectItem[] = [];
   clonedProducts: { [s: string]: Provider; } = {};
+  initialState: any;
   constructor(
-    private prodicerService: ProviderService,
+    private providerService: ProviderService,
     private catalogueService: CataloguesService,
     private formBuilder: FormBuilder,
     private messageService: MessageService,
@@ -76,7 +77,8 @@ export class GestionProvedoresComponent implements OnInit {
       details: ['', Validators.required],
       paytype: ['', Validators.required],
       salername: ['', Validators.required]
-    }, {validator: this.sharedFunctions.emailValidator('email')});
+    }, { validators: [this.sharedFunctions.emailValidator('email'), this.sharedFunctions.validateProviderByRuc('dni')] });
+    this.initialState = this.formProvider.value;
   }
 
   validateForm() {
@@ -101,21 +103,23 @@ export class GestionProvedoresComponent implements OnInit {
   }
   saveForm(container: Provider) {
     // console.log('cotainer', container);
-    this.prodicerService.saveProvider(container).subscribe(res => {
-      if (res != null) this.messageService.add({ severity: 'success', detail: 'Registrado correctamente' });
-      this.formProvider.reset();
-      this.chargeData(null);
+    this.providerService.saveProvider(container).subscribe(res => {
+      if (res != null) {
+        this.messageService.add({ severity: 'success', detail: 'Registrado correctamente' });
+        this.formProvider.reset(this.initialState);
+        this.chargeData(null);
+      }
     })
   }
 
   async chargeData(event: LazyLoadEvent) {
-     await this.prodicerService.getProviders().then(rest => {
+    await this.providerService.getProviders().then(rest => {
       if (rest.length > 0) {
         console.log("rest", rest);
         this.dataFromdb = rest;
       }
     })
-    
+
   }
   async getCatalogues() {
     await this.catalogueService.getCataloguebyCodeCat(PROVINCECAT).then(rest => {
@@ -135,13 +139,13 @@ export class GestionProvedoresComponent implements OnInit {
       this.dropCity = this.catalogueService.constructModel(rest);
     })
   }
-  
+
 
   onRowEditInit(customer: Provider) {
     this.clonedProducts[customer.seqprovider] = { ...customer };
   }
   onRowEditSave(customer: Provider) {
-    this.prodicerService.updateProvider(customer).subscribe(rest => {
+    this.providerService.updateProvider(customer).subscribe(rest => {
       if (rest) {
         this.messageService.add({ severity: 'success', detail: 'Actualizado' });
         this.chargeData(null);
@@ -157,7 +161,7 @@ export class GestionProvedoresComponent implements OnInit {
     delete this.clonedProducts[customer.seqprovider];
   }
   deleteCustomerService(seqcustomer: any) {
-    this.prodicerService.deleteProvider(seqcustomer).subscribe(rest => {
+    this.providerService.deleteProvider(seqcustomer).subscribe(rest => {
       if (rest) {
         this.messageService.add({ severity: 'success', detail: 'Registro eliminado' });
         this.chargeData(null);
@@ -165,6 +169,11 @@ export class GestionProvedoresComponent implements OnInit {
         this.messageService.add({ severity: 'error', detail: 'Error al eliminar' });
       }
     })
+  }
+  cancelForm() {
+    this.formProvider.reset(this.initialState);
+    this.chargeData(null);
+    this.activeIndex = 0;
   }
 
 

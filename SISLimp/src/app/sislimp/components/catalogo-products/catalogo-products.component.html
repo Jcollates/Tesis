@@ -1,6 +1,6 @@
 <p-toast></p-toast>
 <div class="p-mb-3 p-text-italic">
-    <h3>Catalogo de productos</h3>
+    <h3>Catálogo de productos</h3>
 </div>
 <p-card>
     <p-tabView [(activeIndex)]="activeIndex1">
@@ -24,9 +24,9 @@
                 <ng-template pTemplate="body" let-dataFrom let-index="rowIndex" let-columns="columns"
                     let-editing="editing">
                     <tr [pEditableRow]="dataFrom">
-                        <td>
+                        <td NOWRAP>
                             <span class="p-column-title">Código</span>
-                            {{dataFrom.seqcatproduct}}
+                            {{dataFrom.codeproduct}}
                         </td>
                         <td>
                             <span class="p-column-title">Nombre</span>
@@ -145,7 +145,7 @@
                         <span for="inputgroup">Nombre</span>
                         <div class="p-inputgroup">
                             <span class="p-inputgroup-addon">
-                                <i class="pi pi-id-card"></i>
+                                <i class="fa fa-product-hunt"></i>
                             </span>
                             <input type="text" id="inputgroup" pInputText formControlName="name">
                         </div>
@@ -160,9 +160,12 @@
                         <span for="inputgroup">Precio venta</span>
                         <div class="p-inputgroup">
                             <span class="p-inputgroup-addon">
-                                <i class="pi pi-phone"></i>
+                                <i class="fa fa-usd"></i>
                             </span>
-                            <input type="text" id="inputgroup" pInputText formControlName="saleprize">
+                            <!-- <input type="text" id="inputgroup" pInputText formControlName="saleprize"> -->
+                            <p-inputNumber formControlName="saleprize" inputId="locale-us" mode="decimal" locale="en-US"
+                                [minFractionDigits]="2" (keypress)="sharedFuntions.enterOnlyNumbers($event)">
+                            </p-inputNumber>
                         </div>
                         <small *ngIf="formProduct.get('saleprize')?.errors && (formProduct.get('saleprize')?.dirty ||
                         formProduct.get('saleprize')?.touched)" class="p-error block">
@@ -175,7 +178,7 @@
                         <span for="inputgroup">Descripcion</span>
                         <div class="p-inputgroup">
                             <span class="p-inputgroup-addon">
-                                <i class="pi pi-globe"></i>
+                                <i class="pi pi pi-info-circle"></i>
                             </span>
                             <textarea id="float-input" rows="5" cols="30" pInputTextarea
                                 formControlName="description"></textarea>
@@ -191,6 +194,10 @@
             </form>
             <p-toolbar>
                 <div class="p-toolbar-group-left">
+                    <button pButton pRipple type="button" label="Cancelar" icon="pi pi-arrow-left"
+                        (click)="cancelForm()" class="p-button-raised p-button-rounded p-button-danger p-mr-2 p-mb-2 "
+                        style="float: right">
+                    </button>
                 </div>
                 <div class="p-toolbar-group-right">
                     <button pButton pRipple type="button" label="Agregar" icon="pi pi-save"

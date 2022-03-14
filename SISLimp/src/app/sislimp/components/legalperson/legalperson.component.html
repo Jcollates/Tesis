@@ -8,10 +8,11 @@
         <div class="p-field p-col-12 p-md-6">
             <div class="p-inputgroup">
                 <span class="p-inputgroup-addon">
-                    <i class="pi pi-user"></i>
+                    <i class="pi pi-id-card"></i>
                 </span>
                 <span class="p-float-label">
-                    <input type="text" id="inputgroup" pInputText formControlName="dni">
+                    <input type="text" id="inputgroup" pInputText formControlName="dni"
+                        (keypress)="sharedFuntions.enterOnlyNumbers($event)" maxlength="10">
                     <label for="inputgroup">Cédula</label>
                 </span>
             </div>
@@ -20,12 +21,16 @@
                 <small *ngIf="formLegalperson.get('dni').errors?.required">
                     Requerido
                 </small>
+                <small *ngIf="formLegalperson.get('dni').errors?.dni">
+                    {{formLegalperson.get('dni').errors?.dni}}
+                </small>
+                
             </small>
         </div>
         <div class="p-field p-col-12 p-md-6">
             <div class="p-inputgroup">
                 <span class="p-inputgroup-addon">
-                    <i class="pi pi-id-card"></i>
+                    <i class="pi pi-user"></i>
                 </span>
                 <span class="p-float-label">
                     <input type="text" id="inputgroup" pInputText formControlName="name">
@@ -42,7 +47,7 @@
         <div class="p-field p-col-12 p-md-6">
             <div class="p-inputgroup">
                 <span class="p-inputgroup-addon">
-                    <i class="pi pi-phone"></i>
+                    <i class="pi pi-user"></i>
                 </span>
                 <span class="p-float-label">
                     <input type="text" id="inputgroup" pInputText formControlName="lastname">
@@ -57,15 +62,12 @@
             </small>
         </div>
         <div class="p-field p-col-12 p-md-6">
-            <div class="p-inputgroup">
-                <span class="p-inputgroup-addon">
-                    <i class="pi pi-phone"></i>
-                </span>
-                <span class="p-float-label">
-                    <input type="text" id="inputgroup" pInputText formControlName="position">
-                    <label for="inputgroup">Posición</label>
-                </span>
-            </div>
+            <span class="p-float-label">
+                <p-dropdown [options]="drop" formControlName="position"></p-dropdown>
+
+                <!-- <input type="text" id="inputgroup" pInputText formControlName="position"> -->
+                <label for="inputgroup">Posición</label>
+            </span>
             <small *ngIf="formLegalperson.get('position')?.errors && (formLegalperson.get('position')?.dirty ||
             formLegalperson.get('position')?.touched)" class="p-error block">
                 <small *ngIf="formLegalperson.get('position').errors?.required">
@@ -76,7 +78,7 @@
         <div class="p-field p-col-12 p-md-6">
             <div class="p-inputgroup">
                 <span class="p-inputgroup-addon">
-                    <i class="pi pi-phone"></i>
+                    <i class="pi pi-map-marker"></i>
                 </span>
                 <span class="p-float-label">
                     <input type="text" id="inputgroup" pInputText formControlName="address">
@@ -96,7 +98,8 @@
                     <i class="pi pi-phone"></i>
                 </span>
                 <span class="p-float-label">
-                    <input type="text" id="inputgroup" pInputText formControlName="phone">
+                    <input type="text" id="inputgroup" pInputText formControlName="phone"
+                        (keypress)="sharedFuntions.enterOnlyNumbers($event)" maxlength="10">
                     <label for="inputgroup">Teléfono</label>
                 </span>
             </div>
@@ -111,12 +114,13 @@
 </form>
 <div class="p-field p-col-12 p-md-6">
     <h6>Seleccione si ya esta registrado</h6>
-    <p-dropdown [options]="options" [(ngModel)]="valueCombo" (onChange)="onChangeCombo($event)" appendTo="body"></p-dropdown>
+    <p-dropdown [options]="options" [(ngModel)]="valueCombo" (onChange)="onChangeCombo($event)" appendTo="body">
+    </p-dropdown>
 </div>
 <p-toolbar>
     <div class="p-toolbar-group-left">
-        <button pButton pRipple type="button" label="Cancelar" icon="pi pi-exclamation-triangle"
-            class="p-button-raised p-button-rounded p-button-warning p-mr-2 p-mb-2 "
+        <button pButton pRipple type="button" label="Cancelar" icon="pi pi-arrow-left"
+            class="p-button-raised p-button-rounded p-button-danger p-mr-2 p-mb-2" (click)="outLegalMethod()"
             style="float: right">
         </button>
     </div>

@@ -24,4 +24,20 @@ export class EmailService {
     let url = this.url + `/api/sendEmailNewGeneric`;
     return this.http.post(url, restorePassWord).pipe(map(res => res as any )).toPromise();
   }
+
+
+
+
+  sendNewRequestToUSER(restorePassWord: BasicEmailModel): Promise<any>{
+    let url = this.url + `/api/sendNewRequestToUSER`;
+    return this.http.post(url, restorePassWord).pipe(map(res => res as any )).toPromise();
+  }
+  sendNewRequestToAdmin(restorePassWord: BasicEmailModel): Promise<any>{
+    let url = this.url + `/api/sendNewRequestToAdmin`;
+    return this.http.post(url, restorePassWord).pipe(map(res => res as any )).toPromise();
+  }
+  sendChangedRequestToUser(restorePassWord: BasicEmailModel): Promise<any>{
+    let url = this.url + `/api/sendChangedRequestToUser`;
+    return this.http.post(url, restorePassWord).pipe(map(res => res as any )).toPromise();
+  }
 }

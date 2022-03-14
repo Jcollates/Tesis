@@ -3,6 +3,9 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MessageService, SelectItem } from 'primeng/api';
 import { LegalPerson } from '../../shared/models/legalperson.model';
 import { LegalpersonService } from './legalperson.service';
+import { FuntionsSharedService } from '../../../sharedAll/serviceShared/funtions-shared.service';
+import { CataloguesService } from '../../../sharedAll/serviceShared/catalogues.service';
+const CODECAT = 'CHARGECAT';
 
 @Component({
   selector: 'app-legalperson',
@@ -13,29 +16,47 @@ import { LegalpersonService } from './legalperson.service';
 export class LegalpersonComponent implements OnInit {
 
   @Output() legalData: EventEmitter<LegalData> = new EventEmitter();
+  @Output() outLegal: EventEmitter<boolean> = new EventEmitter();
+
+  
 
   formLegalperson: FormGroup = new FormGroup({});
   legalContainer: LegalPerson = new LegalPerson();
   valueCombo: LegalPerson = new LegalPerson();
   options: SelectItem[] = [];
   enableForm: boolean = true;
-  dataOut: LegalPerson = new LegalPerson()
+  dataOut: LegalPerson = new LegalPerson();
+  initialState: any;
+  drop: SelectItem[] = [];
   constructor(
     private formBuilder: FormBuilder,
     private messageService: MessageService,
-    private legalPersonService: LegalpersonService
+    private legalPersonService: LegalpersonService,
+    public sharedFuntions: FuntionsSharedService,
+    private catalogueService: CataloguesService,
+
+
   ) { }
 
   ngOnInit(): void {
     this.creteForm();
     this.getLegalPersons();
+    this.getCatalogues();
+  }
+
+
+
+  getCatalogues() {
+    this.catalogueService.getCataloguebyCodeCat(CODECAT).then(rest => {
+      this.drop = this.catalogueService.constructModel(rest);
+    });
   }
   prevalidate() {
     if (this.enableForm) {
       this.validateForm();
     } else {
       this.sendDataOut(this.dataOut);
-      this.formLegalperson.reset();
+      this.formLegalperson.reset(this.initialState);
     }
   }
   validateForm() {
@@ -62,13 +83,14 @@ export class LegalpersonComponent implements OnInit {
       position: ['', Validators.required],
       address: ['', Validators.required],
       phone: ['', Validators.required]
-    });
+    }, {validator: this.sharedFuntions.validateLegalPersonDNI('dni')});
+    this.initialState = this.formLegalperson.value;
   }
   saveForm(container: LegalPerson) {
     this.legalPersonService.saveLegalPerson(container).subscribe(res => {
       if (res != null) {
         this.messageService.add({ severity: 'success', detail: 'Registrado correctamente' });
-        this.formLegalperson.reset();
+        this.formLegalperson.reset(this.initialState);
         this.sendDataOut(res);
       }
     })
@@ -101,17 +123,11 @@ export class LegalpersonComponent implements OnInit {
       }
     }
   }
-
-  // this.formLegalperson.patchValue({
-  //   dni: data.dni,
-  //   name:  data.name,
-  //   lastname: data.lastname,
-  //   position: data.position,
-  //   address: data.homeadrees,
-  //   phone: data.phonenumber
-  // })
-
-
+  outLegalMethod(){
+    this.outLegal.emit(true);
+    this.formLegalperson.reset(this.initialState);
+    this.valueCombo = new LegalPerson();
+  }
 
 }
 export class LegalData {

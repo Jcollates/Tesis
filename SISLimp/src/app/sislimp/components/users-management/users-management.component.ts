@@ -262,7 +262,11 @@ export class UsersManagementComponent implements OnInit {
       } else {
         this.messageService.add({ severity: 'error', detail: 'Error al enviar correo' });
       }
-    })
-
+    });
+  }
+  cancelForm(){
+    this.formUser.reset(this.initialValues);
+    this.getUsers(null);
+    this.activeIndex1 = 0;
   }
 }
