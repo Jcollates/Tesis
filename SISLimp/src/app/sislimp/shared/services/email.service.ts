@@ -40,4 +40,9 @@ export class EmailService {
     let url = this.url + `/api/sendChangedRequestToUser`;
     return this.http.post(url, restorePassWord).pipe(map(res => res as any )).toPromise();
   }
+
+  sendContactForm(contactForm: BasicEmailModel): Promise<any>{
+    let url = this.url + `/api/sendContactForm`;
+    return this.http.post(url, contactForm).pipe(map(res => res as any )).toPromise();
+  }
 }

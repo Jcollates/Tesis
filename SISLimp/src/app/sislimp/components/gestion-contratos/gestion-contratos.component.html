@@ -510,12 +510,11 @@
             </form>
         </p-tabPanel>
     </p-tabView>
-    <p-dialog header="Asignacion de empleado" [(visible)]="showEmployes">
+    <p-dialog header="Asignacion de empleado" [(visible)]="showEmployes" modal="true" (onHide)="onHideToAssig($event)">
         <p-table [value]="employesToAssig" styleClass="p-datatable-customers p-datatable-gridlines p-datatable-striped"
             [responsive]="true" [paginator]="true" [rows]="pageSize" dataKey="seqemploy"
             [rowsPerPageOptions]="[10,30,60]" [totalRecords]="sizeRecordsToAsig" [lazy]="true" [autoLayout]="true"
-            [columns]="colsEmployees" (onRowSelect)="onRowSelect($event)" (onLazyLoad)="getEmployees($event)"
-            selectionMode="single">
+            [columns]="colsEmployees" (onLazyLoad)="getEmployees($event)" [(selection)]="selectdEmployes">
             <ng-template pTemplate="caption">
                 Listado
             </ng-template>
@@ -550,7 +549,7 @@
                 No hay registros que mostrar
             </ng-template>
         </p-table>
-        <p-toolbar>
+        <!-- <p-toolbar>
             <div style="text-align: center;">
                 <button pButton pRipple type="button" label="Asignar selección" icon="pi pi-save"
                     (click)="saveAssigment()" class="p-button-raised p-button-rounded p-button-success p-mr-2 p-mb-2 "
@@ -558,18 +557,34 @@
                 </button>
             </div>
 
+        </p-toolbar> -->
+        <p-toolbar>
+            <div class="p-toolbar-group-left">
+                <button pButton pRipple type="button" label="Cerrar" (click)="cancelAssigned()" icon="pi pi-times"
+                    class="p-button-raised p-button-rounded p-button-danger p-mr-2 p-mb-2 " style="float: center">
+                </button>
+            </div>
+            <div class="p-toolbar-group-right">
+                <button pButton pRipple type="button" label="Asignar selección" icon="pi pi-save"
+                    (click)="saveAssigment()" class="p-button-raised p-button-rounded p-button-success p-mr-2 p-mb-2 "
+                    style="float: center">
+                </button>
+            </div>
         </p-toolbar>
     </p-dialog>
-    <p-dialog header="Empleados asignados" [(visible)]="showEmployesAssigned">
+    <p-dialog header="Empleados asignados" [(visible)]="showEmployesAssigned" modal="true" (onHide)="onHide($event)">
         <p-table [value]="employesAssigned" styleClass="p-datatable-customers p-datatable-gridlines p-datatable-striped"
             [responsive]="true" [paginator]="true" [rows]="pageSize" dataKey="seqemploy"
             [rowsPerPageOptions]="[10,30,60]" [totalRecords]="sizeRecordsAsigned" [lazy]="true" [autoLayout]="true"
-            [columns]="colsEmployees">
+            [columns]="colsEmployees" [(selection)]="selectedEmployessRemove">
             <ng-template pTemplate="caption">
                 Listado
             </ng-template>
             <ng-template pTemplate="header" let-columns>
                 <tr>
+                    <th style="width: 3rem">
+                        <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                    </th>
                     <ng-container *ngFor="let col of columns">
                         <th>
                             {{col.header}}
@@ -579,6 +594,9 @@
             </ng-template>
             <ng-template pTemplate="body" let-dataFrom let-index="rowIndex" let-columns="columns">
                 <tr>
+                    <td>
+                        <p-tableCheckbox [value]="dataFrom"></p-tableCheckbox>
+                    </td> 
                     <td>
                         <span class="p-column-title">Nombre</span>
                         {{dataFrom.name}} - {{dataFrom.lastname}}
@@ -593,6 +611,19 @@
                 No hay registros que mostrar
             </ng-template>
         </p-table>
+        <p-toolbar>
+            <div class="p-toolbar-group-left">
+                <button pButton pRipple type="button" label="Cerrar" icon="pi pi-times"
+                    (click)="cancelEmployesAssigned()"
+                    class="p-button-raised p-button-rounded p-button-danger p-mr-2 p-mb-2 " style="float: center">
+                </button>
+            </div>
+            <div class="p-toolbar-group-right">
+                <button pButton pRipple type="button" label="Remover" icon="pi pi-trash" (click)="removeEmployees()"
+                    class="p-button-raised p-button-rounded p-button-warning p-mr-2 p-mb-2 " style="float: center">
+                </button>
+            </div>
+        </p-toolbar>
     </p-dialog>
     <p-dialog header="Asignacion de representante" [(visible)]="showLegalperson" [style]="{width: '50vw'}"
         [style]="{width: '50vw'}">

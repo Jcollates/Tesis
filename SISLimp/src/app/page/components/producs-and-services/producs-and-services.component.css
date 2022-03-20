@@ -1,3 +1,11 @@
+/* i {
+  display: inline-block;
+  height: 200px;
+  width: 200px;
+  background-image: url(../../../../assets/foricons/productos.png);
+} */
+
+
 .site-header.inicio {
     background-image: url(../../../../assets/picturespage/imagetop.svg);
     background-position: center center;

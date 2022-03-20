@@ -95,7 +95,7 @@
                                     <span class="input-group-text ">
                                         <i class="fa fa-envelope text-muted"></i>
                                     </span>
-                                    <input id="email" type="email" name="email" placeholder="Correo electrónico"
+                                    <input id="email" type="text" name="email" placeholder="Correo electrónico"
                                         formControlName="email" class="form-control bg-white border-left-0 border-md">
                                 </div>
                                 <small *ngIf="formNewUser.get('email')?.errors && (formNewUser.get('email')?.dirty ||
@@ -105,6 +105,9 @@
                                     </small>
                                     <small *ngIf="formNewUser.get('email').errors?.userNameFound">
                                         Correo electrónico existente
+                                    </small>
+                                    <small *ngIf="formNewUser.get('email').errors?.mustMatch">
+                                        Correo electrónico incorrecto
                                     </small>
                                 </small>
                             </div>
@@ -199,7 +202,7 @@
                                     <small *ngIf="formNewUser.controls.passwordConfirmation.errors?.required">
                                         Requerido
                                     </small>
-                                    <small *ngIf="formNewUser.controls.passwordConfirmation.errors?.mustMatch">Las
+                                    <small *ngIf="formNewUser.controls.passwordConfirmation.errors?.mustMatchs">Las
                                         contraseñas
                                         deben coincidir</small>
                                 </small>
@@ -245,7 +248,8 @@
         </div>
     </div>
 </section>
-<p-dialog header="Cambiar contraseña" [(visible)]="showChangePass" [style]="{width: '40vw'}" modal="true" (onHide)="onHide($event)">
+<p-dialog header="Cambiar contraseña" [(visible)]="showChangePass" [style]="{width: '40vw'}" modal="true"
+    (onHide)="onHide($event)">
     <form [formGroup]="formPassword" (ngSubmit)="onPasschanged()">
         <div class="row">
             <div class="col-12">
@@ -277,7 +281,7 @@
                     <small *ngIf="formPassword.controls.repassword.errors?.required">
                         Requerido
                     </small>
-                    <small *ngIf="formPassword.controls.repassword.errors?.mustMatch">Las
+                    <small *ngIf="formPassword.controls.repassword.errors?.mustMatchs">Las
                         contraseñas
                         deben coincidir</small>
                 </small>
@@ -332,8 +336,8 @@
         </div>
     </form>
 </p-dialog>
-<p-dialog header="Contraseña temporal generada" [(visible)]="confirmDialog" [modal]="true" [style]="{width: '50vw'}" [draggable]="false"
-    [resizable]="false">
+<p-dialog header="Contraseña temporal generada" [(visible)]="confirmDialog" [modal]="true" [style]="{width: '50vw'}"
+    [draggable]="false" [resizable]="false">
     <p class="p-m-0">
         Tu contraseña ha sido reestablecida, te llegará un correo con la nueva contraseña temporal para que
         puedas accerder al sistema y crear una nueva.

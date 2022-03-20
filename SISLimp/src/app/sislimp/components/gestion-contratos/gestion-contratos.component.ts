@@ -68,12 +68,14 @@ export class GestionContratosComponent implements OnInit {
   showEmployesAssignedProccessed: boolean = false;
   historyAgreement: AgreementHistory = new AgreementHistory();
   initialState: any;
+
+  selectedEmployessRemove: Employee[] = [];
   constructor(
     private formBuilder: FormBuilder,
     private catalogueService: CataloguesService,
     private messageService: MessageService,
     private agreeService: AgreementService,
-    private emplyeeservice: EmployeeService,
+    private employeeservice: EmployeeService,
     public sharedFuntions: FuntionsSharedService,
     private legalPersonService: LegalpersonService,
   ) { }
@@ -122,7 +124,7 @@ export class GestionContratosComponent implements OnInit {
     this.showEmployesAssignedProccessed = true;
   }
   getEmployees(event: LazyLoadEvent) {
-    this.emplyeeservice.getEmployesToBesAssigned().subscribe(res => {
+    this.employeeservice.getEmployesToBesAssigned().subscribe(res => {
       res.forEach(item => {
         item.img = this.sharedFuntions.repair(item.img);
       })
@@ -131,7 +133,7 @@ export class GestionContratosComponent implements OnInit {
     })
   }
   getEmployeesAssigned() {
-    this.emplyeeservice.getEmployessAssigned(null, this.selectedFather.seqagree).subscribe(res => {
+    this.employeeservice.getEmployessAssigned(null, this.selectedFather.seqagree).subscribe(res => {
       res.forEach(item => {
         item.img = this.sharedFuntions.repair(item.img);
       })
@@ -154,8 +156,8 @@ export class GestionContratosComponent implements OnInit {
       this.showLegalperson = false;
     }
   }
-  getOutLegal(event: any){
-    if(event){
+  getOutLegal(event: any) {
+    if (event) {
       this.showLegalperson = false;
     }
   }
@@ -221,7 +223,7 @@ export class GestionContratosComponent implements OnInit {
     console.log("this.item)", item);
     if (item.status != 'inactive') {
       if (item.status == 'active') {
-        this.emplyeeservice.getEmployessAssigned(null, item.seqagree).subscribe(res => {
+        this.employeeservice.getEmployessAssigned(null, item.seqagree).subscribe(res => {
           if (res.length <= 0) {
             this.messageService.add({ severity: 'error', detail: 'Debe haber al menos un empleado asignado' });
           } else {
@@ -243,7 +245,7 @@ export class GestionContratosComponent implements OnInit {
     }
   }
   getEmployesAndUpdate(seqagree: number, meet: Agreement) {
-    this.emplyeeservice.getEmployessAssigned(null, seqagree).subscribe(rest => {
+    this.employeeservice.getEmployessAssigned(null, seqagree).subscribe(rest => {
       if (rest) {
         this.saveHistory(rest, meet);
         rest.forEach(item => {
@@ -252,7 +254,7 @@ export class GestionContratosComponent implements OnInit {
           item.endassigmentdate = null;
           item.seqmeet = null;
           item.seqcontractassig = null;
-          this.emplyeeservice.updateEmployee(item).subscribe(() => console.log('employee removed'));
+          this.employeeservice.updateEmployee(item).then(() => console.log('employee removed'));
         });
       }
     })
@@ -371,22 +373,30 @@ export class GestionContratosComponent implements OnInit {
   saveAssigment() {
     if (this.selectdEmployes.length > 0) {
       this.selectdEmployes.forEach(item => {
-        this.emplyeeservice.updateEmployee(item).subscribe(update => {
+
+        item.assigmentdayte = this.selectedFather.datestart;
+        item.endassigmentdate = this.selectedFather.dateend;
+        item.seqcontractassig = this.selectedFather.seqagree;
+
+        this.employeeservice.updateEmployee(item).then(update => {
           if (update) this.messageService.add({ severity: 'success', detail: 'Empleado asignado' })
           else this.messageService.add({ severity: 'error', detail: 'No se logro asignar' });
-          this.getEmployeesAssigned();
-          this.getEmployees(null)
-          this.showEmployes = false;
-        })
-      })
+
+        });
+      });
+
+      this.getEmployeesAssigned();
+      this.getEmployees(null)
+      this.showEmployes = false;
+
     } else {
       this.messageService.add({ severity: 'error', detail: 'Seleccione al menos un empleado' });
     }
 
   }
   onRowSelectFather(event: Agreement) {
-    // console.log(event);
     this.selectedFather = event;
+    this.getEmployees(null);
   }
 
   // for edit 
@@ -443,7 +453,7 @@ export class GestionContratosComponent implements OnInit {
   deleteService(serviceIndex: number) {
     this.services.removeAt(serviceIndex);
   }
-  cancelForm(){
+  cancelForm() {
     this.formcontracts.reset(this.initialState);
     while (this.services.controls.length >= 1) {
       this.deleteService(0);
@@ -451,5 +461,40 @@ export class GestionContratosComponent implements OnInit {
     this.addService();
     this.chargeData(null);
     this.activeIndex1 = 0;
+  }
+  cancelAssigned() {
+    this.showEmployes = false;
+    this.selectdEmployes = [];
+  }
+  cancelEmployesAssigned() {
+    this.showEmployesAssigned = false;
+    this.selectedEmployessRemove = [];
+  }
+  removeEmployees() {
+    if (this.selectedEmployessRemove.length > 0) {
+      this.selectedEmployessRemove.forEach(item => {
+        item.assigmentdayte = null;
+        item.endassigmentdate = null;
+        item.seqmeet = null;
+        item.seqcontractassig = null;
+        this.employeeservice.updateEmployee(item).then(rest => {
+          if (rest) {
+            this.messageService.add({ severity: 'success', detail: 'Empleado(s) removido(s)' });
+            this.getEmployeesAssigned();
+            this.getEmployees(null);
+          }
+        });
+      });
+    } else {
+      this.messageService.add({ severity: 'error', detail: 'Debe seleccionar al menos un empleado' });
+    }
+
+
+  }
+  onHide(event: any) {
+    this.selectedEmployessRemove = [];
+  }
+  onHideToAssig(event: any) {
+    this.selectdEmployes = [];
   }
 }
