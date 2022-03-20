@@ -9,7 +9,10 @@ export class BasicEmailModel {
     requestdate: string;
     supportemail: string;
     status: string;
-    request: string
+    request: string;
+    message: string;
+    contactEmail: string
+    name: string;
     constructor(){
         this.requestdate = new Date().toString();
         this.companyname = 'SisLimp Inc.';

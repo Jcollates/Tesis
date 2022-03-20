@@ -7,8 +7,8 @@ export class Agreement{
     principallocation: string;
     phone: string;
     type: string;
-    datestart: string;
-    dateend: string;
+    datestart: Date;
+    dateend: Date;
     schedule: string;
     servicedetail: string;
     subtotal: number;

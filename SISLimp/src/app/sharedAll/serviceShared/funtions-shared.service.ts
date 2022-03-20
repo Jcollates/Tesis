@@ -51,6 +51,7 @@ export class FuntionsSharedService {
         return;
       }
       if (/^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/.test(control?.value)) {
+        console.log("HEHE");
         control.setErrors(null);
       } else {
         control.setErrors({ mustMatch: 'Correo incorrecto' });

@@ -98,8 +98,11 @@ export class LoginComponent implements OnInit {
       passwordConfirmation: ['', Validators.required],
       conditions: ['', Validators.required]
     }, {
-      validators: [this.MustMatch("password", "passwordConfirmation"),
-      this.sharedFuntions.validateUsername('email')]
+      validators: [
+        this.MustMatch("password", "passwordConfirmation"),
+        this.sharedFuntions.emailValidator('email'),
+        this.sharedFuntions.validateUsername('email'), 
+      ]
     });
     this.formForgotPassword = this.formBuilder.group({
       username: ['', Validators.required]
@@ -174,18 +177,17 @@ export class LoginComponent implements OnInit {
       const control = formGroup.controls[controlName];
       const matchingControl = formGroup.controls[matchingControlName];
 
-      if (matchingControl.errors && !matchingControl.errors.mustMatch) {
+      if (matchingControl.errors && !matchingControl.errors.mustMatchs) {
         return;
       }
       if (control.value !== matchingControl.value) {
-        matchingControl.setErrors({ mustMatch: true });
+        matchingControl.setErrors({ mustMatchs: true });
       } else {
         matchingControl.setErrors(null);
       }
     }
   }
   onSaveUser() {
-    console.log(this.formNewUser.value);
     this.formNewUser.markAllAsTouched();
     if (!this.formNewUser.valid) {
       this.messageService.add({ severity: 'error', detail: 'Formulario imcompleto' });

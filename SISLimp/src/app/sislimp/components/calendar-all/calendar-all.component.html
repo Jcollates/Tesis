@@ -4,10 +4,6 @@
 <p-card>
     <p-tabView>
         <p-tabPanel header="Vista general">
-            <div class="card-header">
-                Vista general
-            </div>
-            <br>
             <div>
                 <nz-calendar [nzDateCell]="dateCellTpl" [(ngModel)]="date" [(nzMode)]="mode"
                     (nzPanelChange)="panelChange($event)">
@@ -15,14 +11,16 @@
                 <ng-template #dateCellTpl let-date>
                     <ul>
                         <ng-container *ngFor="let meet of meets">
-                            <li *ngIf="meet.dateService == date.toISOString() || meet.dateEnd == date.toISOString() " class="meetstyle">
+                            <li *ngIf="meet.dateService == date.toISOString() || meet.dateEnd == date.toISOString() "
+                                class="meetstyle">
                                 <span> Cita: {{meet.seqsimplemeet}}</span>
                                 <br>
                                 <span> Cliente: {{meet.cliName}} {{meet.cliLastName}} </span>
                             </li>
                         </ng-container>
                         <ng-container *ngFor="let contract of contracts">
-                            <li *ngIf="contract.datestart == date.toISOString() || contract.dateend == date.toISOString() " class="contractstyle">
+                            <li *ngIf="contract.datestart == date.toISOString() || contract.dateend == date.toISOString() "
+                                class="contractstyle" (click)="detailContract(contract)">
                                 <span> Contrato: {{contract.seqagree}}</span>
                                 <br>
                                 <span> Cliente: {{contract.name}}</span>
@@ -31,68 +29,81 @@
                     </ul>
                 </ng-template>
             </div>
-        </p-tabPanel>
-        <!-- <p-tabPanel header="Lista de horarios">
-            <p-table [value]="dataFromdb" styleClass="p-datatable-customers p-datatable-gridlines p-datatable-striped"
-                [responsive]="true" [paginator]="true" [rows]="pageSize" dataKey="code"
-                [rowsPerPageOptions]="[10,30,60]" [totalRecords]="sizeRecords" [lazy]="true" [autoLayout]="true"
-                [columns]="cols">
-                <ng-template pTemplate="caption">
-                    Listado
-                </ng-template>
-                <ng-template pTemplate="header" let-columns>
-                    <tr>
-                        <ng-container *ngFor="let col of columns">
-                            <th>
-                                {{col.header}}
-                            </th>
+            <p-dialog header="Detalle" [(visible)]="showContractDetail" [modal]="true" [responsive]="true"
+                [style]="{width: '40vw'}">
+                <div class="p-grid p-fluid">
+                    <div class="p-col-12 p-md-2">
+                        <span> <b style="font-weight: bold; font-style: italic; color: #1E65AE;">Contrato: </b></span>
+                    </div>
+                    <div class="p-col-12 p-md-10">
+                        <span>{{contractDetail.seqagree}}</span>
+                    </div>
+                    <div class="p-col-12 p-md-2">
+                        <span> <b style="font-weight: bold; font-style: italic; color: #1E65AE;">Lugar: </b></span>
+                    </div>
+                    <div class="p-col-12 p-md-10">
+                        <span>{{contractDetail.location}}</span>
+                    </div>
+                    <div class="p-col-12 p-md-2">
+                        <span> <b style="font-weight: bold; font-style: italic; color: #1E65AE;">Servicios: </b></span>
+                    </div>
+                    <div class="p-col-12 p-md-10">
+                        <span>
+                            <ng-container *ngFor="let item of contractDetail.elementAsArray">
+                                <b style="color: #009b40;">Tipo:</b> {{item.typeService |selectedItemPipe:serviceTypes}}
+                                <br>
+                                <b style="color: #009b40;">Nombre:</b> {{item.serviceName}}
+                                <br>
+                            </ng-container>
+                        </span>
+                    </div>
+                    <div class="p-col-12 p-md-2">
+                        <span> <b style="font-weight: bold; font-style: italic; color: #1E65AE;">Fecha de inicio:
+                            </b></span>
+                    </div>
+                    <div class="p-col-12 p-md-10">
+                        <span>{{contractDetail.datestart}}</span>
+                    </div>
+                    <div class="p-col-12 p-md-2">
+                        <span> <b style="font-weight: bold; font-style: italic; color: #1E65AE;">Fecha de finalización:
+                            </b></span>
+                    </div>
+                    <div class="p-col-12 p-md-10">
+                        <span>{{contractDetail.dateend}}</span>
+                    </div>
+                    <div class="p-col-12 p-md-2">
+                        <span> <b style="font-weight: bold; font-style: italic; color: #1E65AE;">Horario: </b></span>
+                    </div>
+                    <div class="p-col-12 p-md-10">
+                        <span>{{contractDetail.schedule}}</span>
+                    </div>
+                    <div class="p-col-12 p-md-2">
+                        <span> <b style="font-weight: bold; font-style: italic; color: #1E65AE;">Empleados: </b></span>
+                    </div>
+                    <div class="p-col-12 p-md-10">
+                        <ng-container *ngFor="let item of employesAssigned">
+                            <span>{{item.name}} {{item.lastname}} - {{item.seqemploy}}</span>
+                            <br>
                         </ng-container>
-                    </tr>
+                    </div>
+                    <div class="p-col-12 p-md-2">
+                        <span> <b style="font-weight: bold; font-style: italic; color: #1E65AE;">Cliente: </b></span>
+                    </div>
+                    <div class="p-col-12 p-md-10">
+                        <span>{{contractDetail.name}}</span>
+                    </div>
+                    <div class="p-col-12 p-md-2">
+                        <span> <b style="font-weight: bold; font-style: italic; color: #1E65AE;">Teléfono: </b></span>
+                    </div>
+                    <div class="p-col-12 p-md-10">
+                        <span>{{contractDetail.phone}}</span>
+                    </div>
+                </div>
+                <ng-template pTemplate="footer">
+                    <p-button icon="pi pi-check" (click)="showContractDetail=false" label="Ok"
+                        styleClass="p-button-text"></p-button>
                 </ng-template>
-                <ng-template pTemplate="body" let-dataFrom let-index="rowIndex" let-columns="columns">
-                    <tr>
-                        <td>
-                            <span class="p-column-title">Código cita</span>
-                            {{dataFrom.code}}
-                        </td>
-                        <td>
-                            <span class="p-column-title">Código contrato</span>
-                            {{dataFrom.contractCode}}
-                        </td>
-                        <td>
-                            <span class="p-column-title">Código empleado</span>
-                            {{dataFrom.employeecode}}
-                        </td>
-                        <td>
-                            <span class="p-column-title">Día</span>
-                            {{dataFrom.day}}
-                        </td>
-                        <td>
-                            <span class="p-column-title">Mes</span>
-                            {{dataFrom.month}}
-                        </td>
-                        <td>
-                            <span class="p-column-title">Horario</span>
-                            {{dataFrom.schedule}}
-                        </td>
-                        <td>
-                            <span class="p-column-title">Tipo servicio</span>
-                            {{dataFrom.typeservice}}
-                        </td>
-                        <td>
-                            <span class="p-column-title">Materiales</span>
-                            {{dataFrom.tools}}
-                        </td>
-                        <td>
-                            <span class="p-column-title">Estado</span>
-                            {{dataFrom.status}}
-                        </td>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="emptymessage">
-                    No hay registros que mostrar
-                </ng-template>
-            </p-table>
-        </p-tabPanel> -->
+            </p-dialog>
+        </p-tabPanel>
     </p-tabView>
 </p-card>

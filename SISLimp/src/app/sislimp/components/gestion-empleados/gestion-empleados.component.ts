@@ -157,7 +157,7 @@ export class GestionEmpleadosComponent implements OnInit {
     this.clonedProducts[customer.seqemploy] = { ...customer };
   }
   onRowEditSave(customer: Employee) {
-    this.employeService.updateEmployee(customer).subscribe(rest => {
+    this.employeService.updateEmployee(customer).then(rest => {
       if (rest) {
         this.messageService.add({ severity: 'success', detail: 'Actualizado' });
         this.chargeData(null);

@@ -25,9 +25,9 @@ export class EmployeeService {
     return this.http.post(url, container).pipe(map( res => res as any));
 
   }
-  updateEmployee(container: Employee): Observable<any>{
+  updateEmployee(container: Employee): Promise<any>{
     let url = this.url + '/updatemeploy';
-    return this.http.put(url, container).pipe(map( res => res as any));
+    return this.http.put(url, container).pipe(map( res => res as any)).toPromise();
   }
   getEmployessAssigned(seqmeet: number, seqcontract: number): Observable<Employee[]>{
     let url = this.url + `/assignedEmploy/${seqmeet ? seqmeet : null}/${seqcontract ? seqcontract : null}`;

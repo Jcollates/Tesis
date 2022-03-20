@@ -77,6 +77,10 @@ export class AgendamientoCitasComponent implements OnInit {
   historyMeet: SimplemeetHistory = new SimplemeetHistory();
   initialState: any;
   initialStateServi: any;
+
+
+  selectedEmployessRemove: Employee[] = [];
+  
   constructor(
     private simpleMeetService: SimpleMeetService,
     private formBuilder: FormBuilder,
@@ -270,10 +274,7 @@ export class AgendamientoCitasComponent implements OnInit {
     })
   }
   getEmployeesAssigned() {
-    console.log(this.selectedFather.seqsimplemeet);
     this.employeeService.getEmployessAssigned(this.selectedFather.seqsimplemeet, null).subscribe(res => {
-      console.log('NO SE LLAMA O QUE ?', res)
-
       res.forEach(item => {
         item.img = this.sharedFuntions.repair(item.img);
       })
@@ -284,30 +285,42 @@ export class AgendamientoCitasComponent implements OnInit {
   }
 
   onRowSelect(event: any) {
+    //AaaaaaaQUIAa
     event.data.assigmentdayte = this.selectedFather.dateService;
     event.data.endassigmentdate = this.selectedFather.dateEnd;
     event.data.seqmeet = this.selectedFather.seqsimplemeet;
     this.selectdEmployes.push(event.data);
     console.log("this.selectdEmployes", this.selectdEmployes);
   }
-  saveAssigment() {
+  async saveAssigment() {
     if (this.selectdEmployes.length > 0) {
-      this.selectdEmployes.forEach(item => {
-        this.employeeService.updateEmployee(item).subscribe(update => {
-          if (update) this.messageService.add({ severity: 'success', detail: 'Empleado asignado' })
-          else this.messageService.add({ severity: 'error', detail: 'No se logro asignar' });
-          this.getEmployeesAssigned();
-          this.getEmployees(null);
-          this.showEmployes = false;
-        })
-      })
+    this.selectdEmployes.forEach(item => {
+
+        item.assigmentdayte = this.selectedFather.dateService;
+        item.endassigmentdate = this.selectedFather.dateEnd;
+        item.seqmeet = this.selectedFather.seqsimplemeet;
+
+        this.employeeService.updateEmployee(item).then(async update => {
+          if (update) {
+            this.messageService.add({ severity: 'success', detail: 'Empleado asignado' });
+          } else {
+            this.messageService.add({ severity: 'error', detail: 'No se logro asignar' });
+          };
+        });
+      });
+
+      this.getEmployeesAssigned();
+      this.getEmployees(null);
+      this.showEmployes = false;
+
+
     } else {
       this.messageService.add({ severity: 'error', detail: 'Seleccione al menos un empleado' });
     }
-
   }
   onRowSelectFather(event: Simplemeet) {
     this.selectedFather = event;
+    this.getEmployees(null);
   }
   onRowSelectAssigned(event: Simplemeet) {
     this.selectedFather = event;
@@ -357,10 +370,10 @@ export class AgendamientoCitasComponent implements OnInit {
           item.endassigmentdate = null;
           item.seqmeet = null;
           item.seqcontractassig = null;
-          this.employeeService.updateEmployee(item).subscribe(() => console.log('employee removed'));
+          this.employeeService.updateEmployee(item).then(() => console.log('employee removed'));
         });
       }
-    })
+    });
   }
   saveHistory(employees: Employee[], meet: Simplemeet) {
     console.log("employees", employees);
@@ -486,7 +499,7 @@ export class AgendamientoCitasComponent implements OnInit {
     resetBodyEmail.subject = 'Estado de la solicitud';
     resetBodyEmail.username = data.cliName + "" + data.cliLastName;
     resetBodyEmail.status = data.status;
-    resetBodyEmail.request = data.seqsimplemeet +"";
+    resetBodyEmail.request = data.seqsimplemeet + "";
     this.emailService.sendChangedRequestToUser(resetBodyEmail).then(rest => {
       if (!rest.hasOwnProperty('message')) {
         console.log("EMAIL EMIAL", rest);
@@ -494,6 +507,41 @@ export class AgendamientoCitasComponent implements OnInit {
         this.messageService.add({ severity: 'error', detail: 'Error al enviar correo' });
       }
     });
+  }
+  cancelAssigned() {
+    this.showEmployes = false;
+    this.selectdEmployes = [];
+  }
+  cancelEmployesAssigned() {
+    this.showEmployesAssigned = false;
+    this.selectedEmployessRemove = [];
+  }
+  removeEmployees() {
+    if (this.selectedEmployessRemove.length > 0) {
+      this.selectedEmployessRemove.forEach(item => {
+        item.assigmentdayte = null;
+        item.endassigmentdate = null;
+        item.seqmeet = null;
+        item.seqcontractassig = null;
+        this.employeeService.updateEmployee(item).then(rest => {
+          if (rest) {
+            this.messageService.add({ severity: 'success', detail: 'Empleado(s) removido(s)' });
+            this.getEmployeesAssigned();
+            this.getEmployees(null);
+          }
+        });
+      });
+    } else {
+      this.messageService.add({ severity: 'error', detail: 'Debe seleccionar al menos un empleado' });
+    }
+
+
+  }
+  onHide(event: any) {
+    this.selectedEmployessRemove = [];
+  }
+  onHideToAssig(event: any) {
+    this.selectdEmployes = [];
   }
 }
 
