@@ -13,7 +13,6 @@ export class CheckLoginGuard implements CanActivate, CanActivateChild {
 
   }
   canActivate(): Observable<boolean> {
-    // console.log(this.authService.userLogged.value)
     return this.authService.userLogged.pipe(
       take(1),
       map((islogged: boolean) => islogged)

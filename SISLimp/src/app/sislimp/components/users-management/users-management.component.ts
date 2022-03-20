@@ -150,7 +150,6 @@ export class UsersManagementComponent implements OnInit {
 
     await this.emailService.sendNewGenericPassEmail(resetBodyEmail).then(rest => {
       if (!rest.hasOwnProperty('message')) {
-        console.log("EMAIL EMIAL", rest);
       } else {
         this.messageService.add({ severity: 'error', detail: 'Error al enviar correo' });
       }
@@ -164,7 +163,6 @@ export class UsersManagementComponent implements OnInit {
         this.messageService.add({ severity: 'error', detail: rest.message });
       } else {
         this.dataFromdb = rest;
-        console.log("users", this.dataFromdb);
       }
     });
   }
@@ -174,7 +172,6 @@ export class UsersManagementComponent implements OnInit {
         this.messageService.add({ severity: 'error', detail: rest.message });
       } else {
         this.loginUsers = rest;
-        console.log("login users", this.loginUsers)
       }
     })
   }
@@ -258,7 +255,6 @@ export class UsersManagementComponent implements OnInit {
 
     this.emailService.sendRestorePasswordEmail(resetBodyEmail).then(rest => {
       if (!rest.hasOwnProperty('message')) {
-        console.log("EMAIL EMIAL", rest);
       } else {
         this.messageService.add({ severity: 'error', detail: 'Error al enviar correo' });
       }

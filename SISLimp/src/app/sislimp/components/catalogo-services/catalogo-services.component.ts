@@ -62,7 +62,6 @@ export class CatalogoServicesComponent implements OnInit {
   }
   chargeData(event: LazyLoadEvent) {
     this.catService.getCatServices().subscribe(rest => {
-      console.log(rest);
       rest.forEach(item => {
         item.img = this.sharedFuntions.repair(item.img);
       })
@@ -92,9 +91,8 @@ export class CatalogoServicesComponent implements OnInit {
     this.formService.markAllAsTouched();
     if (!this.formService.valid) {
       this.messageService.add({ severity: 'error', detail: 'Formulario no valido' });
-      console.log(this.formService.value);
+      
     } else {
-      console.log('FORM', this.formService.value);
       this.catServiceContainer.codeservice = this.formService.controls.codeService.value;
       this.catServiceContainer.img = this.formService.controls.img.value;
       this.catServiceContainer.nameservice = this.formService.controls.name.value;

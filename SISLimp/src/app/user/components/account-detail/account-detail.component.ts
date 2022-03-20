@@ -41,7 +41,6 @@ export class AccountDetailComponent implements OnInit {
   chargeData() {
     this.userService.getUserExtraData(this.authService.codeUser).then(rest => {
       if (rest) {
-        console.log(rest);
         this.dataUser = rest;
         this.createForm();
       }
@@ -53,7 +52,6 @@ export class AccountDetailComponent implements OnInit {
     });
   }
   onChangueProvince(event: any) {
-    console.log(event.value)
     this.catalogueService.getCataloguebyCodeCatAndCodeFather(CITYCAT, PROVINCECAT, event.value).then(rest => {
       this.dropcity = this.catalogueService.constructModel(rest);
     })

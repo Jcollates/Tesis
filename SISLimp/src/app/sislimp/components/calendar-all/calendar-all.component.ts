@@ -102,23 +102,19 @@ export class CalendarAllComponent implements OnInit {
   chargeMeets(event: LazyLoadEvent) {
     this.simpleMeetService.getSimpleMeets().subscribe(rest => {
       if (rest.length > 0) {
-        rest.forEach(item => item.elementAsArray = item.addededServices ? JSON.parse(item.addededServices) : [])
-        this.meets = rest.filter(item => item.status !== 'process' && item.status !== 'hold');
-        console.log('dataFromdb', this.meets);
+        rest.forEach(item => item.elementAsArray = item.addededServices ? JSON.parse(item.addededServices) : []);
+        this.meets = rest.filter(item => item.status === 'process' || item.status === 'hold');
       }
     });
     this.agreeService.getAgreements().subscribe(rest => {
       if (rest.length > 0) {
-        console.log(rest);
-        rest.forEach(item => item.elementAsArray = item.addededServices ? JSON.parse(item.addededServices) : [])
-        this.contracts = rest;
+        rest.forEach(item => item.elementAsArray = item.addededServices ? JSON.parse(item.addededServices) : []);
+        this.contracts = rest.filter(item => item.status === 'active' || item.status === 'inactive');
       }
     });
   }
   getMonthData(date: Date, dateCalendar: Date): true | false {
-    console.log(new Date(date).getTime(), dateCalendar.getTime());
     if (new Date(date) == date) {
-      
       return true;
     }
     return false;
@@ -127,10 +123,25 @@ export class CalendarAllComponent implements OnInit {
     this.showContractDetail = true;
     this.contractDetail = {...contract};
     this.getEmployeesAssigned(this.contractDetail.seqagree);
-    console.log(contract);
   }
   getEmployeesAssigned(codeContract: number) {
     this.employeeService.getEmployessAssigned(null, codeContract).subscribe(res => {
+      res.forEach(item => {
+        item.img = this.sharedFuntions.repair(item.img);
+      })
+      this.employesAssigned = res;
+      this.employesAssigned.length > 0 ? this.employeesAsignated = this.employesAssigned.length : 0;
+      this.sizeRecordsAsigned = res.length;
+    });
+  }
+
+  detailMeet(meet: Simplemeet){
+    this.showMeetDetail = true;
+    this.meetDetail = {...meet};
+    this.getEmployeesAssigned(this.meetDetail.seqsimplemeet);
+  }
+  getEmployeesAssignedMeet(meetCode: number) {
+    this.employeeService.getEmployessAssigned(meetCode, null).subscribe(res => {
       res.forEach(item => {
         item.img = this.sharedFuntions.repair(item.img);
       })

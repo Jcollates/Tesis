@@ -78,7 +78,6 @@ export class GestionInventarioProductsComponent implements OnInit {
   chargeData(event: LazyLoadEvent) {
     this.productService.getProducts().subscribe(rest => {
       if (rest.length > 0) {
-        console.log(rest);
         this.dataFromdb = rest;
         this.sizeRecords = rest.length;
         this.dataFromdb.forEach(item => item.datebought = new Date(item.datebought))
@@ -91,9 +90,7 @@ export class GestionInventarioProductsComponent implements OnInit {
     this.formProducts.markAllAsTouched();
     if (!this.formProducts.valid) {
       this.messageService.add({ severity: 'error', detail: 'Formulario no valido' });
-      console.log(this.formProducts.value)
     } else {
-      console.log('FORM', this.formProducts.value);
       this.productContainer.codeproduct = this.formProducts.controls.codeprod.value;
       this.productContainer.name = this.formProducts.controls.nameprod.value;
       this.productContainer.description = this.formProducts.controls.description.value;
@@ -137,7 +134,6 @@ export class GestionInventarioProductsComponent implements OnInit {
   }
 
   onRowEditSave(customer: ProductModel) {
-    console.log(customer)
     this.productService.updateProducts(customer).subscribe(rest => {
       if (rest) {
         this.messageService.add({ severity: 'success', detail: 'Actualizado' });

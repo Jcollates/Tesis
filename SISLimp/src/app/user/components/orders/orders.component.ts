@@ -95,7 +95,6 @@ export class OrdersComponent implements OnInit {
       }
     });
     this.simpleMeetService.getSimpleMeetsByname(userData.name, userData.lastname, userData.email).then(rest => {
-      console.log("CITAS", rest);
       if(rest.length > 0) {
         rest.forEach(item => item.elementAsArray = JSON.parse(item.addededServices));
         this.meets = rest;

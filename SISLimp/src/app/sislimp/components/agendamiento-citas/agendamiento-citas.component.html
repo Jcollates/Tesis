@@ -34,6 +34,10 @@
                             </button>
                         </td>
                         <td NOWRAP>
+                            <span class="p-column-title">Código</span>
+                            {{dataFrom.seqsimplemeet}}
+                        </td>
+                        <td NOWRAP>
                             <span class="p-column-title">Fecha inicio</span>
                             {{dataFrom.dateService | date:'dd/MM/yyyy'}}
                         </td>
@@ -45,13 +49,13 @@
                             <span class="p-column-title">Estado</span>
                             {{dataFrom.status | solistatus:drop}}
                         </td>
-                        <td>
+                        <td NOWRAP>
                             <span class="p-column-title">Cliente</span>
                             {{dataFrom.cliName}} {{dataFrom.cliLastName}}
                         </td>
                         <td>
                             <span class="p-column-title">Agendador</span>
-                            {{dataFrom.codeUser}}
+                            {{dataFrom.codeUser | loginUserPipe:loginUsers}}
                         </td>
 
                         <td>
@@ -176,6 +180,10 @@
                             </button>
                         </td>
                         <td NOWRAP>
+                            <span class="p-column-title">Código</span>
+                            {{dataFrom.seqsimplemeethistory}}
+                        </td>
+                        <td NOWRAP>
                             <span class="p-column-title">Fecha inicio</span>
                             {{dataFrom.dateService | date:'dd/MM/yyyy'}}
                         </td>
@@ -187,13 +195,13 @@
                             <span class="p-column-title">Estado</span>
                             {{dataFrom.status | solistatus:drop}}
                         </td>
-                        <td>
+                        <td NOWRAP>
                             <span class="p-column-title">Cliente</span>
                             {{dataFrom.cliName}} {{dataFrom.cliLastName}}
                         </td>
                         <td>
                             <span class="p-column-title">Agendador</span>
-                            {{dataFrom.codeUser}}
+                            {{dataFrom.codeUser | loginUserPipe:loginUsers}}
                         </td>
 
                         <td>
@@ -534,12 +542,8 @@
     </p-tabView>
     <p-dialog header="Asignacion de empleado" [(visible)]="showEmployes" modal="true" (onHide)="onHideToAssig($event)">
         <p-table [value]="employesToAssig" styleClass="p-datatable-customers p-datatable-gridlines p-datatable-striped"
-            [responsive]="true" [paginator]="true" [rows]="pageSize" dataKey="seqemploy"
-            [rowsPerPageOptions]="[10,30,60]" [totalRecords]="sizeRecordsToAsig" [lazy]="true" [autoLayout]="true"
-            [columns]="colsEmployees"  (onLazyLoad)="getEmployees($event)" [(selection)]="selectdEmployes">
-            <ng-template pTemplate="caption">
-                Listado
-            </ng-template>
+            [responsive]="true" dataKey="seqemploy" [lazy]="true" [autoLayout]="true" [columns]="colsEmployees"
+            (onLazyLoad)="getEmployees($event)" [(selection)]="selectdEmployes">
             <ng-template pTemplate="header" let-columns>
                 <tr>
                     <th style="width: 3rem">
@@ -568,14 +572,17 @@
                 </tr>
             </ng-template>
             <ng-template pTemplate="emptymessage">
-                No hay registros que mostrar
+                <tr>
+                    <td colspan="3">
+                        No hay registros que mostrar
+                    </td>
+                </tr>
             </ng-template>
         </p-table>
         <p-toolbar>
             <div class="p-toolbar-group-left">
                 <button pButton pRipple type="button" label="Cerrar" (click)="cancelAssigned()" icon="pi pi-times"
-                    class="p-button-raised p-button-rounded p-button-danger p-mr-2 p-mb-2 "
-                    style="float: center">
+                    class="p-button-raised p-button-rounded p-button-danger p-mr-2 p-mb-2 " style="float: center">
                 </button>
             </div>
             <div class="p-toolbar-group-right">
@@ -588,12 +595,8 @@
     </p-dialog>
     <p-dialog header="Empleados asignados" [(visible)]="showEmployesAssigned" modal="true" (onHide)="onHide($event)">
         <p-table [value]="employesAssigned" styleClass="p-datatable-customers p-datatable-gridlines p-datatable-striped"
-            [responsive]="true" [paginator]="true" [rows]="pageSize" dataKey="seqemploy"
-            [rowsPerPageOptions]="[10,30,60]" [totalRecords]="sizeRecordsAsigned" [lazy]="true" [autoLayout]="true"
-            [columns]="colsEmployees" [(selection)]="selectedEmployessRemove">
-            <ng-template pTemplate="caption">
-                Listado
-            </ng-template>
+            [responsive]="true" dataKey="seqemploy" [lazy]="true" [autoLayout]="true" [columns]="colsEmployees"
+            [(selection)]="selectedEmployessRemove">
             <ng-template pTemplate="header" let-columns>
                 <tr>
                     <th style="width: 3rem">
@@ -610,7 +613,7 @@
                 <tr>
                     <td>
                         <p-tableCheckbox [value]="dataFrom"></p-tableCheckbox>
-                    </td>    
+                    </td>
                     <td>
                         <span class="p-column-title">Nombre</span>
                         {{dataFrom.name}} - {{dataFrom.lastname}}
@@ -622,12 +625,17 @@
                 </tr>
             </ng-template>
             <ng-template pTemplate="emptymessage">
-                No hay registros que mostrar
+                <tr>
+                    <td colspan="3">
+                        No hay registros que mostrar
+                    </td>
+                </tr>
             </ng-template>
         </p-table>
         <p-toolbar>
             <div class="p-toolbar-group-left">
-                <button pButton pRipple type="button" label="Cerrar" icon="pi pi-times" (click)="cancelEmployesAssigned()"
+                <button pButton pRipple type="button" label="Cerrar" icon="pi pi-times"
+                    (click)="cancelEmployesAssigned()"
                     class="p-button-raised p-button-rounded p-button-danger p-mr-2 p-mb-2 " style="float: center">
                 </button>
             </div>
@@ -641,8 +649,7 @@
     <p-dialog header="Empleados que laborarón" [(visible)]="showEmployesAssignedProccessed" modal="true">
         <p-table [value]="historyMeet.elementsAsArray"
             styleClass="p-datatable-customers p-datatable-gridlines p-datatable-striped" [responsive]="true"
-            [paginator]="true" [rows]="pageSize" dataKey="seqemploy" [rowsPerPageOptions]="[10,30,60]"
-            [totalRecords]="sizeRecordsAsigned" [lazy]="true" [autoLayout]="true" [columns]="colsEmployees">
+            dataKey="seqemploy" [lazy]="true" [autoLayout]="true" [columns]="colsEmployees">
             <ng-template pTemplate="header" let-columns>
                 <tr>
                     <ng-container *ngFor="let col of columns">
@@ -665,7 +672,11 @@
                 </tr>
             </ng-template>
             <ng-template pTemplate="emptymessage">
-                No hay registros que mostrar
+                <tr>
+                    <td colspan="3">
+                        No hay registros que mostrar
+                    </td>
+                </tr>
             </ng-template>
         </p-table>
     </p-dialog>

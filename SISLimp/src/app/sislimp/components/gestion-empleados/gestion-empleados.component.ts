@@ -62,7 +62,6 @@ export class GestionEmpleadosComponent implements OnInit {
   }
   chargeData(event: LazyLoadEvent) {
     this.employeService.getEmployess().subscribe(rest => {
-      console.log(rest);
       rest.forEach(item => {
         item.img = this.sharedFuntions.repair(item.img);
         item.birthday = new Date(item.birthday);
@@ -149,7 +148,6 @@ export class GestionEmpleadosComponent implements OnInit {
       this.fileUploades = [];
       this.chargeData(null);
       this.activeIndex1 = 0;
-      // console.log("SAVED?", res);
     })
   }
 

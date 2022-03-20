@@ -49,8 +49,6 @@ export class ServicesCliComponent implements OnInit {
     } else {
       this.cart = [...this.cart, this.serviceSelected];
     }
-    console.log(exist);
-    console.log(this.cart);
   }
 
   quitservice(idPRod: number) {
@@ -61,8 +59,6 @@ export class ServicesCliComponent implements OnInit {
     } else {
       this.cart = this.cart.filter(item => item.idProd !== this.serviceSelected.idProd);
     }
-    console.log(this.serviceSelected);
-    console.log(this.cart);
   }
   confirmservices() {
 
@@ -84,7 +80,6 @@ export class ServicesCliComponent implements OnInit {
   getServices() {
     this.serviceShowService.getCatServices().subscribe(rest => {
       if (rest.length > 0) {
-        console.log(rest);
         rest.forEach(item => {
           item.img = this.sharedFuntions.repair(item.img);
         });
@@ -95,7 +90,6 @@ export class ServicesCliComponent implements OnInit {
     });
   }
   sendServices() {
-    console.log("this.cart", this.cart);
     this.fillData(this.cart);
 
   }
@@ -151,7 +145,7 @@ export class ServicesCliComponent implements OnInit {
     resetBodyEmail.request = data.seqsolservice + "";
     this.emailService.sendNewRequestToUSER(resetBodyEmail).then(rest => {
       if (!rest.hasOwnProperty('message')) {
-        console.log("EMAIL EMIAL", rest);
+        console.log("EMAIL EMIAL");
       } else {
         this.messageService.add({ severity: 'error', detail: 'Error al enviar correo' });
       }
@@ -168,7 +162,7 @@ export class ServicesCliComponent implements OnInit {
     resetBodyEmail.request = data.seqsolservice + "";
     this.emailService.sendNewRequestToAdmin(resetBodyEmail).then(rest => {
       if (!rest.hasOwnProperty('message')) {
-        console.log("EMAIL EMIAL", rest);
+        console.log("EMAIL EMIAL");
       } else {
         this.messageService.add({ severity: 'error', detail: 'Error al enviar correo' });
       }
