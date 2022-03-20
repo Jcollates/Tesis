@@ -135,7 +135,6 @@ export class LoginComponent implements OnInit {
   async prevalidatePassword(code: number) {
     let response: boolean;
     await this.userGeneralService.getUniqueLoginUser(code).then(rest => {
-      console.log("Esta entrando");
       if (rest.changepassnextenter === "YES") {
         this.loginUserUpdate = rest;
         response = true;
@@ -191,7 +190,6 @@ export class LoginComponent implements OnInit {
     this.formNewUser.markAllAsTouched();
     if (!this.formNewUser.valid) {
       this.messageService.add({ severity: 'error', detail: 'Formulario imcompleto' });
-      console.log('FORM', this.formNewUser.value);
     } else {
       this.fillContainerLoginUSer(this.formNewUser);
     }
@@ -206,7 +204,6 @@ export class LoginComponent implements OnInit {
     this.newUSer.loginuser_codeuser = this.loginuser_codeuser;
     this.userGeneralService.saveUser(this.newUSer).then(rest => {
       if (rest) {
-        console.log("SAVED newUSer ?", rest);
         this.messageService.add({ severity: 'success', detail: 'Registrado correctamente' });
         this.formNewUser.reset(this.initialState);
       } else {
@@ -223,7 +220,6 @@ export class LoginComponent implements OnInit {
     this.loginUser.status = 'ACTIVO';
     this.loginUser.loginusercol = 'USER';
     await this.userGeneralService.createLoginUSer(this.loginUser).then(rest => {
-      console.log("SAVED loginUser ?", rest);
       if (rest.codeuser != null && rest.codeuser != 0) this.loginuser_codeuser = rest.codeuser;
     });
     this.fillContainer(this.formNewUser);
@@ -237,7 +233,6 @@ export class LoginComponent implements OnInit {
     this.formForgotPassword.markAllAsTouched();
     if (this.formForgotPassword.valid) {
       this.userGeneralService.validateUsername(this.formForgotPassword.controls.username.value).then(rest => {
-        console.log(rest);
         if (rest.code === '01') {
           this.messageService.add({ severity: 'success', detail: 'Usuario encontrado' });
           this.getDataUserAndUpdate(rest.codeUser);
@@ -247,7 +242,6 @@ export class LoginComponent implements OnInit {
         }
       })
     }
-    console.log("AL mostrar", this.formForgotPassword.value);
 
   }
   onPassForgotCancel() {
@@ -295,7 +289,6 @@ export class LoginComponent implements OnInit {
 
     this.emailService.sendRestorePasswordEmail(resetBodyEmail).then(rest => {
       if (!rest.hasOwnProperty('message')) {
-        console.log("EMAIL EMIAL", rest);
       } else {
         this.messageService.add({ severity: 'error', detail: 'Error al enviar correo' });
       }

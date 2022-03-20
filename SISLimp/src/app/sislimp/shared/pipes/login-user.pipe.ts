@@ -6,13 +6,13 @@ import { LoginUser } from 'src/app/sharedAll/models/usergeneral.model';
 })
 export class LoginUserPipe implements PipeTransform {
 
-  transform(value: string, legalperson: LoginUser[]): unknown {
+  transform(value: string | number, legalperson: LoginUser[]): unknown {
     value = value ? value : null;
     let nameItem = value.toString();
     if (legalperson) {
       legalperson.forEach((user) => {
-        if (value === user.codeuser.toString()) {
-          nameItem = `${user.username}`
+        if (value + "" === user.codeuser.toString()) {
+          nameItem = `${user.username}`;
           return nameItem
         }
       });

@@ -44,7 +44,6 @@ export class ProductsComponent implements OnInit {
     this.findExtraData();
   }
   addProduct(idProd: number) {
-    console.log("idProd", idProd)
     this.productSelected = this.product.find(item => idProd == item.idProd);
     const exist = this.cart.some(prod => prod.idProd === this.productSelected.idProd);
     if (exist) {
@@ -87,7 +86,6 @@ export class ProductsComponent implements OnInit {
       });
       this.pureProducts = rest;
       this.product = this.mapperFromCatPRo(rest);
-      console.log("PRODUCTS", rest);
     });
   }
   sentProducts() {
@@ -143,7 +141,7 @@ export class ProductsComponent implements OnInit {
     resetBodyEmail.request = data.seqsolproduct + "";
     this.emailService.sendNewRequestToUSER(resetBodyEmail).then(rest => {
       if (!rest.hasOwnProperty('message')) {
-        console.log("EMAIL EMIAL", rest);
+        console.log("EMAIL EMIAL");
       } else {
         this.messageService.add({ severity: 'error', detail: 'Error al enviar correo' });
       }
@@ -160,7 +158,7 @@ export class ProductsComponent implements OnInit {
     resetBodyEmail.request = data.seqsolproduct + "";
     this.emailService.sendNewRequestToAdmin(resetBodyEmail).then(rest => {
       if (!rest.hasOwnProperty('message')) {
-        console.log("EMAIL EMIAL", rest);
+        console.log("EMAIL EMIAL");
       } else {
         this.messageService.add({ severity: 'error', detail: 'Error al enviar correo' });
       }

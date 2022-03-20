@@ -54,7 +54,7 @@ export class AtencionClienteComponent implements OnInit {
 
   createCols() {
     this.cols = [
-      { field: 'codeCli', header: 'Codigo cliente' },
+      { field: 'codeCli', header: 'Código cliente' },
       { field: 'date', header: 'Fecha de observación' },
       { field: 'name', header: 'Nombre' },
       { field: 'lastname', header: 'Apellido' },
@@ -110,10 +110,8 @@ export class AtencionClienteComponent implements OnInit {
     this.formCustomer.markAllAsTouched()
     if (!this.formCustomer.valid) {
       this.messageService.add({ severity: 'error', detail: 'Formulario no valido' });
-      console.log('FORM', this.formCustomer.value);
 
     } else {
-      console.log('FORM', this.formCustomer.value);
       this.customerContainer.dnicliente = this.formCustomer.controls.dni.value;
       this.customerContainer.email = this.formCustomer.controls.email.value;
       this.customerContainer.nameclient = this.formCustomer.controls.cliname.value;
@@ -133,7 +131,6 @@ export class AtencionClienteComponent implements OnInit {
   }
 
   saveForm(container: CustomerServiceModel) {
-    // console.log('cotainer', container);
     this.customerService.saveCustomerService(container).subscribe(res => {
       if (res != null) {
         this.messageService.add({ severity: 'success', detail: 'Registrado correctamente' });
@@ -144,7 +141,6 @@ export class AtencionClienteComponent implements OnInit {
     })
   }
   onChangueProvince(event: any) {
-    console.log(event.value)
     this.catalogueService.getCataloguebyCodeCatAndCodeFather(CITYCAT, PROVINCECAT, event.value).then(rest => {
       this.dropCity = this.catalogueService.constructModel(rest);
     })
@@ -172,7 +168,6 @@ export class AtencionClienteComponent implements OnInit {
   }
 
   onRowEditSave(customer: CustomerServiceModel) {
-    console.log(customer)
     this.customerService.saveCustomerService(customer).subscribe(rest => {
       if (rest) {
         this.messageService.add({ severity: 'success', detail: 'Actualizado' });

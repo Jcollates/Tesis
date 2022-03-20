@@ -26,9 +26,16 @@ export class PrincipalComponent implements OnInit {
   }
   ngOnInit() {
     this.items = [
+      // {
+      //   label: `<h4>Asoserlat</h4>`,
+      //   escape: false,
+        
+      // },
       {
-        label: this.authService.username
-      }
+        label: this.authService.username,
+        icon: 'fa fa-users',
+      },
+      
     ]
     this.items2 = [
       {
@@ -152,7 +159,6 @@ export class PrincipalComponent implements OnInit {
       'client-theme'
     ) as HTMLLinkElement;
     if (themeLink) {
-      console.log(styleName);
       themeLink.href = styleName;
     } else {
       const style = this.document.createElement('link');

@@ -112,7 +112,6 @@ export class RequestsAllComponent implements OnInit {
   }
   saveConfirmation(father: SolProduct) {
     if (father.selectedProducts.length > 0) {
-      console.log("Ta mare",father.selectedProducts);
       father.products = JSON.stringify(this.constructJSON(father.selectedProducts));
       this.messageService.add({ severity: 'success', detail: 'Confirmado' });
     } else {
@@ -197,7 +196,6 @@ export class RequestsAllComponent implements OnInit {
           item.selectedProducts = item.elementAsArray
         });
         this.dataFromdb = rest.filter(item => item.status == 'process' || item.status == 'hold');
-        console.log("Comming products", this.dataFromdb);
         this.dataFromdbWatch = rest.filter(item => item.status != 'process' && item.status != 'hold');
       }
     });
@@ -205,8 +203,7 @@ export class RequestsAllComponent implements OnInit {
 
 
   onChangeSelect(event: any, father: any){
-    console.log("Select", event);
-    console.log("Father", father);
+    
   }
 
 }

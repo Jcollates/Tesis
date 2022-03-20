@@ -105,8 +105,6 @@ export class CatalogoProductsComponent implements OnInit {
     this.productService.getProducts().subscribe(res => {
       if (res.length > 0) {
         this.pureProducts = res;
-        //const items: ProductModel[] = [...res];
-        //this.productsToShow = this.productService.constructModel(items);
       }
     });
   }
@@ -141,9 +139,7 @@ export class CatalogoProductsComponent implements OnInit {
     this.formProduct.markAllAsTouched();
     if (!this.formProduct.valid) {
       this.messageService.add({ severity: 'error', detail: 'Formulario no valido' });
-      console.log('FORM', this.formProduct.value);
     } else {
-      console.log('FORM', this.formProduct.value);
       this.catProducContainer.codeproduct = this.formProduct.controls.codeProd.value;
       this.catProducContainer.img = this.formProduct.controls.img.value;
       this.catProducContainer.nameproduct = this.formProduct.controls.name.value;
@@ -163,7 +159,6 @@ export class CatalogoProductsComponent implements OnInit {
         this.activeIndex1 = 0;
         this.chargeData(null);
       }
-      // console.log("SAVED?", res);
     })
   }
   async uploadFileEdit(event, datafrom: CatProducts) {
