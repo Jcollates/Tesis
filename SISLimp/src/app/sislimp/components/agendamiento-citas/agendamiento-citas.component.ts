@@ -14,6 +14,8 @@ import { SimplemeetHistory } from '../../shared/models/siemplemeetHistory.model'
 import { CatalgogueItem } from '../../../sharedAll/models/catalogue';
 import { EmailService } from '../../shared/services/email.service';
 import { BasicEmailModel } from '../../shared/models/emails.model';
+import { LoginUserService } from '../../shared/services/login-user-service.service';
+import { LoginUser } from '../../../sharedAll/models/usergeneral.model';
 const CITYCAT = 'CITYCAT';
 const PROVINCECAT = 'PROVINCECAT';
 const SERVICETYPE = 'SERVICETYPE';
@@ -80,7 +82,8 @@ export class AgendamientoCitasComponent implements OnInit {
 
 
   selectedEmployessRemove: Employee[] = [];
-  
+  loginUsers: LoginUser[] = [];
+
   constructor(
     private simpleMeetService: SimpleMeetService,
     private formBuilder: FormBuilder,
@@ -91,6 +94,7 @@ export class AgendamientoCitasComponent implements OnInit {
     private sharedFuntions: FuntionsSharedService,
     private authService: AuthService,
     private emailService: EmailService,
+    private loginUsersService: LoginUserService,
 
   ) { }
   ngOnInit(): void {
@@ -102,6 +106,7 @@ export class AgendamientoCitasComponent implements OnInit {
 
   createCols() {
     this.cols = [
+      { field: '', header: 'Código' },
       { field: 'date', header: 'Fecha inicio' },
       { field: 'dateEnd', header: 'Fecha fin' },
       { field: 'status', header: 'Estado' },
@@ -121,7 +126,6 @@ export class AgendamientoCitasComponent implements OnInit {
       if (rest.length > 0) {
         rest.forEach(item => item.elementAsArray = item.addededServices ? JSON.parse(item.addededServices) : [])
         this.dataFromdb = rest.filter(item => item.status === 'process' || item.status === 'hold');
-        console.log('dataFromdb', this.dataFromdb);
       }
     });
     if (event) {
@@ -132,8 +136,7 @@ export class AgendamientoCitasComponent implements OnInit {
       if (rest) {
         this.dataFromdbProcesed = rest.list;
         this.sizeRecordsPro = rest.count;
-        this.dataFromdbProcesed.forEach(item => item.employeesAssig != "[]" ? item.elementsAsArray = JSON.parse(item.employeesAssig) : [])
-        console.log('dataFromdb', this.dataFromdbProcesed);
+        this.dataFromdbProcesed.forEach(item => item.employeesAssig != "[]" ? item.elementsAsArray = JSON.parse(item.employeesAssig) : []);
       }
     });
   }
@@ -174,12 +177,10 @@ export class AgendamientoCitasComponent implements OnInit {
     this.services.removeAt(serviceIndex);
   }
   validateForm() {
-    // console.log("this.services", JSON.stringify(this.formCita.controls.services.value));
     this.formCita.markAllAsTouched();
     this.formCita.markAsDirty();
     if (!this.formCita.valid) {
       this.messageService.add({ severity: 'error', detail: 'Formulario no valido' });
-      console.log(this.formCita.value);
     } else {
       if (this.services.length > 0) {
         if (this.fromEdit) {
@@ -232,6 +233,7 @@ export class AgendamientoCitasComponent implements OnInit {
   }
 
   async getCatalogues() {
+    this.loginUsers = await this.loginUsersService.getLoginUsers();
     await this.catalogueService.getCataloguebyCodeCat(PROVINCECAT).then(rest => {
       this.dropProvince = this.catalogueService.constructModel(rest);
     });
@@ -244,7 +246,8 @@ export class AgendamientoCitasComponent implements OnInit {
 
     this.catalogueService.getCataloguebyCodeCat(REQUESTSTATUSCAT).then(rest => {
       this.drop = this.catalogueService.constructModel(rest);
-    })
+    });
+
   }
   onChangueProvince(event: any) {
     this.catalogueService.getCataloguebyCodeCatAndCodeFather(CITYCAT, PROVINCECAT, event.value).then(rest => {
@@ -290,11 +293,10 @@ export class AgendamientoCitasComponent implements OnInit {
     event.data.endassigmentdate = this.selectedFather.dateEnd;
     event.data.seqmeet = this.selectedFather.seqsimplemeet;
     this.selectdEmployes.push(event.data);
-    console.log("this.selectdEmployes", this.selectdEmployes);
   }
   async saveAssigment() {
     if (this.selectdEmployes.length > 0) {
-    this.selectdEmployes.forEach(item => {
+      this.selectdEmployes.forEach(item => {
 
         item.assigmentdayte = this.selectedFather.dateService;
         item.endassigmentdate = this.selectedFather.dateEnd;
@@ -328,7 +330,6 @@ export class AgendamientoCitasComponent implements OnInit {
   }
 
   fillDataToUpdate(item: Simplemeet) {
-    console.log("this.item)", item);
     if (item.status != 'hold') {
       if (item.status == 'process') {
         this.employeeService.getEmployessAssigned(item.seqsimplemeet, null).subscribe(res => {
@@ -376,7 +377,6 @@ export class AgendamientoCitasComponent implements OnInit {
     });
   }
   saveHistory(employees: Employee[], meet: Simplemeet) {
-    console.log("employees", employees);
     const historymeet = this.createHistoryMeet(meet);
     historymeet.employeesAssig = JSON.stringify(employees.length > 0 ? employees : []);
     this.simpleMeetService.saveSimpleMeetHistory(historymeet).subscribe(rest => {
@@ -413,7 +413,6 @@ export class AgendamientoCitasComponent implements OnInit {
 
   }
   onEditMeet(dataFrom: Simplemeet) {
-    console.log('On edit', dataFrom);
     this.fromEdit = true;
     this.activeIndex1 = 2;
     this.populateDataEdit(dataFrom);
@@ -502,7 +501,7 @@ export class AgendamientoCitasComponent implements OnInit {
     resetBodyEmail.request = data.seqsimplemeet + "";
     this.emailService.sendChangedRequestToUser(resetBodyEmail).then(rest => {
       if (!rest.hasOwnProperty('message')) {
-        console.log("EMAIL EMIAL", rest);
+        console.log("EMAIL");
       } else {
         this.messageService.add({ severity: 'error', detail: 'Error al enviar correo' });
       }

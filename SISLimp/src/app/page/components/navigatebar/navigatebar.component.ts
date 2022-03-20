@@ -17,6 +17,7 @@ export class NavigatebarComponent implements OnInit {
   ngOnInit(): void {
     this.isUser();
   }
+  
   isUser() {
     let role = localStorage.getItem('role');
     if (role == 'USER') {

@@ -26,7 +26,6 @@ export class RoleGuardGuard implements CanActivate, CanActivateChild {
   canActivateChild() {
     let role = localStorage.getItem('role');
     if(role == 'ADMIN'){
-      // this.router.navigate(['/system']);
       return true;
     } else {
       console.log("you not a ADMIN");

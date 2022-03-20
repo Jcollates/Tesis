@@ -85,9 +85,7 @@ export class GestionProvedoresComponent implements OnInit {
     this.formProvider.markAllAsTouched();
     if (!this.formProvider.valid) {
       this.messageService.add({ severity: 'error', detail: 'Formulario no valido' });
-      // console.log('FORM', this.formService.value);
     } else {
-      console.log('FORM', this.formProvider.value);
       this.providerContainer.namenterprice = this.formProvider.controls.enterpricename.value;
       this.providerContainer.dni = this.formProvider.controls.dni.value;
       this.providerContainer.email = this.formProvider.controls.email.value;
@@ -102,7 +100,6 @@ export class GestionProvedoresComponent implements OnInit {
     }
   }
   saveForm(container: Provider) {
-    // console.log('cotainer', container);
     this.providerService.saveProvider(container).subscribe(res => {
       if (res != null) {
         this.messageService.add({ severity: 'success', detail: 'Registrado correctamente' });
@@ -115,7 +112,6 @@ export class GestionProvedoresComponent implements OnInit {
   async chargeData(event: LazyLoadEvent) {
     await this.providerService.getProviders().then(rest => {
       if (rest.length > 0) {
-        console.log("rest", rest);
         this.dataFromdb = rest;
       }
     })
@@ -134,7 +130,6 @@ export class GestionProvedoresComponent implements OnInit {
     });
   }
   onChangueProvince(event: any) {
-    console.log(event.value)
     this.catalogueService.getCataloguebyCodeCatAndCodeFather(CITYCAT, PROVINCECAT, event.value).then(rest => {
       this.dropCity = this.catalogueService.constructModel(rest);
     })

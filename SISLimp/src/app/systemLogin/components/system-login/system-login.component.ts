@@ -62,7 +62,6 @@ export class SystemLoginComponent implements OnInit {
       this.messageService.add({ severity: 'error', detail: 'Formulario no valido' });
     } else {
       this.loginService.login(this.formLogin.value).subscribe(async rest => {
-        console.log("REST", rest);
         if (rest.hasOwnProperty('codeuser')) {
           this.messageService.add({ severity: 'success', detail: 'Acceso exitoso' });
           await this.prevalidatePassword(Number(localStorage.getItem('code')));
@@ -81,7 +80,6 @@ export class SystemLoginComponent implements OnInit {
   async prevalidatePassword(code: number) {
     let response: boolean;
     await this.userGeneralService.getUniqueLoginUser(code).then(rest => {
-      console.log("Esta entrando");
       if (rest.changepassnextenter === "YES") {
         this.loginUserUpdate = rest;
         response = true;
@@ -160,7 +158,6 @@ export class SystemLoginComponent implements OnInit {
     this.formForgotPassword.markAllAsTouched();
     if (this.formForgotPassword.valid) {
       this.userGeneralService.validateUsername(this.formForgotPassword.controls.username.value).then(rest => {
-        console.log(rest);
         if (rest.code === '01') {
           this.messageService.add({ severity: 'success', detail: 'Usuario encontrado' });
           this.getDataUserAndUpdate(rest.codeUser);
@@ -170,7 +167,6 @@ export class SystemLoginComponent implements OnInit {
         }
       })
     }
-    console.log("AL mostrar", this.formForgotPassword.value);
   }
   async getDataUserAndUpdate(codeUser: number) {
     await this.userGeneralService.getUserExtraData(codeUser).then(rest => {
@@ -204,7 +200,7 @@ export class SystemLoginComponent implements OnInit {
 
     this.emailService.sendRestorePasswordEmail(resetBodyEmail).then(rest => {
       if (!rest.hasOwnProperty('message')) {
-        console.log("EMAIL EMIAL", rest);
+        console.log("EMAIL EMIAL");
       } else {
         this.messageService.add({ severity: 'error', detail: 'Error al enviar correo' });
       }

@@ -165,7 +165,6 @@ export class GestionContratosComponent implements OnInit {
     this.formcontracts.markAllAsTouched();
     if (!this.formcontracts.valid) {
       this.messageService.add({ severity: 'error', detail: 'Formulario no valido' });
-      console.log(this.formcontracts.value);
     } else {
       if (this.services.length > 0) {
         if (this.fromEdit && !this.fromChangeEdit) {
@@ -198,7 +197,6 @@ export class GestionContratosComponent implements OnInit {
   chargeData(event: LazyLoadEvent) {
     this.agreeService.getAgreements().subscribe(rest => {
       if (rest.length > 0) {
-        console.log(rest);
         rest.forEach(item => item.elementAsArray = item.addededServices ? JSON.parse(item.addededServices) : [])
         this.dataFromdb = rest;
         this.dataFromdb = rest.filter(item => item.status === 'inactive' || item.status === 'active');
@@ -213,14 +211,12 @@ export class GestionContratosComponent implements OnInit {
       if (rest) {
         this.dataFromdbProcesed = rest.list;
         this.sizeRecordsPro = rest.count;
-        this.dataFromdbProcesed.forEach(item => item.employeeAssig != "[]" ? item.elementsAsArray = JSON.parse(item.employeeAssig) : [])
-        console.log('dataFromdbProcesed', this.dataFromdbProcesed);
+        this.dataFromdbProcesed.forEach(item => item.employeeAssig != "[]" ? item.elementsAsArray = JSON.parse(item.employeeAssig) : []);
       }
     });
   }
 
   fillDataToUpdate(item: Agreement) {
-    console.log("this.item)", item);
     if (item.status != 'inactive') {
       if (item.status == 'active') {
         this.employeeservice.getEmployessAssigned(null, item.seqagree).subscribe(res => {
@@ -364,7 +360,6 @@ export class GestionContratosComponent implements OnInit {
     event.data.endassigmentdate = this.selectedFather.dateend;
     event.data.seqcontractassig = this.selectedFather.seqagree;
     this.selectdEmployes.push(event.data);
-    console.log("this.selectdEmployes", this.selectdEmployes);
   }
   onRowSelectAssigned(event: Agreement) {
     this.selectedFather = event;
@@ -411,7 +406,6 @@ export class GestionContratosComponent implements OnInit {
     this.services.push(formServices);
   }
   onEditContract(dataFrom: Agreement) {
-    console.log('On edit', dataFrom);
     this.fromEdit = true;
     this.activeIndex1 = 2;
     this.populateDataEdit(dataFrom);

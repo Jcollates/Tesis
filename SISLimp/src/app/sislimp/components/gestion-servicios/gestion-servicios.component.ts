@@ -122,7 +122,6 @@ export class GestionServiciosComponent implements OnInit {
     this.formCita.markAllAsTouched();
     if (!this.formCita.valid) {
       this.messageService.add({ severity: 'error', detail: 'Formulario no valido' });
-      console.log(this.formCita.value);
     } else {
       if (this.services.length > 0) {
         this.simpleMeet.status = 'hold';
@@ -201,7 +200,6 @@ export class GestionServiciosComponent implements OnInit {
     });
   }
   async onRowSelect(solService: SolService) {
-    console.log(solService)
     this.idSolService = solService.seqsolservice;
     const userData: UserGeneralModel = await this.usersGeneralService.getUserExtraData(solService.codeuser).then(rest => rest);
     this.formCita.patchValue({
@@ -214,7 +212,6 @@ export class GestionServiciosComponent implements OnInit {
       city: userData.city
     })
     this.showDetail = true;
-    console.log("simplemeet", this.simpleMeet);
   }
   populateServices(service: CatServices[]) {
     this.deleteService(0);

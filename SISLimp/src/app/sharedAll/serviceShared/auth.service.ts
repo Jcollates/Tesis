@@ -47,7 +47,7 @@ export class AuthService {
     const isExpired = helper.isTokenExpired(userToken);
     this.codeUser = Number(localStorage.getItem('code'));
     this.username = localStorage.getItem('username');
-    console.log('isExpired', isExpired);
+    console.log('isExpired?', isExpired);
     if (isExpired) {
       this.logOut();
     } else {
@@ -69,7 +69,6 @@ export class AuthService {
     if (error) {
       errorMessage = `Error: code ${error.message}`
     }
-    console.log(errorMessage);
     return throwError(errorMessage);
 
   }

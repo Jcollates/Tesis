@@ -12,24 +12,24 @@
                     <ul>
                         <ng-container *ngFor="let meet of meets">
                             <li *ngIf="meet.dateService == date.toISOString() || meet.dateEnd == date.toISOString() "
-                                class="meetstyle">
-                                <span> Cita: {{meet.seqsimplemeet}}</span>
+                                class="meetstyle" (click)="detailMeet(meet)">
+                                <span> <b style="font-weight: bold; font-style: italic; color: #1E65AE;">Cita:</b> {{meet.seqsimplemeet}}</span>
                                 <br>
-                                <span> Cliente: {{meet.cliName}} {{meet.cliLastName}} </span>
+                                <span><b style="font-weight: bold; font-style: italic; color: #1E65AE;">Cliente:</b> {{meet.cliName}} {{meet.cliLastName}} </span>
                             </li>
                         </ng-container>
                         <ng-container *ngFor="let contract of contracts">
                             <li *ngIf="contract.datestart == date.toISOString() || contract.dateend == date.toISOString() "
                                 class="contractstyle" (click)="detailContract(contract)">
-                                <span> Contrato: {{contract.seqagree}}</span>
+                                <span><b style="font-weight: bold; font-style: italic; color: #1E65AE;">Contrato:</b> {{contract.seqagree}}</span>
                                 <br>
-                                <span> Cliente: {{contract.name}}</span>
+                                <span><b style="font-weight: bold; font-style: italic; color: #1E65AE;">Cliente:</b> {{contract.name}}</span>
                             </li>
                         </ng-container>
                     </ul>
                 </ng-template>
             </div>
-            <p-dialog header="Detalle" [(visible)]="showContractDetail" [modal]="true" [responsive]="true"
+            <p-dialog header="Detalle contrato" [(visible)]="showContractDetail" [modal]="true" [responsive]="true"
                 [style]="{width: '40vw'}">
                 <div class="p-grid p-fluid">
                     <div class="p-col-12 p-md-2">
@@ -62,14 +62,14 @@
                             </b></span>
                     </div>
                     <div class="p-col-12 p-md-10">
-                        <span>{{contractDetail.datestart}}</span>
+                        <span>{{contractDetail.datestart | date:'dd/MM/yyyy'}}</span>
                     </div>
                     <div class="p-col-12 p-md-2">
                         <span> <b style="font-weight: bold; font-style: italic; color: #1E65AE;">Fecha de finalización:
                             </b></span>
                     </div>
                     <div class="p-col-12 p-md-10">
-                        <span>{{contractDetail.dateend}}</span>
+                        <span>{{contractDetail.dateend | date:'dd/MM/yyyy'}}</span>
                     </div>
                     <div class="p-col-12 p-md-2">
                         <span> <b style="font-weight: bold; font-style: italic; color: #1E65AE;">Horario: </b></span>
@@ -101,6 +101,76 @@
                 </div>
                 <ng-template pTemplate="footer">
                     <p-button icon="pi pi-check" (click)="showContractDetail=false" label="Ok"
+                        styleClass="p-button-text"></p-button>
+                </ng-template>
+            </p-dialog>
+
+            <p-dialog header="Detalle cita" [(visible)]="showMeetDetail" [modal]="true" [responsive]="true"
+                [style]="{width: '40vw'}">
+                <div class="p-grid p-fluid">
+                    <div class="p-col-12 p-md-2">
+                        <span> <b style="font-weight: bold; font-style: italic; color: #1E65AE;">Contrato: </b></span>
+                    </div>
+                    <div class="p-col-12 p-md-10">
+                        <span>{{meetDetail.seqsimplemeet}}</span>
+                    </div>
+                    <div class="p-col-12 p-md-2">
+                        <span> <b style="font-weight: bold; font-style: italic; color: #1E65AE;">Lugar: </b></span>
+                    </div>
+                    <div class="p-col-12 p-md-10">
+                        <span>{{meetDetail.address}}</span>
+                    </div>
+                    <div class="p-col-12 p-md-2">
+                        <span> <b style="font-weight: bold; font-style: italic; color: #1E65AE;">Servicios: </b></span>
+                    </div>
+                    <div class="p-col-12 p-md-10">
+                        <span>
+                            <ng-container *ngFor="let item of meetDetail.elementAsArray">
+                                <b style="color: #009b40;">Tipo:</b> {{item.typeService |selectedItemPipe:serviceTypes}}
+                                <br>
+                                <b style="color: #009b40;">Nombre:</b> {{item.serviceName}}
+                                <br>
+                            </ng-container>
+                        </span>
+                    </div>
+                    <div class="p-col-12 p-md-2">
+                        <span> <b style="font-weight: bold; font-style: italic; color: #1E65AE;">Fecha de inicio:
+                            </b></span>
+                    </div>
+                    <div class="p-col-12 p-md-10">
+                        <span>{{meetDetail.dateService | date:'dd/MM/yyyy'}}</span>
+                    </div>
+                    <div class="p-col-12 p-md-2">
+                        <span> <b style="font-weight: bold; font-style: italic; color: #1E65AE;">Fecha de finalización:
+                            </b></span>
+                    </div>
+                    <div class="p-col-12 p-md-10">
+                        <span>{{meetDetail.dateEnd| date:'dd/MM/yyyy'}}</span>
+                    </div>
+                    <div class="p-col-12 p-md-2">
+                        <span> <b style="font-weight: bold; font-style: italic; color: #1E65AE;">Empleados: </b></span>
+                    </div>
+                    <div class="p-col-12 p-md-10">
+                        <ng-container *ngFor="let item of employesAssigned">
+                            <span>{{item.name}} {{item.lastname}} - {{item.seqemploy}}</span>
+                            <br>
+                        </ng-container>
+                    </div>
+                    <div class="p-col-12 p-md-2">
+                        <span> <b style="font-weight: bold; font-style: italic; color: #1E65AE;">Cliente: </b></span>
+                    </div>
+                    <div class="p-col-12 p-md-10">
+                        <span>{{meetDetail.cliName}} {{meetDetail.cliLastName}}</span>
+                    </div>
+                    <div class="p-col-12 p-md-2">
+                        <span> <b style="font-weight: bold; font-style: italic; color: #1E65AE;">Teléfono: </b></span>
+                    </div>
+                    <div class="p-col-12 p-md-10">
+                        <span>{{meetDetail.phone}}</span>
+                    </div>
+                </div>
+                <ng-template pTemplate="footer">
+                    <p-button icon="pi pi-check" (click)="showMeetDetail=false" label="Ok"
                         styleClass="p-button-text"></p-button>
                 </ng-template>
             </p-dialog>

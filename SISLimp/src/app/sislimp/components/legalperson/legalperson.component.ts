@@ -63,7 +63,6 @@ export class LegalpersonComponent implements OnInit {
     this.formLegalperson.markAllAsTouched();
     if (!this.formLegalperson.valid) {
       this.messageService.add({ severity: 'error', detail: 'Formulario no valido' });
-      console.log('FORM', this.formLegalperson.value);
     } else {
       this.legalContainer.dni = this.formLegalperson.controls.dni.value;
       this.legalContainer.name = this.formLegalperson.controls.name.value;
