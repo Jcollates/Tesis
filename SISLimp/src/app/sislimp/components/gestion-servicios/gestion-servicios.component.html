@@ -297,7 +297,7 @@
                     </div>
                     <div class="p-field p-col-12 p-md-6">
                         <span class="p-float-label">
-                            <p-calendar [showIcon]="true" inputId="icon" formControlName="dateService"></p-calendar>
+                            <p-calendar [showIcon]="true" inputId="icon" formControlName="dateService"  appendTo="body"></p-calendar>
                             <label for="inputgroup">Fecha inicio</label>
                         </span>
                         <small *ngIf="formCita.get('dateService')?.errors && (formCita.get('dateService')?.dirty ||
@@ -309,7 +309,7 @@
                     </div>
                     <div class="p-field p-col-12 p-md-6">
                         <span class="p-float-label">
-                            <p-calendar [showIcon]="true" inputId="icon" formControlName="dateEnd"></p-calendar>
+                            <p-calendar [showIcon]="true" inputId="icon" formControlName="dateEnd" appendTo="body"></p-calendar>
                             <label for="inputgroup">Fecha fin</label>
                         </span>
                         <small *ngIf="formCita.get('dateEnd')?.errors && (formCita.get('dateEnd')?.dirty ||

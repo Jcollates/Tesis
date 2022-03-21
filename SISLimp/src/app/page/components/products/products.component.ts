@@ -44,6 +44,7 @@ export class ProductsComponent implements OnInit {
     this.findExtraData();
   }
   addProduct(idProd: number) {
+    this.messageService.add({ severity: 'success', detail: 'Añadido' });
     this.productSelected = this.product.find(item => idProd == item.idProd);
     const exist = this.cart.some(prod => prod.idProd === this.productSelected.idProd);
     if (exist) {
