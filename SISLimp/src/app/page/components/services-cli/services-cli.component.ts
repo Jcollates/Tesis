@@ -42,6 +42,7 @@ export class ServicesCliComponent implements OnInit {
   }
 
   addservice(idProd: number) {
+    this.messageService.add({ severity: 'success', detail: 'Añadido' });
     this.serviceSelected = this.service.find(item => idProd == item.idProd);
     const exist = this.cart.some(prod => prod.idProd === this.serviceSelected.idProd);
     if (exist) {
