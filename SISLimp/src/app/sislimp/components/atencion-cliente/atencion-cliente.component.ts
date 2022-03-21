@@ -125,6 +125,8 @@ export class AtencionClienteComponent implements OnInit {
       this.customerContainer.employeename = this.formCustomer.controls.employename.value.name;
       this.customerContainer.codeemployee = this.formCustomer.controls.employecode.value;
       this.customerContainer.servicedate = this.formCustomer.controls.servicedate.value;
+      this.customerContainer.servicedetail = this.formCustomer.controls.serviceDetail.value;
+      this.customerContainer.address = this.formCustomer.controls.address.value;
 
       this.saveForm(this.customerContainer);
     }
